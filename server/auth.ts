@@ -53,16 +53,19 @@ export function loginAdmin(req: Request, res: Response) {
   r.session = r.session || {};
   r.session.admin = true;
   r.session.email = expectedEmail;
+  res.setHeader('Cache-Control', 'no-store');
   res.json({ ok: true });
 }
 
 export function logoutAdmin(req: Request, res: Response) {
   (req as Request & { session?: AdminSession | null }).session = null;
+  res.setHeader('Cache-Control', 'no-store');
   res.json({ ok: true });
 }
 
 export function meAdmin(req: Request, res: Response) {
   const session = getSession(req);
+  res.setHeader('Cache-Control', 'no-store');
   res.json({
     authenticated: Boolean(session?.admin),
     email: session?.admin ? session.email || null : null

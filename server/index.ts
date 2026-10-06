@@ -37,7 +37,8 @@ app.use(
     maxAge: 7 * 24 * 60 * 60 * 1000,
     sameSite: 'lax',
     httpOnly: true,
-    secure: isProd
+    // Secure cookies are ignored by browsers on http://. Only enable for https.
+    secure: (process.env.APP_URL || '').startsWith('https://')
   })
 );
 
