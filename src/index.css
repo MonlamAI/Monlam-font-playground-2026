@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --tibetan-line-height: 1.85;
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+    background-color: #000000;
+    /* Neutralize Tailwind slate in dark mode — true black canvas, no blue tint */
+    --color-slate-50: #fafafa;
+    --color-slate-100: #f5f5f5;
+    --color-slate-200: #e5e5e5;
+    --color-slate-300: #d4d4d4;
+    --color-slate-400: #a3a3a3;
+    --color-slate-500: #737373;
+    --color-slate-600: #404040;
+    --color-slate-700: #333333;
+    --color-slate-800: #242424;
+    --color-slate-900: #1a1a1a;
+    --color-slate-950: #000000;
+  }
+
+  html.dark body {
+    background-color: #000000;
+  }
+}
+
+/* Tibetan OpenType Typography Enhancement */
+.tibetan-text {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "calt" 1, "ccmp" 1, "blws" 1, "abvs" 1, "psts" 1;
+  font-variant-ligatures: contextual common-ligatures;
+  line-height: var(--tibetan-line-height);
+  word-break: break-all;
+}
+
+/* Specific Font Families — Monlam Bodyig 4.0.1 */
+.font-monlam-ouchan-1 {
+  font-family: "Monlam Uni OuChan 1", "Monlam Uni OuChan1", "Noto Serif Tibetan", serif;
+}
+
+.font-monlam-ouchan-2 {
+  font-family: "Monlam Uni OuChan 2", "Monlam Uni OuChan2", "Noto Serif Tibetan", serif;
+  font-weight: 700;
+}
+
+.font-monlam-ouchan-3 {
+  font-family: "Monlam Uni OuChan 3", "Monlam Uni OuChan3", "Noto Serif Tibetan", serif;
+  letter-spacing: -0.01em;
+}
+
+.font-monlam-ouchan-4 {
+  font-family: "Monlam Uni OuChan 4", "Monlam Uni OuChan4", "Noto Serif Tibetan", serif;
+}
+
+.font-monlam-ouchan-5 {
+  font-family: "Monlam Uni OuChan 5", "Monlam Uni OuChan5", "Noto Serif Tibetan", serif;
+}
+
+.font-monlam-lakdi-ouchen {
+  font-family: "Monlam Lakdi Ouchen", "Noto Serif Tibetan", serif;
+}
+
+.font-monlam-chouk {
+  font-family: "Monlam Uni Chouk", "Noto Sans Tibetan", cursive, sans-serif;
+}
+
+.font-monlam-chouk-matik {
+  font-family: "Monlam Uni ChoukMatik", "Noto Sans Tibetan", cursive, sans-serif;
+}
+
+.font-monlam-tsikmachok {
+  font-family: "Monlam Tsikmachok", "Noto Sans Tibetan", cursive, sans-serif;
+}
+
+.font-monlam-dutsa-1 {
+  font-family: "Monlam Uni Dutsa 1", "Monlam Uni Dutsa1", "Noto Serif Tibetan", serif;
+}
+
+.font-monlam-dutsa-2 {
+  font-family: "Monlam Uni Dutsa 2", "Monlam Uni Dutsa2", "Noto Serif Tibetan", serif;
+}
+
+.font-monlam-paytsik {
+  font-family: "Monlam Uni PayTsik", "Noto Serif Tibetan", serif;
+}
+
+.font-monlam-tiktong {
+  font-family: "Monlam Uni TikTong", "Noto Serif Tibetan", serif;
+}
+
+.font-monlam-tikrang {
+  font-family: "Monlam Uni Tikrang", "Noto Serif Tibetan", serif;
+}
+
+.font-monlam-sans {
+  font-family: "Monlam Uni Sans Serif", "Noto Sans Tibetan", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.font-monlam-lanza {
+  font-family: "Monlam Lanza", "Monlam Lanza-Regular", "Noto Serif Tibetan", serif;
+}
+
+.font-monlam-yigchung {
+  font-family: "Monlam yig-chong", "Monlam Yig-chong", "Noto Serif Tibetan", serif;
+  font-size: 0.95em;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.4);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(107, 114, 128, 0.7);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(163, 163, 163, 0.35);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(163, 163, 163, 0.55);
+}
+
+/* Google Fonts style subtle paper texture and card interactions */
+.font-card {
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s ease;
+}
+
+.font-card:hover {
+  transform: translateY(-2px);
+}

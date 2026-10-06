@@ -1,0 +1,6 @@
+{
+  "name": "Monlam Font Playground & Typography Suite",
+  "description": "Interactive Google Fonts-inspired playground for Monlam IT Tibetan typefaces. Real-time side-by-side font comparison, typing practice tutor, complex Tibetan typography guide, and font & keyboard asset downloader.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/logos/bodyig.svg" />
+    <link rel="apple-touch-icon" href="/logos/bodyig.png" />
+    <title>Monlam Font Playground & Typography Suite</title>
+    <meta name="description" content="Interactive Google Fonts-inspired playground for Monlam IT Tibetan typefaces. Real-time side-by-side font comparison, typing practice tutor, complex Tibetan typography guide, and font & keyboard asset downloader." />
+    <meta property="og:title" content="Monlam Font Playground & Typography Suite" />
+    <meta property="og:description" content="Interactive Google Fonts-inspired playground for Monlam IT Tibetan typefaces. Real-time side-by-side font comparison, typing practice tutor, complex Tibetan typography guide, and font & keyboard asset downloader." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Tibetan:wght@100..900&family=Noto+Serif+Tibetan:wght@100..900&display=swap" rel="stylesheet">
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('monlam-theme');
+          var dark =
+            stored === 'dark' ||
+            (stored !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (dark) document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="bg-gray-50 text-gray-900 antialiased selection:bg-blue-100 selection:text-blue-900 dark:bg-slate-950 dark:text-slate-100 dark:selection:bg-blue-900/60 dark:selection:text-blue-100">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

@@ -1,0 +1,135 @@
+import type { Db } from './db';
+import { MONLAM_FONTS, PRESET_TEXTS } from '../src/data/fontsData.ts';
+import { TIBETAN_KEYBOARD_LAYOUT, TIBETAN_KEYBOARD_LAYOUT_WINDOWS } from '../src/data/tibetanData.ts';
+
+const KEYBOARD_ID = 'monlam-bodyig-2025';
+const KEYBOARD_FILE = 'Monlam_Bodyig_2025_Mac_Keyboard.bundle.zip';
+const KEYBOARD_KEY = `keyboards/${KEYBOARD_FILE}`;
+const KEYBOARD_URL = `/uploads/${KEYBOARD_KEY}`;
+
+export function seedPresetsIfEmpty(db: Db) {
+  const count = db.prepare('SELECT COUNT(*) as c FROM presets').get() as { c: number };
+  if (count.c > 0) return;
+
+  const now = new Date().toISOString();
+  const insert = db.prepare(`
+    INSERT INTO presets (
+      id, title, tibetan_title, content, translation, sort_order, status, created_at, updated_at
+    ) VALUES (
+      @id, @title, @tibetan_title, @content, @translation, @sort_order, 'published', @created_at, @updated_at
+    )
+  `);
+
+  const tx = db.transaction(() => {
+    PRESET_TEXTS.forEach((preset, index) => {
+      insert.run({
+        id: preset.id,
+        title: preset.title,
+        tibetan_title: preset.tibetanTitle,
+        content: preset.content,
+        translation: preset.translation,
+        sort_order: index,
+        created_at: now,
+        updated_at: now
+      });
+    });
+  });
+  tx();
+  console.log(`Seeded ${PRESET_TEXTS.length} preview presets`);
+}
+
+/** Wipe and reseed fonts/keyboards from Bodyig 4.0.1 local assets. */
+export function reseedBodyigAssets(db: Db) {
+  const now = new Date().toISOString();
+  seedPresetsIfEmpty(db);
+
+  const insertFont = db.prepare(`
+    INSERT INTO fonts (
+      id, name, tibetan_name, category, font_kind, designer, release_year, version,
+      description, tibetan_description, css_class, styles_count, weights,
+      features, file_size, filename, sample_text, tags, metrics,
+      supported_scripts, status, s3_key, file_url, keyboard_id, created_at, updated_at
+    ) VALUES (
+      @id, @name, @tibetan_name, @category, @font_kind, @designer, @release_year, @version,
+      @description, @tibetan_description, @css_class, @styles_count, @weights,
+      @features, @file_size, @filename, @sample_text, @tags, @metrics,
+      @supported_scripts, @status, @s3_key, @file_url, @keyboard_id, @created_at, @updated_at
+    )
+  `);
+
+  const tx = db.transaction(() => {
+    db.prepare('DELETE FROM font_preset_configs').run();
+    db.prepare('DELETE FROM font_keyboards').run();
+    db.prepare('DELETE FROM fonts').run();
+    db.prepare('DELETE FROM keyboards').run();
+
+    db.prepare(`
+      INSERT INTO keyboards (
+        id, name, tibetan_name, description, layout_type, script, version,
+        status, s3_key, file_url, layout_json, layout_json_mac, layout_json_windows, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, 'published', ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      KEYBOARD_ID,
+      'Monlam Bodyig 2025 Keyboard',
+      'མོན་ལམ་བོད་ཡིག་མཐེབ་གཞོང་།',
+      'Official Mac keyboard layout bundle from Monlam Bodyig 4.0.1 (Monlam bodyig 2025.bundle).',
+      'Monlam Bodyig QWERTY',
+      'Tibetan',
+      '4.0.1',
+      KEYBOARD_KEY,
+      KEYBOARD_URL,
+      JSON.stringify(TIBETAN_KEYBOARD_LAYOUT),
+      JSON.stringify(TIBETAN_KEYBOARD_LAYOUT),
+      JSON.stringify(TIBETAN_KEYBOARD_LAYOUT_WINDOWS),
+      now,
+      now
+    );
+
+    const link = db.prepare(
+      'INSERT INTO font_keyboards (font_id, keyboard_id) VALUES (?, ?)'
+    );
+
+    for (const font of MONLAM_FONTS) {
+      const storageKey = `fonts/${font.filename}`;
+      insertFont.run({
+        id: font.id,
+        name: font.name,
+        tibetan_name: font.tibetanName,
+        category: font.category,
+        font_kind: font.fontKind || 'normal',
+        designer: font.designer,
+        release_year: font.releaseYear,
+        version: font.version || '4.0.1',
+        description: font.description,
+        tibetan_description: font.tibetanDescription,
+        css_class: font.cssClass,
+        styles_count: font.stylesCount,
+        weights: JSON.stringify(font.weights),
+        features: JSON.stringify(font.features),
+        file_size: font.fileSize,
+        filename: font.filename,
+        sample_text: font.sampleText,
+        tags: JSON.stringify(font.tags),
+        metrics: JSON.stringify(font.metrics),
+        supported_scripts: JSON.stringify(font.supportedScripts || ['Tibetan']),
+        status: 'published',
+        s3_key: storageKey,
+        file_url: font.fileUrl || `/uploads/${storageKey}`,
+        keyboard_id: KEYBOARD_ID,
+        created_at: now,
+        updated_at: now
+      });
+      link.run(font.id, KEYBOARD_ID);
+    }
+  });
+
+  tx();
+  console.log(`Reseeded ${MONLAM_FONTS.length} Bodyig fonts + keyboard ${KEYBOARD_ID}`);
+}
+
+export function seedIfEmpty(db: Db) {
+  seedPresetsIfEmpty(db);
+  const fontCount = db.prepare('SELECT COUNT(*) as c FROM fonts').get() as { c: number };
+  if (fontCount.c > 0) return;
+  reseedBodyigAssets(db);
+}
