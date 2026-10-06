@@ -361,7 +361,7 @@ export default function App() {
               <ul className="space-y-1.5">
                 <li>
                   <a
-                    href="https://github.com/MonlamAI/monlam-font"
+                    href="https://github.com/MonlamAI/Monlam-font-playground-2026"
                     target="_blank"
                     rel="noreferrer"
                     className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1 transition"
