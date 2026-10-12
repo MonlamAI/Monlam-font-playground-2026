@@ -162,7 +162,7 @@ export const FontSampleCard: React.FC<FontSampleCardProps> = ({
       </header>
 
       {/* Large sample poster plane */}
-      <div className="relative flex-1 min-h-[200px] sm:min-h-[240px] px-5 pb-6 flex items-center">
+      <div className="relative flex-1 min-h-[200px] sm:min-h-[240px] px-5 pb-6 flex items-center justify-center">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-5 top-0 h-px opacity-30"
@@ -178,7 +178,7 @@ export const FontSampleCard: React.FC<FontSampleCardProps> = ({
               ? { fontFamily: `'${font.name}', 'Noto Serif Tibetan', 'Jomolhari', serif` }
               : {})
           }}
-          className={`${font.cssClass} tibetan-text ${theme.text} break-words w-full select-text`}
+          className={`${font.cssClass} tibetan-text ${theme.text} break-words w-full select-text text-center`}
         >
           {previewText}
         </p>

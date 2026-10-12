@@ -1,11 +1,21 @@
 import type { Db } from './db';
 import { MONLAM_FONTS, PRESET_TEXTS } from '../src/data/fontsData.ts';
-import { TIBETAN_KEYBOARD_LAYOUT, TIBETAN_KEYBOARD_LAYOUT_WINDOWS } from '../src/data/tibetanData.ts';
+import {
+  TIBETAN_KEYBOARD_LAYOUT,
+  TIBETAN_KEYBOARD_LAYOUT_WINDOWS,
+  TIBETAN_KEYBOARD_LAYOUT_BODYIG_31,
+  TIBETAN_KEYBOARD_LAYOUT_BODYIG_31_WINDOWS
+} from '../src/data/tibetanData.ts';
 
-const KEYBOARD_ID = 'monlam-bodyig-2025';
-const KEYBOARD_FILE = 'Monlam_Bodyig_2025_Mac_Keyboard.bundle.zip';
-const KEYBOARD_KEY = `keyboards/${KEYBOARD_FILE}`;
-const KEYBOARD_URL = `/uploads/${KEYBOARD_KEY}`;
+const DEFAULT_KEYBOARD_ID = 'monlam-bodyig-3.1';
+const KEYBOARD_31_FILE = 'Monlam_Bodyig_3.1.exe';
+const KEYBOARD_31_KEY = `keyboards/${KEYBOARD_31_FILE}`;
+const KEYBOARD_31_URL = `/uploads/${KEYBOARD_31_KEY}`;
+
+const KEYBOARD_2025_ID = 'monlam-bodyig-2025';
+const KEYBOARD_2025_FILE = 'Monlam_Bodyig_2025_Mac_Keyboard.bundle.zip';
+const KEYBOARD_2025_KEY = `keyboards/${KEYBOARD_2025_FILE}`;
+const KEYBOARD_2025_URL = `/uploads/${KEYBOARD_2025_KEY}`;
 
 export function seedPresetsIfEmpty(db: Db) {
   const count = db.prepare('SELECT COUNT(*) as c FROM presets').get() as { c: number };
@@ -63,21 +73,40 @@ export function reseedBodyigAssets(db: Db) {
     db.prepare('DELETE FROM fonts').run();
     db.prepare('DELETE FROM keyboards').run();
 
-    db.prepare(`
+    const insertKeyboard = db.prepare(`
       INSERT INTO keyboards (
         id, name, tibetan_name, description, layout_type, script, version,
         status, s3_key, file_url, layout_json, layout_json_mac, layout_json_windows, created_at, updated_at
       ) VALUES (?, ?, ?, ?, ?, ?, ?, 'published', ?, ?, ?, ?, ?, ?, ?)
-    `).run(
-      KEYBOARD_ID,
+    `);
+
+    insertKeyboard.run(
+      DEFAULT_KEYBOARD_ID,
+      'Monlam Bodyig 3.1 Keyboard',
+      'མོན་ལམ་བོད་ཡིག་༣.༡་མཐེབ་གཞོང་།',
+      'Monlam Bodyig 3.1 Windows installer (Monlam_Bodyig_3.1.exe) — MLBYHMLY layout (c=ཀ, j=་ tsheg, Space=space).',
+      'Monlam Bodyig QWERTY',
+      'Tibetan',
+      '3.1',
+      KEYBOARD_31_KEY,
+      KEYBOARD_31_URL,
+      JSON.stringify(TIBETAN_KEYBOARD_LAYOUT_BODYIG_31),
+      JSON.stringify(TIBETAN_KEYBOARD_LAYOUT_BODYIG_31),
+      JSON.stringify(TIBETAN_KEYBOARD_LAYOUT_BODYIG_31_WINDOWS),
+      now,
+      now
+    );
+
+    insertKeyboard.run(
+      KEYBOARD_2025_ID,
       'Monlam Bodyig 2025 Keyboard',
       'མོན་ལམ་བོད་ཡིག་མཐེབ་གཞོང་།',
       'Official Mac keyboard layout bundle from Monlam Bodyig 4.0.1 (Monlam bodyig 2025.bundle).',
       'Monlam Bodyig QWERTY',
       'Tibetan',
       '4.0.1',
-      KEYBOARD_KEY,
-      KEYBOARD_URL,
+      KEYBOARD_2025_KEY,
+      KEYBOARD_2025_URL,
       JSON.stringify(TIBETAN_KEYBOARD_LAYOUT),
       JSON.stringify(TIBETAN_KEYBOARD_LAYOUT),
       JSON.stringify(TIBETAN_KEYBOARD_LAYOUT_WINDOWS),
@@ -115,16 +144,19 @@ export function reseedBodyigAssets(db: Db) {
         status: 'published',
         s3_key: storageKey,
         file_url: font.fileUrl || `/uploads/${storageKey}`,
-        keyboard_id: KEYBOARD_ID,
+        keyboard_id: DEFAULT_KEYBOARD_ID,
         created_at: now,
         updated_at: now
       });
-      link.run(font.id, KEYBOARD_ID);
+      link.run(font.id, DEFAULT_KEYBOARD_ID);
+      link.run(font.id, KEYBOARD_2025_ID);
     }
   });
 
   tx();
-  console.log(`Reseeded ${MONLAM_FONTS.length} Bodyig fonts + keyboard ${KEYBOARD_ID}`);
+  console.log(
+    `Reseeded ${MONLAM_FONTS.length} Bodyig fonts + keyboards ${DEFAULT_KEYBOARD_ID}, ${KEYBOARD_2025_ID}`
+  );
 }
 
 export function seedIfEmpty(db: Db) {

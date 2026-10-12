@@ -3,6 +3,7 @@ import {
   Type,
   GitCompare,
   Keyboard,
+  Gamepad2,
   BookOpen,
   Download,
   ShoppingBag,
@@ -13,7 +14,7 @@ import {
 import { FontItem } from '../types/font';
 import { useTheme } from '../hooks/useTheme';
 
-export type AppTab = 'catalog' | 'compare' | 'typing' | 'guide' | 'install';
+export type AppTab = 'catalog' | 'compare' | 'typing' | 'quest' | 'guide' | 'install';
 
 interface HeaderProps {
   activeTab: AppTab;
@@ -102,6 +103,18 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <Keyboard className="w-4 h-4" />
               <span>Typing Practice</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('quest')}
+              className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                activeTab === 'quest'
+                  ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 font-semibold'
+                  : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
+              }`}
+            >
+              <Gamepad2 className="w-4 h-4" />
+              <span>Typing Quest</span>
             </button>
 
             <button
@@ -208,6 +221,16 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             Typing Tutor
+          </button>
+          <button
+            onClick={() => setActiveTab('quest')}
+            className={`px-3 py-1.5 whitespace-nowrap rounded-md ${
+              activeTab === 'quest'
+                ? 'bg-blue-600 text-white font-medium'
+                : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
+            }`}
+          >
+            Typing Quest
           </button>
           <button
             onClick={() => setActiveTab('guide')}

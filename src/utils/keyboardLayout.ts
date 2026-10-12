@@ -1,6 +1,7 @@
 import {
   TIBETAN_KEYBOARD_LAYOUT,
   TIBETAN_KEYBOARD_LAYOUT_WINDOWS,
+  keyMapOutput,
   toWindowsKeyboardLayout,
   type KeyMap
 } from '../data/tibetanData';
@@ -56,8 +57,23 @@ const CODE_TO_LAYOUT_KEY: Record<string, string> = {
   Comma: ',',
   Period: '.',
   Slash: '/',
-  IntlBackslash: '\\'
+  IntlBackslash: '\\',
+  Space: ' '
 };
+
+/** Default Bodyig 2025 Space mapping when layout has no explicit Space key. */
+export const SPACE_TIBETAN_CHAR = '་';
+/** Shift+Space → regular Latin space (not shad). */
+export const SPACE_SHIFT_TIBETAN_CHAR = ' ';
+
+/** Resolve Space output from layout; fall back to Bodyig 2025 (tsheg / Latin space). */
+export function resolveSpaceChars(layout: KeyMap[][]): { char: string; shiftChar: string } {
+  const mapped = findMappedKey(layout, ' ');
+  if (mapped) {
+    return { char: mapped.char, shiftChar: mapped.shiftChar };
+  }
+  return { char: SPACE_TIBETAN_CHAR, shiftChar: SPACE_SHIFT_TIBETAN_CHAR };
+}
 
 export function isKeyMapLayout(value: unknown): value is KeyMap[][] {
   if (!Array.isArray(value) || value.length === 0) return false;
@@ -111,19 +127,62 @@ export function findMappedKey(layout: KeyMap[][], layoutKey: string): KeyMap | u
   return undefined;
 }
 
+/** Physical key that produces `char` (prefers Space when Space maps to it). */
+export function findLayoutKeyForChar(
+  layout: KeyMap[][],
+  char: string,
+  shift: boolean,
+  caps = false
+): string | null {
+  const space = resolveSpaceChars(layout);
+  if (char === space.char || char === space.shiftChar) {
+    return ' ';
+  }
+  for (const row of layout) {
+    for (const k of row) {
+      if (k.key === ' ') continue;
+      if (keyMapOutput(k, shift, caps) === char) return k.key;
+      if (
+        k.char === char ||
+        k.shiftChar === char ||
+        k.capsChar === char ||
+        k.capsShiftChar === char
+      ) {
+        return k.key;
+      }
+    }
+  }
+  return null;
+}
+
 export function layoutKeyFromCode(code: string): string | undefined {
   return CODE_TO_LAYOUT_KEY[code];
 }
 
 export function mappedCharFromKeyboardEvent(
-  event: Pick<KeyboardEvent, 'code' | 'key' | 'shiftKey' | 'metaKey' | 'ctrlKey' | 'altKey'>,
+  event: Pick<
+    KeyboardEvent,
+    'code' | 'key' | 'shiftKey' | 'metaKey' | 'ctrlKey' | 'altKey' | 'getModifierState'
+  >,
   layout: KeyMap[][],
-  shiftLatched: boolean
+  shiftLatched: boolean,
+  capsLatched = false
 ): string | null {
   if (event.metaKey || event.ctrlKey || event.altKey) return null;
+
+  const useShift = event.shiftKey || shiftLatched;
+  const useCaps =
+    capsLatched ||
+    (typeof event.getModifierState === 'function' && event.getModifierState('CapsLock'));
+
+  if (event.code === 'Space') {
+    const space = resolveSpaceChars(layout);
+    return useShift ? space.shiftChar : space.char;
+  }
+
   const layoutKey = CODE_TO_LAYOUT_KEY[event.code];
   if (!layoutKey) return null;
   const mapped = findMappedKey(layout, layoutKey);
   if (!mapped) return null;
-  return event.shiftKey || shiftLatched ? mapped.shiftChar : mapped.char;
+  return keyMapOutput(mapped, useShift, useCaps);
 }

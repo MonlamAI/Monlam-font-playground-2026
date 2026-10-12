@@ -14,6 +14,7 @@ interface FontCardProps {
   isCompared: boolean;
   onToggleCompare: (font: FontItem) => void;
   onOpenGlyphs: (font: FontItem) => void;
+  centerPreview?: boolean;
 }
 
 export const FontCard: React.FC<FontCardProps> = ({
@@ -26,7 +27,8 @@ export const FontCard: React.FC<FontCardProps> = ({
   onToggleSelect,
   isCompared,
   onToggleCompare,
-  onOpenGlyphs
+  onOpenGlyphs,
+  centerPreview = false
 }) => {
   const [localText, setLocalText] = React.useState<string | null>(null);
   const [copied, setCopied] = React.useState(false);
@@ -111,7 +113,9 @@ export const FontCard: React.FC<FontCardProps> = ({
               ? { fontFamily: `'${font.name}', 'Noto Serif Tibetan', 'Jomolhari', serif` }
               : {})
           }}
-          className={`${font.cssClass} tibetan-text text-gray-900 dark:text-slate-100 focus:outline-hidden focus:bg-blue-50/20 dark:focus:bg-blue-950/30 p-2 rounded-lg transition-colors break-words`}
+          className={`${font.cssClass} tibetan-text text-gray-900 dark:text-slate-100 focus:outline-hidden focus:bg-blue-50/20 dark:focus:bg-blue-950/30 p-2 rounded-lg transition-colors break-words ${
+            centerPreview ? 'text-center' : 'text-left'
+          }`}
         >
           {displayText}
         </div>

@@ -251,7 +251,7 @@ export const TYPING_DRILLS: TypingDrill[] = [
   }
 ];
 
-// Standard Monlam / Sambhota Tibetan Keyboard Mapping (QWERTY layout)
+// Official Monlam Bodyig 2025 / TCRC Monlam keyboard (from Monlam_Bodyig_2025.keylayout)
 export interface KeyMap {
   key: string;
   char: string;
@@ -259,67 +259,156 @@ export interface KeyMap {
   label: string;
   wylie: string;
   shiftWylie: string;
+  /** Caps Lock layer (optional; Bodyig 2025) */
+  capsChar?: string;
+  /** Caps Lock + Shift layer (optional; Bodyig 2025) */
+  capsShiftChar?: string;
 }
 
-export const TIBETAN_KEYBOARD_LAYOUT: KeyMap[][] = [
-  // Row 1 (Numbers)
+/**
+ * Monlam Bodyig 3.1 default keyboard (MLBYHMLY.dll from Monlam_Bodyig_3.1.exe).
+ * Distinct from Bodyig 2025: e.g. c→ཀ, v→ཁ, k→ག, j→་ (tsheg), Space→Latin space.
+ * M is a dead key for subjoined forms; shown as ྄ / ྅ for the virtual keyboard.
+ */
+export const TIBETAN_KEYBOARD_LAYOUT_BODYIG_31: KeyMap[][] = [
   [
-    { key: '`', char: '༄', shiftChar: '༅', label: '`', wylie: '@', shiftWylie: '#' },
-    { key: '1', char: '༡', shiftChar: '!', label: '1', wylie: '1', shiftWylie: '!' },
-    { key: '2', char: '༢', shiftChar: '࿐', label: '2', wylie: '2', shiftWylie: '$' },
-    { key: '3', char: '༣', shiftChar: '༑', label: '3', wylie: '3', shiftWylie: '༑' },
-    { key: '4', char: '༤', shiftChar: '༏', label: '4', wylie: '4', shiftWylie: '༏' },
-    { key: '5', char: '༥', shiftChar: '༐', label: '5', wylie: '5', shiftWylie: '༐' },
-    { key: '6', char: '༦', shiftChar: '༒', label: '6', wylie: '6', shiftWylie: '༒' },
-    { key: '7', char: '༧', shiftChar: '༸', label: '7', wylie: '7', shiftWylie: '༸' },
-    { key: '8', char: '༨', shiftChar: '༺', label: '8', wylie: '8', shiftWylie: '༺' },
-    { key: '9', char: '༩', shiftChar: '༻', label: '9', wylie: '9', shiftWylie: '༻' },
-    { key: '0', char: '༠', shiftChar: '༽', label: '0', wylie: '0', shiftWylie: ')' },
-    { key: '-', char: '༼', shiftChar: '—', label: '-', wylie: '(', shiftWylie: '_' },
-    { key: '=', char: '༚', shiftChar: '༛', label: '=', wylie: '=', shiftWylie: '+' }
+    { key: '`', char: 'ཨ', shiftChar: '༁', label: '`', wylie: 'a', shiftWylie: 'mark' },
+    { key: '1', char: '༡', shiftChar: '༪', label: '1', wylie: '1', shiftWylie: '1h' },
+    { key: '2', char: '༢', shiftChar: '༫', label: '2', wylie: '2', shiftWylie: '2h' },
+    { key: '3', char: '༣', shiftChar: '༬', label: '3', wylie: '3', shiftWylie: '3h' },
+    { key: '4', char: '༤', shiftChar: '༭', label: '4', wylie: '4', shiftWylie: '4h' },
+    { key: '5', char: '༥', shiftChar: '༮', label: '5', wylie: '5', shiftWylie: '5h' },
+    { key: '6', char: '༦', shiftChar: '༯', label: '6', wylie: '6', shiftWylie: '6h' },
+    { key: '7', char: '༧', shiftChar: '༰', label: '7', wylie: '7', shiftWylie: '7h' },
+    { key: '8', char: '༨', shiftChar: '༱', label: '8', wylie: '8', shiftWylie: '8h' },
+    { key: '9', char: '༩', shiftChar: '༲', label: '9', wylie: '9', shiftWylie: '9h' },
+    { key: '0', char: '༠', shiftChar: '༳', label: '0', wylie: '0', shiftWylie: '0h' },
+    { key: '-', char: 'ཧ', shiftChar: '༼', label: '-', wylie: 'ha', shiftWylie: '(' },
+    { key: '=', char: 'ཝ', shiftChar: '༽', label: '=', wylie: 'wa', shiftWylie: ')' },
   ],
-  // Row 2 (QWERTY)
   [
-    { key: 'q', char: 'ཆ', shiftChar: 'ཎ', label: 'Q', wylie: 'cha', shiftWylie: 'Na' },
-    { key: 'w', char: 'ཇ', shiftChar: 'ཝ', label: 'W', wylie: 'ja', shiftWylie: 'wa' },
-    { key: 'e', char: 'ེ', shiftChar: 'ཻ', label: 'E', wylie: 'e', shiftWylie: 'ai' },
-    { key: 'r', char: 'ར', shiftChar: 'ྲ', label: 'R', wylie: 'ra', shiftWylie: 'r-sub' },
+    { key: 'q', char: 'ཅ', shiftChar: '༕', label: 'Q', wylie: 'ca', shiftWylie: 'mark' },
+    { key: 'w', char: 'ཆ', shiftChar: '༖', label: 'W', wylie: 'cha', shiftWylie: 'mark' },
+    { key: 'e', char: 'ེ', shiftChar: '༗', label: 'E', wylie: 'e', shiftWylie: 'mark' },
+    { key: 'r', char: 'ར', shiftChar: 'ྼ', label: 'R', wylie: 'ra', shiftWylie: 'r-sub' },
     { key: 't', char: 'ཏ', shiftChar: 'ཊ', label: 'T', wylie: 'ta', shiftWylie: 'Ta' },
-    { key: 'y', char: 'ཡ', shiftChar: 'ྱ', label: 'Y', wylie: 'ya', shiftWylie: 'y-sub' },
-    { key: 'u', char: 'ུ', shiftChar: 'ཱུ', label: 'U', wylie: 'u', shiftWylie: 'U' },
-    { key: 'i', char: 'ི', shiftChar: 'ཱི', label: 'I', wylie: 'i', shiftWylie: 'I' },
-    { key: 'o', char: 'ོ', shiftChar: 'ཽ', label: 'O', wylie: 'o', shiftWylie: 'au' },
-    { key: 'p', char: 'པ', shiftChar: 'ཕ', label: 'P', wylie: 'pa', shiftWylie: 'pha' },
-    { key: '[', char: 'ཞ', shiftChar: 'ཟ', label: '[', wylie: 'zha', shiftWylie: 'za' },
-    { key: ']', char: 'འ', shiftChar: 'ཨ', label: ']', wylie: "'a", shiftWylie: 'a' }
+    { key: 'y', char: 'ཡ', shiftChar: 'ྻ', label: 'Y', wylie: 'ya', shiftWylie: 'y-sub' },
+    { key: 'u', char: 'ུ', shiftChar: '༘', label: 'U', wylie: 'u', shiftWylie: 'mark' },
+    { key: 'i', char: 'ི', shiftChar: '༙', label: 'I', wylie: 'i', shiftWylie: 'mark' },
+    { key: 'o', char: 'ོ', shiftChar: '༚', label: 'O', wylie: 'o', shiftWylie: 'mark' },
+    { key: 'p', char: 'ཕ', shiftChar: '༛', label: 'P', wylie: 'pha', shiftWylie: 'mark' },
+    { key: '[', char: 'ཙ', shiftChar: '༜', label: '[', wylie: 'tsa', shiftWylie: 'mark' },
+    { key: ']', char: 'ཚ', shiftChar: '༝', label: ']', wylie: 'tsha', shiftWylie: 'mark' },
   ],
-  // Row 3 (ASDFGHJKL)
   [
-    { key: 'a', char: 'ཨ', shiftChar: 'ཱ', label: 'A', wylie: 'a', shiftWylie: 'A' },
-    { key: 's', char: 'ས', shiftChar: 'ཤ', label: 'S', wylie: 'sa', shiftWylie: 'sha' },
+    { key: 'a', char: 'འ', shiftChar: 'ཱ', label: 'A', wylie: "'a", shiftWylie: 'A' },
+    { key: 's', char: 'ས', shiftChar: '༟', label: 'S', wylie: 'sa', shiftWylie: 'mark' },
     { key: 'd', char: 'ད', shiftChar: 'ཌ', label: 'D', wylie: 'da', shiftWylie: 'Da' },
-    { key: 'f', char: 'ཐ', shiftChar: 'ཋ', label: 'F', wylie: 'tha', shiftWylie: 'Tha' },
-    { key: 'g', char: 'ག', shiftChar: 'གྷ', label: 'G', wylie: 'ga', shiftWylie: 'Gha' },
-    { key: 'h', char: 'ཧ', shiftChar: 'ལྷ', label: 'H', wylie: 'ha', shiftWylie: 'lha' },
-    { key: 'j', char: 'ཅ', shiftChar: 'ཉ', label: 'J', wylie: 'ca', shiftWylie: 'nya' },
-    { key: 'k', char: 'ཀ', shiftChar: 'ཁ', label: 'K', wylie: 'ka', shiftWylie: 'kha' },
-    { key: 'l', char: 'ལ', shiftChar: 'ླ', label: 'L', wylie: 'la', shiftWylie: 'l-sub' },
-    { key: ';', char: 'ཚ', shiftChar: 'ཛ', label: ';', wylie: 'tsha', shiftWylie: 'dza' },
-    { key: "'", char: 'ཙ', shiftChar: 'ཝ', label: "'", wylie: 'tsa', shiftWylie: 'wa' }
+    { key: 'f', char: 'བ', shiftChar: '༾', label: 'F', wylie: 'ba', shiftWylie: 'mark' },
+    { key: 'g', char: 'ང', shiftChar: '༿', label: 'G', wylie: 'nga', shiftWylie: 'mark' },
+    { key: 'h', char: 'མ', shiftChar: '࿏', label: 'H', wylie: 'ma', shiftWylie: 'mark' },
+    { key: 'j', char: '་', shiftChar: '༂', label: 'J', wylie: 'tsheg', shiftWylie: 'mark' },
+    { key: 'k', char: 'ག', shiftChar: '༃', label: 'K', wylie: 'ga', shiftWylie: 'mark' },
+    { key: 'l', char: 'ལ', shiftChar: '༆', label: 'L', wylie: 'la', shiftWylie: 'mark' },
+    { key: ';', char: 'ཞ', shiftChar: '༇', label: ';', wylie: 'zha', shiftWylie: 'mark' },
+    { key: "'", char: '།', shiftChar: '༸', label: "'", wylie: 'shad', shiftWylie: 'mark' },
   ],
-  // Row 4 (ZXCVBNM)
   [
-    { key: 'z', char: 'ཟ', shiftChar: 'ཞ', label: 'Z', wylie: 'za', shiftWylie: 'zha' },
-    { key: 'x', char: 'ང', shiftChar: 'ྃ', label: 'X', wylie: 'nga', shiftWylie: 'om' },
-    { key: 'c', char: 'བ', shiftChar: 'བྷ', label: 'C', wylie: 'ba', shiftWylie: 'Bha' },
-    { key: 'v', char: 'མ', shiftChar: 'ཾ', label: 'V', wylie: 'ma', shiftWylie: 'M' },
-    { key: 'b', char: 'ན', shiftChar: 'ཎ', label: 'B', wylie: 'na', shiftWylie: 'Na' },
-    { key: 'n', char: 'ཉ', shiftChar: 'ྙ', label: 'N', wylie: 'nya', shiftWylie: 'ny-sub' },
-    { key: 'm', char: 'མ', shiftChar: 'ྨ', label: 'M', wylie: 'ma', shiftWylie: 'm-sub' },
-    { key: ',', char: '༌', shiftChar: '༚', label: ',', wylie: 'tsheg', shiftWylie: 'dot' },
-    { key: '.', char: '།', shiftChar: '༎', label: '.', wylie: 'shad', shiftWylie: 'nyis-shad' },
-    { key: '/', char: '༆', shiftChar: '༴', label: '/', wylie: 'symbol', shiftWylie: 'symbol' }
-  ]
+    { key: 'z', char: 'ཟ', shiftChar: '༴', label: 'Z', wylie: 'za', shiftWylie: 'mark' },
+    { key: 'x', char: 'ཤ', shiftChar: 'ཥ', label: 'X', wylie: 'sha', shiftWylie: 'Sha' },
+    { key: 'c', char: 'ཀ', shiftChar: 'ཀྵ', label: 'C', wylie: 'ka', shiftWylie: 'kSha' },
+    { key: 'v', char: 'ཁ', shiftChar: '྇', label: 'V', wylie: 'kha', shiftWylie: 'mark' },
+    { key: 'b', char: 'པ', shiftChar: '྆', label: 'B', wylie: 'pa', shiftWylie: 'mark' },
+    { key: 'n', char: 'ན', shiftChar: 'ཎ', label: 'N', wylie: 'na', shiftWylie: 'Na' },
+    { key: 'm', char: '྄', shiftChar: '྅', label: 'M', wylie: 'sub', shiftWylie: 'paluta' },
+    { key: ',', char: 'ཐ', shiftChar: 'ཋ', label: ',', wylie: 'tha', shiftWylie: 'Tha' },
+    { key: '.', char: 'ཇ', shiftChar: '༺', label: '.', wylie: 'ja', shiftWylie: 'mark' },
+    { key: '/', char: 'ཉ', shiftChar: '༻', label: '/', wylie: 'nya', shiftWylie: 'mark' },
+    // Space is Latin space on Bodyig 3.1 (tsheg is on J)
+    { key: ' ', char: ' ', shiftChar: ' ', label: 'SPACE', wylie: 'space', shiftWylie: 'space' },
+  ],
+];
+
+/** Windows OEM backslash for Bodyig 3.1 (from MLBYHMLY.dll). */
+function withBodyig31WindowsBackslash(macLayout: KeyMap[][]): KeyMap[][] {
+  const rows = macLayout.map((row) => row.map((k) => ({ ...k })));
+  if (rows[1] && !rows[1].some((k) => k.key === '\\')) {
+    rows[1].push({
+      key: '\\',
+      char: 'ཛ',
+      shiftChar: '༞',
+      label: '\\',
+      wylie: 'dza',
+      shiftWylie: 'mark'
+    });
+  }
+  return rows;
+}
+
+export const TIBETAN_KEYBOARD_LAYOUT_BODYIG_31_WINDOWS: KeyMap[][] =
+  withBodyig31WindowsBackslash(TIBETAN_KEYBOARD_LAYOUT_BODYIG_31);
+
+/**
+ * Official Monlam Bodyig 2025 layout.
+ * Corrections + Caps Lock layer from "Monlam Keyboard To be fixed.xlsx".
+ * Space → ་ (tsheg); Shift+Space → regular space.
+ */
+export const TIBETAN_KEYBOARD_LAYOUT: KeyMap[][] = [
+  [
+    { key: '`', char: '་', shiftChar: '༸', label: '`', wylie: 'tsheg', shiftWylie: 'mark', capsChar: '༉', capsShiftChar: '༕' },
+    { key: '1', char: '༡', shiftChar: '༑', label: '1', wylie: '1', shiftWylie: '!', capsChar: '༪', capsShiftChar: '༖' },
+    { key: '2', char: '༢', shiftChar: '༄༅', label: '2', wylie: '2', shiftWylie: 'yig-mgo', capsChar: '༫', capsShiftChar: '࿀' },
+    { key: '3', char: '༣', shiftChar: '༅', label: '3', wylie: '3', shiftWylie: 'yig-mgo', capsChar: '༬', capsShiftChar: '࿁' },
+    { key: '4', char: '༤', shiftChar: '༹', label: '4', wylie: '4', shiftWylie: 'mark', capsChar: '༭', capsShiftChar: '࿂' },
+    { key: '5', char: '༥', shiftChar: '༵', label: '5', wylie: '5', shiftWylie: 'mark', capsChar: '༮', capsShiftChar: '࿄' },
+    { key: '6', char: '༦', shiftChar: '༈', label: '6', wylie: '6', shiftWylie: 'mark', capsChar: '༯', capsShiftChar: '࿅' },
+    { key: '7', char: '༧', shiftChar: '༼', label: '7', wylie: '7', shiftWylie: '(', capsChar: '༰', capsShiftChar: '࿆' },
+    { key: '8', char: '༨', shiftChar: '༽', label: '8', wylie: '8', shiftWylie: ')', capsChar: '༱', capsShiftChar: '࿈' },
+    { key: '9', char: '༩', shiftChar: '(', label: '9', wylie: '9', shiftWylie: '(', capsChar: '༲', capsShiftChar: '࿉' },
+    { key: '0', char: '༠', shiftChar: ')', label: '0', wylie: '0', shiftWylie: ')', capsChar: '༳', capsShiftChar: '࿊' },
+    { key: '-', char: 'ྀ', shiftChar: 'ཱྀ', label: '-', wylie: 'i-rev', shiftWylie: 'i-rev', capsChar: '༘', capsShiftChar: '࿋' },
+    { key: '=', char: 'ྃ', shiftChar: 'ཾ', label: '=', wylie: 'M', shiftWylie: 'M', capsChar: 'ཱི', capsShiftChar: '࿌' },
+  ],
+  [
+    { key: 'q', char: 'ཊ', shiftChar: 'ཋ', label: 'Q', wylie: 'Ta', shiftWylie: 'Tha', capsChar: '༺', capsShiftChar: '࿏' },
+    { key: 'w', char: 'ཝ', shiftChar: 'ྭ', label: 'W', wylie: 'wa', shiftWylie: 'w-sub', capsChar: '༻' },
+    { key: 'e', char: 'ེ', shiftChar: 'ཻ', label: 'E', wylie: 'e', shiftWylie: 'ai', capsChar: '྿' },
+    { key: 'r', char: 'ར', shiftChar: 'ར྄', label: 'R', wylie: 'ra', shiftWylie: 'r+', capsChar: '྆' },
+    { key: 't', char: 'ཏ', shiftChar: 'ཐ', label: 'T', wylie: 'ta', shiftWylie: 'tha', capsChar: '྇' },
+    { key: 'y', char: 'ཡ', shiftChar: 'ྱ', label: 'Y', wylie: 'ya', shiftWylie: 'y-sub', capsChar: '༁' },
+    { key: 'u', char: 'ུ', shiftChar: 'ཱུ', label: 'U', wylie: 'u', shiftWylie: 'U', capsChar: '༂' },
+    { key: 'i', char: 'ི', shiftChar: 'ྀ', label: 'I', wylie: 'i', shiftWylie: 'i-rev', capsChar: '༿' },
+    { key: 'o', char: 'ོ', shiftChar: 'ཽ', label: 'O', wylie: 'o', shiftWylie: 'au', capsChar: '༾' },
+    { key: 'p', char: 'པ', shiftChar: 'ཕ', label: 'P', wylie: 'pa', shiftWylie: 'pha', capsChar: '༆' },
+    { key: '[', char: '༷', shiftChar: 'ྂ', label: '[', wylie: 'mark', shiftWylie: 'mark', capsChar: '༇' },
+    { key: ']', char: '྄', shiftChar: '༵', label: ']', wylie: 'stack', shiftWylie: 'mark', capsChar: '༓' },
+  ],
+  [
+    { key: 'a', char: '྄', shiftChar: 'ཨ', label: 'A', wylie: 'stack', shiftWylie: 'a', capsChar: '࿉' },
+    { key: 's', char: 'ས', shiftChar: 'ཤ', label: 'S', wylie: 'sa', shiftWylie: 'sha', capsChar: '࿊' },
+    { key: 'd', char: 'ད', shiftChar: 'ཛ', label: 'D', wylie: 'da', shiftWylie: 'dza', capsChar: '࿋' },
+    { key: 'f', char: 'ང', shiftChar: 'དྷ', label: 'F', wylie: 'nga', shiftWylie: 'dha', capsChar: '࿌' },
+    { key: 'g', char: 'ག', shiftChar: 'གྷ', label: 'G', wylie: 'ga', shiftWylie: 'gha', capsChar: '༊' },
+    { key: 'h', char: 'ཧ', shiftChar: 'ྷ', label: 'H', wylie: 'ha', shiftWylie: 'h-sub', capsChar: '༏' },
+    { key: 'j', char: 'ཇ', shiftChar: 'ྫྷ', label: 'J', wylie: 'ja', shiftWylie: 'j-sub', capsChar: '༐' },
+    { key: 'k', char: 'ཀ', shiftChar: 'ཁ', label: 'K', wylie: 'ka', shiftWylie: 'kha', capsChar: 'ྈ' },
+    { key: 'l', char: 'ལ', shiftChar: 'ལ྄', label: 'L', wylie: 'la', shiftWylie: 'l+', capsChar: '༒' },
+    { key: ';', char: 'ཌྷ', shiftChar: 'ཿ', label: ';', wylie: 'ddha', shiftWylie: 'H', capsChar: '༓', capsShiftChar: ':' },
+    { key: '\'', char: 'འ', shiftChar: 'ཱ', label: '\'', wylie: '\'a', shiftWylie: 'A', capsChar: 'འ', capsShiftChar: '༕' },
+  ],
+  [
+    { key: 'z', char: 'ཟ', shiftChar: 'ཞ', label: 'Z', wylie: 'za', shiftWylie: 'zha', capsChar: '༗' },
+    { key: 'x', char: 'ཙ', shiftChar: 'ཚ', label: 'X', wylie: 'tsa', shiftWylie: 'tsha', capsChar: '༙' },
+    { key: 'c', char: 'ཅ', shiftChar: 'ཆ', label: 'C', wylie: 'ca', shiftWylie: 'cha', capsChar: '༚' },
+    { key: 'v', char: 'ཌ', shiftChar: 'ཎ', label: 'V', wylie: 'Da', shiftWylie: 'Na', capsChar: '༛' },
+    { key: 'b', char: 'བ', shiftChar: 'བྷ', label: 'B', wylie: 'ba', shiftWylie: 'bha', capsChar: '༜' },
+    { key: 'n', char: 'ན', shiftChar: 'ཉ', label: 'N', wylie: 'na', shiftWylie: 'nya', capsChar: '༝' },
+    { key: 'm', char: 'མ', shiftChar: 'ཥ', label: 'M', wylie: 'ma', shiftWylie: 'Sha', capsChar: '༞' },
+    { key: ',', char: 'ྱ', shiftChar: 'ཱ', label: ',', wylie: 'y-sub', shiftWylie: 'A', capsChar: '༟' },
+    { key: '.', char: 'ྲ', shiftChar: 'ྼ', label: '.', wylie: 'r-sub', shiftWylie: 'r-fixed', capsChar: 'ྉ' },
+    { key: '/', char: '།', shiftChar: 'ས྄', label: '/', wylie: 'shad', shiftWylie: 's+', capsChar: '།' },
+    { key: ' ', char: '་', shiftChar: ' ', label: 'SPACE', wylie: 'tsheg', shiftWylie: 'space' },
+  ],
 ];
 
 /** Windows US QWERTY adds the OEM backslash key on the second row. */
@@ -328,11 +417,12 @@ export function toWindowsKeyboardLayout(macLayout: KeyMap[][]): KeyMap[][] {
   if (rows[1] && !rows[1].some((k) => k.key === '\\')) {
     rows[1].push({
       key: '\\',
-      char: '྾',
-      shiftChar: '|',
+      char: '༔',
+      shiftChar: '༈',
       label: '\\',
-      wylie: 'backslash',
-      shiftWylie: 'bar'
+      wylie: 'gter',
+      shiftWylie: 'nyis',
+      capsChar: '༃'
     });
   }
   return rows;
@@ -340,3 +430,12 @@ export function toWindowsKeyboardLayout(macLayout: KeyMap[][]): KeyMap[][] {
 
 export const TIBETAN_KEYBOARD_LAYOUT_WINDOWS: KeyMap[][] =
   toWindowsKeyboardLayout(TIBETAN_KEYBOARD_LAYOUT);
+
+/** Resolve the character a key produces for the current shift/caps state. */
+export function keyMapOutput(key: KeyMap, shift: boolean, caps: boolean): string {
+  if (caps) {
+    if (shift) return key.capsShiftChar ?? key.capsChar ?? key.shiftChar;
+    return key.capsChar ?? key.char;
+  }
+  return shift ? key.shiftChar : key.char;
+}

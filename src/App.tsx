@@ -10,6 +10,7 @@ import { ControlsBar } from './components/ControlsBar';
 import { FontCatalog } from './components/FontCatalog';
 import { ComparisonView } from './components/ComparisonView';
 import { TypingPractice } from './components/TypingPractice';
+import { TypingQuest } from './components/TypingQuest';
 import { TypographyGuide } from './components/TypographyGuide';
 import { InstallGuide } from './components/InstallGuide';
 import { FeedbackModal } from './components/FeedbackModal';
@@ -255,6 +256,8 @@ export default function App() {
             <TypingPractice onSendToPlayground={handleSendToPlayground} />
           )}
 
+          {activeTab === 'quest' && <TypingQuest />}
+
           {activeTab === 'guide' && <TypographyGuide />}
 
           {activeTab === 'install' && <InstallGuide allFonts={allFonts} />}
@@ -333,6 +336,11 @@ export default function App() {
                 <li>
                   <button onClick={() => setActiveTab('typing')} className="hover:text-blue-600 dark:hover:text-blue-400 transition">
                     Tibetan Typing Practice
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => setActiveTab('quest')} className="hover:text-blue-600 dark:hover:text-blue-400 transition">
+                    Typing Quest
                   </button>
                 </li>
                 <li>

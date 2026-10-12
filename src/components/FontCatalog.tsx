@@ -114,6 +114,7 @@ export const FontCatalog: React.FC<FontCatalogProps> = ({
               isCompared={isCompared(font.id)}
               onToggleCompare={onToggleCompare}
               onOpenGlyphs={onOpenGlyphs}
+              centerPreview={viewMode === 'grid'}
             />
           ))}
         </div>
