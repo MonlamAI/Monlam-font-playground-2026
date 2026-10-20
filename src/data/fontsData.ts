@@ -8,14 +8,14 @@ export const MONLAM_FONTS: FontItem[] = [
   {
     id: 'monlam-ouchan-1',
     name: 'Monlam Uni OuChan 1',
-    tibetanName: 'མོན་ལམ་དབུ་ཅན་དང་པོ།',
+    tibetanName: 'སྨོན་ལམ་དབུ་ཅན་དང་པོ།',
     category: 'Uchen',
     designer: 'Ven. Geshe Lobsang Monlam',
     releaseYear: '2025',
     version: '4.0.1',
     description:
       'Classical Uchen typeface from Monlam Bodyig 4.0.1. Harmonized vowel heights and balanced tsheg spacing for long-form reading, literature, and official publishing.',
-    tibetanDescription: 'མོན་ལམ་གྱིས་གསར་བཟོ་གནང་བའི་དབུ་ཅན་ཚད་ལྡན་ཡིག་གཟུགས་ཤིག་ཡིན།',
+    tibetanDescription: 'སྨོན་ལམ་གྱིས་གསར་བཟོ་གནང་བའི་དབུ་ཅན་ཚད་ལྡན་ཡིག་གཟུགས་ཤིག་ཡིན།',
     cssClass: 'font-monlam-ouchan-1',
     stylesCount: 1,
     weights: [400],
@@ -36,7 +36,7 @@ export const MONLAM_FONTS: FontItem[] = [
   {
     id: 'monlam-ouchan-2',
     name: 'Monlam Uni OuChan 2',
-    tibetanName: 'མོན་ལམ་དབུ་ཅན་གཉིས་པ།',
+    tibetanName: 'སྨོན་ལམ་དབུ་ཅན་གཉིས་པ།',
     category: 'Uchen',
     designer: 'Ven. Geshe Lobsang Monlam',
     releaseYear: '2025',
@@ -64,7 +64,7 @@ export const MONLAM_FONTS: FontItem[] = [
   {
     id: 'monlam-ouchan-3',
     name: 'Monlam Uni OuChan 3',
-    tibetanName: 'མོན་ལམ་དབུ་ཅན་གསུམ་པ།',
+    tibetanName: 'སྨོན་ལམ་དབུ་ཅན་གསུམ་པ།',
     category: 'Uchen',
     designer: 'Ven. Geshe Lobsang Monlam',
     releaseYear: '2025',
@@ -92,13 +92,13 @@ export const MONLAM_FONTS: FontItem[] = [
   {
     id: 'monlam-ouchan-4',
     name: 'Monlam Uni OuChan 4',
-    tibetanName: 'མོན་ལམ་དབུ་ཅན་བཞི་པ།',
+    tibetanName: 'སྨོན་ལམ་དབུ་ཅན་བཞི་པ།',
     category: 'Uchen',
     designer: 'Ven. Geshe Lobsang Monlam',
     releaseYear: '2025',
     version: '4.0.1',
     description: 'Fourth Uchen style in the Bodyig 4.0.1 family — clear structure for general publishing and screens.',
-    tibetanDescription: 'མོན་ལམ་བོད་ཡིག་བཞི་པའི་དབུ་ཅན་བཞི་པ།',
+    tibetanDescription: 'སྨོན་ལམ་བོད་ཡིག་བཞི་པའི་དབུ་ཅན་བཞི་པ།',
     cssClass: 'font-monlam-ouchan-4',
     stylesCount: 1,
     weights: [400],
@@ -119,13 +119,13 @@ export const MONLAM_FONTS: FontItem[] = [
   {
     id: 'monlam-ouchan-5',
     name: 'Monlam Uni OuChan 5',
-    tibetanName: 'མོན་ལམ་དབུ་ཅན་ལྔ་པ།',
+    tibetanName: 'སྨོན་ལམ་དབུ་ཅན་ལྔ་པ།',
     category: 'Uchen',
     designer: 'Ven. Geshe Lobsang Monlam',
     releaseYear: '2025',
     version: '4.0.1',
     description: 'Fifth Uchen style in Bodyig 4.0.1 — complementary display and body text option.',
-    tibetanDescription: 'མོན་ལམ་བོད་ཡིག་བཞི་པའི་དབུ་ཅན་ལྔ་པ།',
+    tibetanDescription: 'སྨོན་ལམ་བོད་ཡིག་བཞི་པའི་དབུ་ཅན་ལྔ་པ།',
     cssClass: 'font-monlam-ouchan-5',
     stylesCount: 1,
     weights: [400],
@@ -146,7 +146,7 @@ export const MONLAM_FONTS: FontItem[] = [
   {
     id: 'monlam-lakdi-ouchen',
     name: 'Monlam Lakdi Ouchen',
-    tibetanName: 'མོན་ལམ་ལག་བྲིས་དབུ་ཅན།',
+    tibetanName: 'སྨོན་ལམ་ལག་བྲིས་དབུ་ཅན།',
     category: 'Uchen',
     designer: 'Ven. Geshe Lobsang Monlam',
     releaseYear: '2025',
@@ -174,7 +174,7 @@ export const MONLAM_FONTS: FontItem[] = [
   {
     id: 'monlam-chouk',
     name: 'Monlam Uni Chouk',
-    tibetanName: 'མོན་ལམ་འཁྱུག་ཡིག',
+    tibetanName: 'སྨོན་ལམ་འཁྱུག་ཡིག',
     category: 'Umê',
     designer: 'Ven. Geshe Lobsang Monlam',
     releaseYear: '2025',
@@ -202,7 +202,7 @@ export const MONLAM_FONTS: FontItem[] = [
   {
     id: 'monlam-chouk-matik',
     name: 'Monlam Uni ChoukMatik',
-    tibetanName: 'མོན་ལམ་འཁྱུག་མ་ཏིག',
+    tibetanName: 'སྨོན་ལམ་འཁྱུག་མ་ཏིག',
     category: 'Umê',
     designer: 'Ven. Geshe Lobsang Monlam',
     releaseYear: '2025',
@@ -229,7 +229,7 @@ export const MONLAM_FONTS: FontItem[] = [
   {
     id: 'monlam-tsikmachok',
     name: 'Monlam Tsikmachok',
-    tibetanName: 'མོན་ལམ་ཚུགས་མ་འཁྱུག',
+    tibetanName: 'སྨོན་ལམ་ཚུགས་མ་འཁྱུག',
     category: 'Umê',
     designer: 'Ven. Geshe Lobsang Monlam',
     releaseYear: '2025',
@@ -257,7 +257,7 @@ export const MONLAM_FONTS: FontItem[] = [
   {
     id: 'monlam-dutsa-1',
     name: 'Monlam Uni Dutsa 1',
-    tibetanName: 'མོན་ལམ་འབྲུ་ཚ་དང་པོ།',
+    tibetanName: 'སྨོན་ལམ་འབྲུ་ཚ་དང་པོ།',
     category: 'Drutsa',
     designer: 'Ven. Geshe Lobsang Monlam',
     releaseYear: '2025',
@@ -285,7 +285,7 @@ export const MONLAM_FONTS: FontItem[] = [
   {
     id: 'monlam-dutsa-2',
     name: 'Monlam Uni Dutsa 2',
-    tibetanName: 'མོན་ལམ་འབྲུ་ཚ་གཉིས་པ།',
+    tibetanName: 'སྨོན་ལམ་འབྲུ་ཚ་གཉིས་པ།',
     category: 'Drutsa',
     designer: 'Ven. Geshe Lobsang Monlam',
     releaseYear: '2025',
@@ -312,7 +312,7 @@ export const MONLAM_FONTS: FontItem[] = [
   {
     id: 'monlam-paytsik',
     name: 'Monlam Uni PayTsik',
-    tibetanName: 'མོན་ལམ་དཔེ་ཚུགས།',
+    tibetanName: 'སྨོན་ལམ་དཔེ་ཚུགས།',
     category: 'Petsug',
     designer: 'Ven. Geshe Lobsang Monlam',
     releaseYear: '2025',
@@ -340,7 +340,7 @@ export const MONLAM_FONTS: FontItem[] = [
   {
     id: 'monlam-tiktong',
     name: 'Monlam Uni TikTong',
-    tibetanName: 'མོན་ལམ་ཐིག་ཐོང་།',
+    tibetanName: 'སྨོན་ལམ་ཐིག་ཐོང་།',
     category: 'Tsugring',
     designer: 'Ven. Geshe Lobsang Monlam',
     releaseYear: '2025',
@@ -367,7 +367,7 @@ export const MONLAM_FONTS: FontItem[] = [
   {
     id: 'monlam-tikrang',
     name: 'Monlam Uni Tikrang',
-    tibetanName: 'མོན་ལམ་ཐིག་རང་།',
+    tibetanName: 'སྨོན་ལམ་ཐིག་རང་།',
     category: 'Tsugring',
     designer: 'Ven. Geshe Lobsang Monlam',
     releaseYear: '2025',
@@ -394,7 +394,7 @@ export const MONLAM_FONTS: FontItem[] = [
   {
     id: 'monlam-sans',
     name: 'Monlam Uni Sans Serif',
-    tibetanName: 'མོན་ལམ་མགོ་མེད།',
+    tibetanName: 'སྨོན་ལམ་མགོ་མེད།',
     category: 'Modern',
     designer: 'Monlam IT Design Team',
     releaseYear: '2025',
@@ -422,7 +422,7 @@ export const MONLAM_FONTS: FontItem[] = [
   {
     id: 'monlam-lanza',
     name: 'Monlam Lanza',
-    tibetanName: 'མོན་ལམ་ལཉྫ།',
+    tibetanName: 'སྨོན་ལམ་ལཉྫ།',
     category: 'Standard',
     designer: 'Ven. Geshe Lobsang Monlam',
     releaseYear: '2025',
@@ -450,7 +450,7 @@ export const MONLAM_FONTS: FontItem[] = [
   {
     id: 'monlam-yigchung',
     name: 'Monlam Yig-chong',
-    tibetanName: 'མོན་ལམ་ཡིག་ཆུང་།',
+    tibetanName: 'སྨོན་ལམ་ཡིག་ཆུང་།',
     category: 'Standard',
     designer: 'Ven. Geshe Lobsang Monlam',
     releaseYear: '2025',
@@ -477,20 +477,27 @@ export const MONLAM_FONTS: FontItem[] = [
   }
 ];
 
+/** Default catalog / card preview preset (The 30 Consonants). */
+export const DEFAULT_PRESET_ID = 'alphabet';
+
+export function resolveDefaultPreset(presets: PresetText[]): PresetText {
+  return presets.find((p) => p.id === DEFAULT_PRESET_ID) ?? presets[0];
+}
+
 export const PRESET_TEXTS: PresetText[] = [
-  {
-    id: 'mantra',
-    title: 'Six Syllable Mantra',
-    tibetanTitle: 'མ་ཎི་ཡིག་དྲུག',
-    content: 'ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ།',
-    translation: 'Om Mani Padme Hum (The Great Compassion Mantra)'
-  },
   {
     id: 'alphabet',
     title: 'The 30 Consonants',
     tibetanTitle: 'ཀ་མད་སུམ་ཅུ།',
     content: 'ཀ་ཁ་ག་ང་། ཅ་ཆ་ཇ་ཉ། ཏ་ཐ་ད་ན། པ་ཕ་བ་མ། ཙ་ཚ་ཛ་ཝ། ཞ་ཟ་འ་ཡ། ར་ལ་ཤ་ས། ཧ་ཨ།',
     translation: 'The thirty root consonants of the Tibetan script created by Thonmi Sambhota'
+  },
+  {
+    id: 'mantra',
+    title: 'Six Syllable Mantra',
+    tibetanTitle: 'མ་ཎི་ཡིག་དྲུག',
+    content: 'ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ།',
+    translation: 'Om Mani Padme Hum (The Great Compassion Mantra)'
   },
   {
     id: 'pangram',

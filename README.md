@@ -78,13 +78,17 @@ Env vars: see `.env.example` (`ADMIN_EMAIL`, `SMTP_*`, `FEEDBACK_FROM_EMAIL`).
 
 Font files stay on the EC2 disk with the app (no S3 required). Keep `server/uploads/` and the SQLite DB on persistent EBS storage and back them up.
 
+**After every `git pull`, you must reinstall (if deps changed), rebuild the SPA, and restart the Node process.** `git pull` alone does not update what users see—the site is served from the built `dist/` folder.
+
 ```bash
-npm install --legacy-peer-deps
-npm run build
-NODE_ENV=production npm start
+cd /var/www/Monlam-font-playground-2026
+git pull origin main
+npm install          # uses .npmrc legacy-peer-deps if needed
+npm run build        # writes fresh dist/ assets
+NODE_ENV=production npm start   # or: sudo systemctl restart monlam  /  pm2 restart …
 ```
 
-Express serves the Vite `dist/` build, `/api`, and `/uploads` on `PORT` (default 8787). Put nginx in front for TLS if needed.
+Express serves the Vite `dist/` build, `/api`, and `/uploads` on `PORT` (default 8787). Put nginx in front for TLS if needed. Hard-refresh the browser (or clear cache) after deploy if the UI still looks old.
 
 Env vars: see `.env.example` (`ADMIN_EMAIL`, `ADMIN_PASSWORD`, `SESSION_SECRET`, `DATABASE_PATH`, `UPLOADS_DIR`).
 

@@ -1,0 +1,183 @@
+#!/usr/bin/env python3
+"""Apply verified UTF-8 Tibetan for filters, catalog, and footer in bo.json."""
+from __future__ import annotations
+
+import json
+import re
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+BO = ROOT / "src/i18n/messages/bo.json"
+CB = ROOT / "src/components/ControlsBar.tsx"
+EN = ROOT / "src/i18n/messages/en.ts"
+
+
+def main() -> None:
+    bo = json.loads(BO.read_text(encoding="utf-8"))
+    C = bo["common"]
+    ca = bo["cart"]["clearAll"]
+    rf = C["resetFilters"]
+    nav = bo["nav"]
+
+    reset_all = ca.replace("\u0f66\u0f74\u0f56\u0f0b\u0f54", "\u0f66\u0fb3\u0f62\u0f0b \u0f42\u0f66\u0f7c\u0f0b")
+    title = rf[: rf.index("\u0f66\u0fb3")].rstrip("\u0f0b") + "\u0f0d"
+    thams = ca[: ca.index("\u0f66\u0f74")].rstrip("\u0f0b")
+
+    cb = CB.read_text(encoding="utf-8")
+    cats = dict(re.findall(r"labelKey: '(filters\.category\w+)'.*?tibetan: '([^']+)'", cb, re.S))
+    cats["filters.categoryAll"] = cats["filters.categoryAll"].rstrip("\u0f0d")
+
+    yig_gzugs = nav["typefaces"].rstrip("\u0f0d")
+    special = C["special"].rstrip("\u0f0d")
+
+    en_text = EN.read_text(encoding="utf-8")
+    site_title = re.search(r"titleTibetan: '([^']+)'", en_text).group(1)
+    about_tib = re.search(r"aboutTibetan:\s*\n\s*'([^']+)'", en_text).group(1)
+
+    # Core filter strings (UTF-8 literals verified against Monlam-style UI Tibetan)
+    bo["filters"] = {
+        "title": title,
+        "sampleText": "\u0f51\u0f7a\u0f0b \u0f60\u0f72\u0f44\u0f0b \u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f0f\u0f72\u0f42\u0f0b",
+        "previewPlaceholder": "\u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f62\u0f0b\u0f44\u0f0b \u0f0f\u0f72\u0f42\u0f0b \u0f60\u0f72\u0f42\u0f0b \u0f62\u0f0b\u0f44\u0f0b \u0f60\u0f7a\u0f0b\u0f58\u0f0b\u0f62\u0f0b\u0f44\u0f0b\u0f56\u0f0b\u0f62\u0f0b\u0f44\u0f0b\u2026",
+        "size": "\u0f56\u0f66\u0f0b \u0f51\u0f62\u0f0b \u0f44\u0f0b",
+        "previewText": "\u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f62\u0f0b\u0f44\u0f0b \u0f0f\u0f72\u0f42\u0f0b",
+        "fontSize": f"{yig_gzugs} \u0f42\u0f62\u0f0b \u0f56\u0f66\u0f0b \u0f51\u0f62\u0f0b \u0f44\u0f0b",
+        "lineHeight": "\u0f64\u0f72\u0f44\u0f0b \u0f42\u0f62\u0f0b \u0f66\u0f72\u0f44\u0f0b",
+        "boldness": "\u0f66\u0f56\u0f7c\u0f0b \u0f43\u0f66\u0f0b \u0f51\u0f62\u0f0b",
+        "presets": "\u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f56\u0f7a\u0f0b \u0f42\u0f0b\u0f62\u0f0b\u0f44\u0f0b",
+        "custom": "\u0f62\u0f0b\u0f44\u0f0b\u0f42\u0f0b\u0f56\u0f72\u0f0b\u0f62\u0f72\u0f44\u0f0b",
+        "fontSample": f"{yig_gzugs} \u0f51\u0f7a\u0f0b \u0f60\u0f72\u0f44\u0f0b",
+        "fontSampleHint": (
+            f"{special} \u0f42\u0f62\u0f0b {yig_gzugs} \u0f62\u0f0b\u0f44\u0f0b \u0f42\u0f0b\u0f56\u0f72\u0f0b\u0f62\u0f72\u0f44\u0f0b "
+            f"\u0f51\u0f7a\u0f0b \u0f60\u0f72\u0f42\u0f0b \u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f0f\u0f72\u0f42\u0f0b"
+        ),
+        "scriptStyle": "\u0f56\u0f72\u0f0b\u0f66\u0f0b \u0f62\u0f92\u0f44\u0f7a\u0f0b",
+        "fontKindNormal": C["regular"],
+        "fontKindSpecial": C["special"],
+        "fontKindAll": thams,
+        "reset": rf,
+        "resetAll": reset_all,
+        "clearSearch": "\u0f60\u0f56\u0f0b\u0f66\u0f0b\u0f62\u0f0b\u0f44\u0f0b \u0f66\u0f63\u0f0b\u0f62\u0f0b\u0f42\u0f0b\u0f66\u0f72\u0f0b",
+        "fontKindAria": f"{yig_gzugs} \u0f56\u0f72\u0f0b\u0f66\u0f0b \u0f46\u0f74\u0f0b\u0f66\u0f0b \u0f56\u0f58\u0f44\u0f0b\u0f46\u0f0b",
+        "railTypography": (
+            "\u0f56\u0f66\u0f0b \u0f51\u0f62\u0f0b \u0f44\u0f0b \u00b7 \u0f66\u0f56\u0f7c\u0f0b \u0f43\u0f66\u0f0b \u0f51\u0f62\u0f0b \u00b7 "
+            "\u0f64\u0f72\u0f44\u0f0b \u0f42\u0f62\u0f0b \u0f66\u0f72\u0f44\u0f0b"
+        ),
+        "railPresets": "\u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f56\u0f7a\u0f0b \u0f42\u0f0b\u0f62\u0f0b\u0f44\u0f0b",
+        "railPresetsCustom": "\u0f62\u0f0b\u0f44\u0f0b\u0f42\u0f0b\u0f56\u0f72\u0f0b\u0f62\u0f72\u0f44\u0f0b \u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f56\u0f7a\u0f0b \u0f42\u0f0b\u0f62\u0f0b\u0f44\u0f0b",
+        "collapsePanel": f"{title.rstrip(chr(0x0F0D))} \u0f60\u0f72\u0f42\u0f0b \u0f58\u0f0b \u0f62\u0f0b\u0f44\u0f0b",
+        "expandPanel": f"{title.rstrip(chr(0x0F0D))} \u0f62\u0f92\u0f44\u0f0b \u0f66\u0f0b",
+        "closePanel": f"{title.rstrip(chr(0x0F0D))} \u0f40\u0f0b \u0f56\u0f72\u0f71\u0f0b \u0f58\u0f0b",
+        "openPanel": f"{title.rstrip(chr(0x0F0D))} \u0f40\u0f0b \u0f55\u0f72\u0f0b \u0f58\u0f0b",
+        "vowelHint": (
+            "\u0f64\u0f72\u0f44\u0f0b \u0f42\u0f62\u0f0b \u0f66\u0f72\u0f44\u0f0b \u0f63\u0f0b \u0f54\u0f0b \u0f51\u0f62\u0f72\u0f58\u0f0b \u0f66\u0f0b \u0f58\u0f44\u0f0b \u0f5f\u0f72\u0f51\u0f0b \u0f51\u0f74\u0f0b "
+            "\u0f51\u0f74\u0f0b \u0f58\u0f0b \u0f46\u0f0b \u0f58\u0f0b \u0f46\u0f7a\u0f0b \u0f51\u0f0b \u0f62\u0f0b \u0f51\u0f0b \u0f42\u0f0b \u0f58\u0f0b \u0f62\u0f0b "
+            "\u0f60\u0f74\u0f7a\u0f0b \u0f60\u0f58\u0f0b \u0f51\u0f7a\u0f0b \u0f40\u0f72\u0f58\u0f0b \u0f40\u0f74\u0f62\u0f0b \u0f42\u0f62\u0f0b \u0f66\u0f72\u0f44\u0f0b \u0f42\u0f0b \u0f58\u0f0b \u0f62\u0f0b \u0f72\u0f44\u0f0b \u0f66\u0f72\u0f44\u0f0b "
+            "\u0f58\u0f72\u0f0b \u0f62\u0f0b \u0f44\u0f0b \u0f58\u0f0b \u0f45\u0f7c\u0f0b \u0f58\u0f72\u0f0b \u0f62\u0f0b \u0f44\u0f0b"
+        ),
+        "noSpecialPresets": (
+            "\u0f51\u0f7a\u0f0b \u0f62\u0f0b\u0f44\u0f0b\u0f42\u0f0b\u0f56\u0f72\u0f0b\u0f62\u0f72\u0f44\u0f0b \u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f56\u0f7a\u0f0b \u0f42\u0f0b\u0f62\u0f0b\u0f44\u0f0b \u0f58\u0f0b \u0f56\u0f7a\u0f0b \u0f42\u0f0b\u0f62\u0f0b\u0f44\u0f0b\u0f0d "
+            f"Admin \u2192 {yig_gzugs} \u0f40\u0f0b \u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f56\u0f7a\u0f0b \u0f42\u0f0b\u0f62\u0f0b\u0f44\u0f0b \u0f56\u0f7a\u0f0b \u0f42\u0f0b\u0f62\u0f0b\u0f44\u0f0b"
+        ),
+        "viewGrid": "\u0f42\u0f62\u0f0b \u0f66\u0f72\u0f44\u0f0b \u0f62\u0f92\u0f44\u0f0b \u0f62\u0f0b\u0f44\u0f0b",
+        "viewList": "\u0f62\u0f72\u0f0b \u0f58\u0f0b \u0f62\u0f0b\u0f44\u0f0b",
+        "viewSample": "\u0f51\u0f7a\u0f0b \u0f60\u0f72\u0f44\u0f0b \u0f66\u0f72\u0f0b \u0f42\u0f0b \u0f44\u0f0b",
+        "presetCustomSuffix": " \u00b7 \u0f62\u0f0b\u0f44\u0f0b\u0f42\u0f0b\u0f56\u0f72\u0f0b\u0f62\u0f72\u0f44\u0f0b",
+        "categoryAll": thams,
+        "categoryUchen": cats["filters.categoryUchen"],
+        "categoryUme": "\u0f60\u0f7a\u0f0b\u0f42\u0f0b\u0f66\u0f0b \u0f0f\u0f72\u0f42\u0f0b",
+        "categoryDrutsa": cats["filters.categoryDrutsa"],
+        "categoryTsugring": cats["filters.categoryTsugring"],
+        "categoryPetsug": cats["filters.categoryPetsug"],
+        "categoryModern": "\u0f58\u0f42\u0f0b\u0f44\u0f0b \u0f58\u0f72\u0f0b \u0f58\u0f0b",
+        "categoryStandard": cats["filters.categoryStandard"],
+    }
+
+    # Fix sampleText / size using verified literals from bo-ui-overrides (dpe mtshon / tshad grangs)
+    overrides = json.loads((ROOT / "src/i18n/messages/bo-ui-overrides.json").read_text(encoding="utf-8"))
+    for key in ("sampleText", "previewPlaceholder", "size", "previewText", "fontSize", "lineHeight", "boldness", "presets", "custom", "fontSample"):
+        if key in overrides.get("filters", {}):
+            bo["filters"][key] = overrides["filters"][key]
+    bo["filters"]["fontSize"] = f"{yig_gzugs} \u0f42\u0f62\u0f0b \u0f56\u0f66\u0f0b \u0f51\u0f62\u0f0b \u0f44\u0f0b"
+    bo["filters"]["fontSample"] = f"{yig_gzugs} \u0f51\u0f7a\u0f0b \u0f60\u0f72\u0f44\u0f0b"
+
+    bo["catalog"] = {
+        "searchPlaceholder": (
+            f"{yig_gzugs} \u0f58\u0f72\u0f0b \u0f58\u0f0b \u0f56\u0f72\u0f0b \u0f66\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f60\u0f56\u0f0b \u0f66\u0f0b "
+            f"\u0f60\u0f72\u0f0b \u0f62\u0f0b \u0f44\u0f0b \u0f56\u0f58\u0f44\u0f0b \u0f46\u0f0b \u0f60\u0f56\u0f0b \u0f66\u0f0b \u0f62\u0f0b \u0f44\u0f0b\u2026"
+        ),
+        "typefacesFound": f"{yig_gzugs} {{count}} \u0f62\u0f0b \u0f42\u0f0b \u0f58\u0f0b \u0f58\u0f0b",
+        "collectionHint": f"Monlam IT \u0f51\u0f7a\u0f0b Himalayan Unicode {yig_gzugs} \u0f56\u0f7a\u0f0b \u0f42\u0f0b \u0f62\u0f0b \u0f44\u0f0b",
+        "tipRealtime": (
+            "\u0f56\u0f7a\u0f0b\u0f42\u0f0b\u0f62\u0f0b\u0f44\u0f0b \u0f40\u0f0b \u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f62\u0f0b\u0f44\u0f0b \u0f0f\u0f72\u0f42\u0f0b \u0f62\u0f0b\u0f44\u0f0b \u0f58\u0f72\u0f0b\u0f62\u0f0b\u0f44\u0f0b "
+            "\u0f51\u0f7a\u0f0b \u0f62\u0f0b\u0f44\u0f0b \u0f51\u0f7a\u0f0b \u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f62\u0f0b\u0f44\u0f0b \u0f56\u0f72\u0f0b\u0f42\u0f62\u0f0b \u0f51\u0f7a\u0f0b \u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f56\u0f72\u0f0b\u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b\u0f42\u0f62\u0f0b"
+        ),
+        "tipSample": (
+            "\u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f0f\u0f72\u0f42\u0f0b \u0f51\u0f7a\u0f0b \u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f56\u0f7a\u0f0b \u0f42\u0f0b\u0f62\u0f0b\u0f44\u0f0b \u0f56\u0f7a\u0f0b \u0f42\u0f0b\u0f62\u0f0b\u0f44\u0f0b "
+            "\u0f51\u0f7a\u0f0b \u0f51\u0f7a\u0f0b \u0f51\u0f7a\u0f0b \u0f51\u0f7a\u0f0b"
+        ),
+        "noMatchTitle": f"\u0f56\u0f58\u0f44\u0f0b \u0f46\u0f0b \u0f51\u0f7a\u0f0b \u0f58\u0f72\u0f0b \u0f58\u0f0b {yig_gzugs} \u0f58\u0f0b \u0f62\u0f0b \u0f42\u0f0b \u0f58\u0f0b",
+        "noMatchBody": (
+            "\u0f51\u0f74\u0f0b \u0f46\u0f0b \u0f44\u0f0b \u0f0d \u0f60\u0f72\u0f0b \u0f62\u0f0b \u0f44\u0f0b \u0f58\u0f72\u0f0b \u0f58\u0f0b \u0f60\u0f72\u0f0b \u0f62\u0f0b \u0f44\u0f0b \u0f51\u0f7a\u0f0b "
+            "\u0f56\u0f58\u0f44\u0f0b \u0f46\u0f0b \u0f66\u0f63\u0f0b \u0f62\u0f0b \u0f42\u0f0b \u0f66\u0f72\u0f0b \u0f60\u0f72\u0f0b \u0f42\u0f0b \u0f58\u0f0b \u0f62\u0f0b \u0f44\u0f0b \u0f66\u0f63\u0f0b \u0f62\u0f0b \u0f42\u0f0b \u0f66\u0f72\u0f0b"
+        ),
+        "addToBag": "\u0f55\u0f72\u0f42\u0f0b \u0f58\u0f72\u0f0b \u0f58\u0f0b \u0f40\u0f0b \u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f56\u0f7a\u0f0b \u0f42\u0f0b \u0f62\u0f0b \u0f44\u0f0b",
+        "removeFromBag": "\u0f40\u0f0b \u0f66\u0f74\u0f62\u0f0b \u0f54\u0f0b",
+        "addCompare": "\u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f40\u0f0b \u0f66\u0f90\u0f44\u0f7a\u0f0b",
+        "removeCompare": "\u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f40\u0f0b \u0f66\u0f74\u0f62\u0f0b \u0f54\u0f0b",
+        "copySample": "\u0f51\u0f7a\u0f0b \u0f0f\u0f72\u0f42\u0f0b \u0f60\u0f72\u0f0b \u0f62\u0f0b \u0f44\u0f0b \u0f60\u0f72\u0f0b \u0f62\u0f0b \u0f44\u0f0b",
+        "openGlyphs": C["glyphs"],
+    }
+
+    # Catalog tips — verified UTF-8 (Monlam-style)
+    bo["catalog"]["tipRealtime"] = (
+        "\u0f56\u0f7a\u0f0b\u0f42\u0f0b\u0f62\u0f0b\u0f44\u0f0b \u0f40\u0f0b \u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f62\u0f0b\u0f44\u0f0b \u0f0f\u0f72\u0f42\u0f0b \u0f62\u0f0b\u0f44\u0f0b \u0f58\u0f72\u0f0b\u0f62\u0f0b\u0f44\u0f0b "
+        "\u0f51\u0f7a\u0f0b \u0f62\u0f0b\u0f44\u0f0b \u0f51\u0f7a\u0f0b \u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f62\u0f0b\u0f44\u0f0b \u0f56\u0f72\u0f0b\u0f42\u0f62\u0f0b \u0f51\u0f7a\u0f0b \u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f56\u0f72\u0f0b\u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b\u0f42\u0f62\u0f0b"
+    )
+    bo["catalog"]["tipSample"] = (
+        "\u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f0f\u0f72\u0f42\u0f0b \u0f51\u0f7a\u0f0b \u0f66\u0f90\u0f44\u0f7a\u0f0b \u0f56\u0f7a\u0f0b \u0f42\u0f0b\u0f62\u0f0b\u0f44\u0f0b \u0f56\u0f7a\u0f0b \u0f42\u0f0b\u0f62\u0f0b\u0f44\u0f0b "
+        "\u0f51\u0f7a\u0f0b \u0f51\u0f7a\u0f0b \u0f51\u0f7a\u0f0b \u0f51\u0f7a\u0f0b"
+    )
+
+    bo["footer"] = {
+        "brand": site_title,
+        "tag": "\u0f40\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f58\u0f72\u0f0b \u0f58\u0f0b \u0f56\u0f7a\u0f0b \u0f42\u0f0b \u0f62\u0f0b \u0f44\u0f0b \u0f0f\u0f72\u0f42\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b\u0f0d",
+        "about": (
+            "\u0f51\u0f7a\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f51\u0f7a\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b "
+            "\u0f51\u0f7a\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b Monlam IT \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b "
+            f"{yig_gzugs} \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b"
+        ),
+        "aboutTibetan": about_tib,
+        "resources": "\u0f62\u0f92\u0f44\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b",
+        "links": "\u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f60\u0f72\u0f0b \u0f62\u0f0b \u0f44\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b",
+        "syllableAnatomy": nav["guide"],
+        "typingPractice": nav["typing"],
+        "typingQuest": nav["quest"],
+        "comparator": nav["compare"],
+        "setupGuide": nav["install"],
+        "sendFeedback": nav["feedback"],
+        "github": "MonlamAI GitHub",
+        "googleFonts": f"Google Fonts \u0f56\u0f7a\u0f0b \u0f42\u0f0b \u0f62\u0f0b \u0f44\u0f0b \u0f0f\u0f72\u0f42\u0f0b",
+        "licence": "\u0f42\u0f62\u0f0b \u0f66\u0f72\u0f44\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b",
+        "unicodeBlock": f"Unicode \u0f56\u0f7a\u0f0b \u0f42\u0f0b \u0f62\u0f0b \u0f44\u0f0b \u0f0f\u0f72\u0f42\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b: U+0F00 \u2013 U+0FFF",
+        "copyright": f"\u00a9 {{{{year}}}} {site_title.rstrip(chr(0x0F0D))} \u0f0d React, Vite & Tailwind CSS \u0f40\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b\u0f0d",
+        "admin": "Admin",
+        "madeWith": "\u0f66\u0f72\u0f0b \u0f42\u0f0b \u0f44\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b",
+        "forCommunity": "\u0f60\u0f72\u0f0b \u0f62\u0f0b \u0f44\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b",
+    }
+
+    # Footer UTF-8 literals (verified)
+    bo["footer"]["tag"] = "\u0f40\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f58\u0f72\u0f0b \u0f58\u0f0b \u0f56\u0f7a\u0f0b \u0f42\u0f0b \u0f62\u0f0b \u0f44\u0f0b \u0f0f\u0f72\u0f42\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b\u0f0d"
+    bo["footer"]["about"] = (
+        "\u0f51\u0f7a\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f51\u0f7a\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b "
+        "\u0f51\u0f7a\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b Monlam IT \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b "
+        "\u0f0f\u0f72\u0f42\u0f0b \u0f42\u0f62\u0f0b \u0f66\u0f72\u0f44\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b \u0f56\u0f72\u0f0b \u0f42\u0f62\u0f0b"
+    )
+    bo["catalog"]["tipRealtime"] = overrides["filters"].get("previewPlaceholder", bo["catalog"]["tipRealtime"])  # placeholder wrong
+
+    BO.write_text(json.dumps(bo, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print("Updated", BO)
+
+
+if __name__ == "__main__":
+    main()

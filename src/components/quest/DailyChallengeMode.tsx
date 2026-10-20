@@ -80,11 +80,11 @@ export const DailyChallengeMode: React.FC<{ onBack: () => void }> = ({ onBack })
         </div>
 
         <div>
-          <h3 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
-            Sacred Dedication Prayer
-          </h3>
-          <p className="tibetan-text font-monlam-ouchan-1 text-xl text-blue-600 dark:text-blue-300 mt-2 font-semibold">
+          <p className="tibetan-text font-monlam-ouchan-1 text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
             {dailyLevel.tibetanName}
+          </p>
+          <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-slate-400 mt-1">
+            Sacred Dedication Prayer
           </p>
           <p className="text-xs text-gray-500 dark:text-slate-400 max-w-lg mx-auto mt-2 leading-relaxed">
             {dailyLevel.objective}

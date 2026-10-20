@@ -1,6 +1,8 @@
 import React from 'react';
 import { Check, Plus, Download, GitCompare } from 'lucide-react';
 import { FontItem } from '../types/font';
+import { useI18n } from '../i18n/I18nProvider';
+import { fontCardTitlePair, fontCategoryLabel } from '../utils/fontDisplay';
 import { downloadSingleFont } from '../utils/fontDownloader';
 
 interface FontSampleCardProps {
@@ -8,6 +10,7 @@ interface FontSampleCardProps {
   previewText: string;
   fontSize: number;
   lineHeight: number;
+  fontWeight: number;
   posterIndex: number;
   isSelected: boolean;
   onToggleSelect: (font: FontItem) => void;
@@ -88,12 +91,15 @@ export const FontSampleCard: React.FC<FontSampleCardProps> = ({
   previewText,
   fontSize,
   lineHeight,
+  fontWeight,
   posterIndex,
   isSelected,
   onToggleSelect,
   isCompared,
   onToggleCompare
 }) => {
+  const { t, locale } = useI18n();
+  const titles = fontCardTitlePair(font, locale);
   const theme = POSTER_THEMES[posterIndex % POSTER_THEMES.length];
   const sampleSize = Math.max(fontSize, 48);
 
@@ -107,17 +113,21 @@ export const FontSampleCard: React.FC<FontSampleCardProps> = ({
       <header className="flex items-start justify-between gap-3 px-5 pt-5 pb-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h3 className={`text-base font-semibold tracking-tight truncate ${theme.name}`}>
-              {font.name}
+            <h3
+              className={`text-base font-semibold tracking-tight truncate ${theme.name} ${
+                titles.primaryIsTibetan ? 'tibetan-text' : ''
+              }`}
+            >
+              {titles.primary}
             </h3>
             <span
               className={`text-[10px] px-1.5 py-0.5 rounded-md font-medium border shrink-0 ${theme.accent}`}
             >
-              {font.category}
+              {fontCategoryLabel(font.category, t)}
             </span>
           </div>
           <div className={`mt-1 flex items-center gap-2 text-xs ${theme.meta}`}>
-            <span className="tibetan-text font-medium">{font.tibetanName}</span>
+            <span className={!titles.primaryIsTibetan ? 'tibetan-text' : ''}>{titles.secondary}</span>
             <span className="opacity-50">·</span>
             <span>
               {font.stylesCount} {font.stylesCount === 1 ? 'style' : 'styles'}
@@ -174,6 +184,7 @@ export const FontSampleCard: React.FC<FontSampleCardProps> = ({
           style={{
             fontSize: `${sampleSize}px`,
             lineHeight,
+            fontWeight,
             ...(font.fileUrl
               ? { fontFamily: `'${font.name}', 'Noto Serif Tibetan', 'Jomolhari', serif` }
               : {})

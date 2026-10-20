@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Scale, ArrowLeft } from 'lucide-react';
+import { useI18n } from '../i18n/I18nProvider';
 
 export const LicencePage: React.FC = () => {
+  const { t } = useI18n();
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-slate-100 flex flex-col">
       <header className="sticky top-0 z-40 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800">
@@ -12,18 +14,18 @@ export const LicencePage: React.FC = () => {
             className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to playground
+            {t('licence.back')}
           </Link>
-          <div className="flex items-center gap-2 text-sm font-semibold">
+          <div className="flex items-center gap-2 text-sm font-semibold tibetan-text">
             <Scale className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-            Licence policies
+            {t('licence.title')}
           </div>
         </div>
       </header>
 
       <main className="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10 space-y-8">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Licence policies</h1>
+          <h1 className="text-2xl font-bold tracking-tight tibetan-text">{t('licence.title')}</h1>
           <p className="mt-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed">
             How you may use the Monlam Font Playground, Monlam typefaces, and related keyboard assets.
           </p>

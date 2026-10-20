@@ -1,0 +1,12 @@
+vowelHint=ཤིང་གྲངས་ལྷག་པར་བཞག་ན་དབུ་མཐའ་མཐོ་བ་དang་འog tu 'greng ba'i yig gi gcod pa mi 'gro bar byed pa yin
+footerTag=ཁོལ་སྐྱོང་མེད་པའi་བod yig bris rgyud
+footerResources=རgyu cha
+footerLinks=གzhung gi 'brel thag
+footerMadeWith=སer snying gi thug rjes
+footerForCommunity=ཧim alaya bod rig gi sde khrod yongs la 'brog pa rnams la
+catalogSearch=ཡig gzugs kyi ming, bris rgyud, theg bu rnams kyis 'tshol rogs…
+catalogTypefaces=ཡig gzugs {{count}} rnyed
+catalogCollection=Monlam IT dang Himalayan Unicode yig gzugs legs bsdus btus tshogs
+catalogTipRealtime=byang bu'i nang gi sngon lta yig la reg pas der ma lag tu bris shing brtag nus
+catalogTipSample=sngon lta yig gam sngon bzhag bsgyur na dpe mtshon shog bu yang der ma lag 'dus 'gyur
+expandPanel=ཚag chhe rgyas pa

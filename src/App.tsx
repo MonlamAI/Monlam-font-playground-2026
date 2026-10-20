@@ -4,7 +4,6 @@
  */
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { Header } from './components/Header';
 import { ControlsBar } from './components/ControlsBar';
 import { FontCatalog } from './components/FontCatalog';
@@ -17,14 +16,19 @@ import { FeedbackModal } from './components/FeedbackModal';
 import { SelectedFontsDrawer } from './components/SelectedFontsDrawer';
 import { GlyphModal } from './components/GlyphModal';
 import { UpdateNotification } from './components/UpdateNotification';
-import { PRESET_TEXTS } from './data/fontsData';
+import { PRESET_TEXTS, resolveDefaultPreset } from './data/fontsData';
 import { FontCategory, FontItem } from './types/font';
-import { Heart, Globe, Github, Scale } from 'lucide-react';
+import { AppFooter } from './components/AppFooter';
 import { usePublishedFonts, PublishedFontFaces } from './hooks/usePublishedFonts';
 import { usePublishedPresets } from './hooks/usePublishedPresets';
 import { useCatalogUpdates } from './hooks/useCatalogUpdates';
 import type { AppTab } from './components/Header';
 import type { FontKindFilter } from './components/ControlsBar';
+import {
+  PRESET_ID_CUSTOM,
+  PRESET_ID_FONT_SAMPLE
+} from './utils/resolvePreviewText';
+import { FEATURE_TYPING_QUEST, FEATURE_TYPOGRAPHY_GUIDE } from './config/features';
 
 export default function App() {
   const { fonts: allFonts } = usePublishedFonts();
@@ -42,19 +46,36 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState<FontCategory>('All');
   const [selectedFontKind, setSelectedFontKind] = useState<FontKindFilter>('normal');
   const [previewText, setPreviewText] = useState(
-    () => PRESET_TEXTS[0]?.content || 'ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ།'
+    () => resolveDefaultPreset(PRESET_TEXTS).content
   );
   const [fontSize, setFontSize] = useState(36);
   const [lineHeight, setLineHeight] = useState(1.85);
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'sample'>('grid');
-  const [activePresetId, setActivePresetId] = useState(() => PRESET_TEXTS[0]?.id || 'mantra');
+  const [fontWeight, setFontWeight] = useState(400);
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'sample'>('list');
+  const [activePresetId, setActivePresetId] = useState(
+    () => resolveDefaultPreset(PRESET_TEXTS).id
+  );
+
+  useEffect(() => {
+    if (
+      (activeTab === 'quest' && !FEATURE_TYPING_QUEST) ||
+      (activeTab === 'guide' && !FEATURE_TYPOGRAPHY_GUIDE)
+    ) {
+      setActiveTab('catalog');
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     if (presets.length === 0) return;
     const stillValid = presets.some((p) => p.id === activePresetId);
-    if (!stillValid && activePresetId !== 'custom') {
-      setActivePresetId(presets[0].id);
-      setPreviewText(presets[0].content);
+    if (
+      !stillValid &&
+      activePresetId !== PRESET_ID_CUSTOM &&
+      activePresetId !== PRESET_ID_FONT_SAMPLE
+    ) {
+      const fallback = resolveDefaultPreset(presets);
+      setActivePresetId(fallback.id);
+      setPreviewText(fallback.content);
     }
   }, [presets, activePresetId]);
 
@@ -73,9 +94,7 @@ export default function App() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [inspectingFont, setInspectingFont] = useState<FontItem | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(
-    () => (typeof window !== 'undefined' ? window.innerWidth >= 1024 : true)
-  );
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Filtered fonts computation
   const filteredFonts = useMemo(() => {
@@ -155,16 +174,17 @@ export default function App() {
     setSearchQuery('');
     setSelectedCategory('All');
     setSelectedFontKind('normal');
-    const first = presets[0] || PRESET_TEXTS[0];
+    const first = resolveDefaultPreset(presets.length ? presets : PRESET_TEXTS);
     setPreviewText(first.content);
     setActivePresetId(first.id);
     setFontSize(36);
     setLineHeight(1.85);
+    setFontWeight(400);
   };
 
   const handleSendToPlayground = (text: string) => {
     setPreviewText(text);
-    setActivePresetId('custom');
+    setActivePresetId(PRESET_ID_CUSTOM);
     setActiveTab('catalog');
   };
 
@@ -193,17 +213,18 @@ export default function App() {
               setSelectedFontKind={(kind) => {
                 setSelectedFontKind(kind);
                 if (kind === 'special') {
-                  setActivePresetId('custom');
+                  setActivePresetId(PRESET_ID_FONT_SAMPLE);
                   const sample =
                     allFonts.find((f) => (f.fontKind || 'normal') === 'special')?.sampleText ||
                     allFonts[0]?.sampleText;
                   if (sample) setPreviewText(sample);
-                } else if (activePresetId === 'custom') {
-                  const first = presets[0] || PRESET_TEXTS[0];
-                  if (first) {
-                    setActivePresetId(first.id);
-                    setPreviewText(first.content);
-                  }
+                } else if (
+                  activePresetId === PRESET_ID_CUSTOM ||
+                  activePresetId === PRESET_ID_FONT_SAMPLE
+                ) {
+                  const first = resolveDefaultPreset(presets.length ? presets : PRESET_TEXTS);
+                  setActivePresetId(first.id);
+                  setPreviewText(first.content);
                 }
               }}
               previewText={previewText}
@@ -212,6 +233,8 @@ export default function App() {
               setFontSize={setFontSize}
               lineHeight={lineHeight}
               setLineHeight={setLineHeight}
+              fontWeight={fontWeight}
+              setFontWeight={setFontWeight}
               viewMode={viewMode}
               setViewMode={setViewMode}
               activePresetId={activePresetId}
@@ -229,6 +252,7 @@ export default function App() {
                 presets={presets}
                 fontSize={fontSize}
                 lineHeight={lineHeight}
+                fontWeight={fontWeight}
                 viewMode={viewMode}
                 selectedFonts={selectedFonts}
                 onToggleSelect={handleToggleSelect}
@@ -249,6 +273,8 @@ export default function App() {
               onSetComparedFonts={setComparedFonts}
               selectedFonts={selectedFonts}
               onToggleSelect={handleToggleSelect}
+              fontWeight={fontWeight}
+              onFontWeightChange={setFontWeight}
             />
           )}
 
@@ -256,9 +282,9 @@ export default function App() {
             <TypingPractice onSendToPlayground={handleSendToPlayground} />
           )}
 
-          {activeTab === 'quest' && <TypingQuest />}
+          {FEATURE_TYPING_QUEST && activeTab === 'quest' && <TypingQuest />}
 
-          {activeTab === 'guide' && <TypographyGuide />}
+          {FEATURE_TYPOGRAPHY_GUIDE && activeTab === 'guide' && <TypographyGuide />}
 
           {activeTab === 'install' && <InstallGuide allFonts={allFonts} />}
         </main>
@@ -293,135 +319,7 @@ export default function App() {
         onViewKeyboards={() => setActiveTab('install')}
       />
 
-      {/* Footer (Google Fonts inspired clean layout) */}
-      <footer className="border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-10 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-xs text-gray-500 dark:text-slate-400">
-            {/* Col 1 */}
-            <div className="space-y-2 md:col-span-2">
-              <div className="flex items-center gap-2.5">
-                <img
-                  src="/logos/monlam.svg"
-                  alt="Monlam"
-                  className="w-8 h-8 shrink-0"
-                  width={32}
-                  height={32}
-                />
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-bold text-sm text-gray-900 dark:text-slate-100">Monlam Font Playground</span>
-                  <span className="text-[10px] bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 px-2 py-0.5 rounded-full font-medium">
-                    Open Tibetan Typography
-                  </span>
-                </div>
-              </div>
-              <p className="leading-relaxed text-gray-600 dark:text-slate-400 max-w-md">
-                Dedicated to the preservation, aesthetic perfection, and digital proliferation of the Tibetan language through the typefaces of Venerable Geshe Lobsang Monlam and the Monlam IT Research Centre.
-              </p>
-              <p className="tibetan-text text-gray-400 dark:text-slate-500 font-monlam-ouchan-1">
-                བོད་ཀྱི་སྐད་ཡིག་དང་ཡིག་གཟུགས་འཛམ་གླིང་ཡོངས་ལ་ཁྱབ་སྤེལ་གཏོང་བའི་ཆེད་དུ་དམིགས་པ་ཡིན།
-              </p>
-            </div>
-
-            {/* Col 2 */}
-            <div className="space-y-2">
-              <span className="font-semibold text-gray-800 dark:text-slate-200 uppercase tracking-wider block">
-                Resources
-              </span>
-              <ul className="space-y-1.5">
-                <li>
-                  <button onClick={() => setActiveTab('guide')} className="hover:text-blue-600 dark:hover:text-blue-400 transition">
-                    Complex Syllable Anatomy
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => setActiveTab('typing')} className="hover:text-blue-600 dark:hover:text-blue-400 transition">
-                    Tibetan Typing Practice
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => setActiveTab('quest')} className="hover:text-blue-600 dark:hover:text-blue-400 transition">
-                    Typing Quest
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => setActiveTab('compare')} className="hover:text-blue-600 dark:hover:text-blue-400 transition">
-                    Side-by-Side Comparator
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => setActiveTab('install')} className="hover:text-blue-600 dark:hover:text-blue-400 transition">
-                    Windows & Mac Setup Guide
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => setIsFeedbackOpen(true)} className="hover:text-blue-600 dark:hover:text-blue-400 transition font-medium text-blue-600 dark:text-blue-400">
-                    Send Feedback
-                  </button>
-                </li>
-              </ul>
-            </div>
-
-            {/* Col 3 */}
-            <div className="space-y-2">
-              <span className="font-semibold text-gray-800 dark:text-slate-200 uppercase tracking-wider block">
-                Official Links
-              </span>
-              <ul className="space-y-1.5">
-                <li>
-                  <a
-                    href="https://github.com/MonlamAI/Monlam-font-playground-2026"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1 transition"
-                  >
-                    <Github className="w-3.5 h-3.5" />
-                    <span>MonlamAI on GitHub</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://fonts.google.com/?query=Tibetan"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1 transition"
-                  >
-                    <Globe className="w-3.5 h-3.5" />
-                    <span>Google Fonts Tibetan</span>
-                  </a>
-                </li>
-                <li>
-                  <Link
-                    to="/licence"
-                    className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1 transition"
-                  >
-                    <Scale className="w-3.5 h-3.5" />
-                    <span>Licence policies</span>
-                  </Link>
-                </li>
-                <li>
-                  <span className="text-gray-400 dark:text-slate-500">Unicode Tibetan Block: U+0F00 - U+0FFF</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="pt-6 border-t border-gray-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-400 dark:text-slate-500 gap-2">
-            <div className="flex items-center gap-2">
-              <img src="/logos/monlam-ai.svg" alt="" className="w-4 h-4 opacity-80" width={16} height={16} />
-              <span>© 2026 Monlam Font Playground. Built with React, Vite & Tailwind CSS.</span>
-              <span className="text-gray-300 dark:text-slate-600">·</span>
-              <Link to="/admin" className="hover:text-blue-600 dark:hover:text-blue-400 transition">
-                Admin
-              </Link>
-            </div>
-            <div className="flex items-center gap-1">
-              <span>Made with</span>
-              <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
-              <span>for the Himalayan Tibetan community worldwide.</span>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <AppFooter onNavigate={setActiveTab} onOpenFeedback={() => setIsFeedbackOpen(true)} />
     </div>
   );
 }

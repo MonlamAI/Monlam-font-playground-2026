@@ -101,12 +101,12 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
               </span>
               <span className="text-xs text-gray-500 dark:text-slate-400">Total XP: <strong className="text-gray-900 dark:text-white">{stats.xp.toLocaleString()}</strong></span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mt-1">
-              {currentRank.title}
-            </h2>
-            <div className="tibetan-text font-monlam-ouchan-1 text-base text-blue-600 dark:text-blue-400 font-semibold mt-0.5">
+            <p className="tibetan-text font-monlam-ouchan-1 text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mt-1">
               {currentRank.tibetanTitle}
-            </div>
+            </p>
+            <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-slate-400 mt-0.5">
+              {currentRank.title}
+            </p>
           </div>
         </div>
 
@@ -195,8 +195,8 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                   {ach.icon}
                 </div>
                 <div>
-                  <div className="font-bold text-xs">{ach.title}</div>
-                  <div className="tibetan-text font-monlam-ouchan-1 text-[11px] text-blue-600 dark:text-blue-400">{ach.tibetanTitle}</div>
+                  <div className="tibetan-text font-monlam-ouchan-1 font-bold text-xs text-gray-900 dark:text-white">{ach.tibetanTitle}</div>
+                  <div className="text-[11px] font-medium text-gray-500 dark:text-slate-400">{ach.title}</div>
                   <p className="text-[11px] text-gray-500 dark:text-slate-400 mt-1 leading-snug">
                     {ach.description}
                   </p>

@@ -82,9 +82,12 @@ export const WeakAreasPractice: React.FC<{ onBack: () => void }> = ({ onBack }) 
             <Sparkles className="w-3.5 h-3.5" />
             AI Adaptive Diagnostic Engine
           </div>
-          <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white">
+          <p className="tibetan-text font-monlam-ouchan-1 text-2xl font-extrabold text-gray-900 dark:text-white">
+            ནོར་འཛོལ་དམིགས་སྦྱོང་།
+          </p>
+          <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-slate-400 mt-1">
             Mistake Frequency & Targeted Drills
-          </h3>
+          </p>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400 mt-1 max-w-xl">
             We continuously log keystroke errors across all worlds. Below are the specific Tibetan letters and stacks where your fingers have hesitated or slipped.
           </p>

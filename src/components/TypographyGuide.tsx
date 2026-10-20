@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Layers, Code, CheckCircle, Sparkles, HelpCircle, Check, Copy } from 'lucide-react';
+import { Layers, Code, CheckCircle, Sparkles, HelpCircle, Check, Copy } from 'lucide-react';
 import {
   DISSECTED_SYLLABLE_BGRUBS,
   TIBETAN_VOWELS,
@@ -8,6 +8,7 @@ import {
   TIBETAN_ALPHABET
 } from '../data/tibetanData';
 import { MONLAM_FONTS } from '../data/fontsData';
+import { fontAssetLabel } from '../utils/fontDisplay';
 
 export const TypographyGuide: React.FC = () => {
   const [activeComponentId, setActiveComponentId] = React.useState<string>('ming-zhi');
@@ -50,35 +51,9 @@ export const TypographyGuide: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-10">
-      {/* Header */}
-      <div>
-        <div className="flex items-center gap-2 mb-1">
-          <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300">
-            <BookOpen className="w-5 h-5" />
-          </div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-slate-100">Complex Tibetan Typography Guide</h2>
-        </div>
-        <p className="text-xs text-gray-500 dark:text-slate-400 max-w-3xl">
-          An interactive reference for designers, developers, and linguists on Tibetan syllable anatomy, vertical consonant stacking, vowel positioning, and OpenType web rendering.
-        </p>
-      </div>
-
       {/* SECTION 1: INTERACTIVE SYLLABLE DISSECTOR (བསྒྲུབས) */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-700 p-6 sm:p-8 shadow-xs">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-gray-100 dark:border-slate-800">
-          <div>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300">
-              Module 1: Anatomical Breakdown
-            </span>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mt-2">
-              The 7-Component Syllable Architecture: <span className="tibetan-text text-xl">བསྒྲུབས</span>
-            </h3>
-            <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
-              Click any element of the syllable below to examine its syntactic role, font metrics, and pronunciation rules.
-            </p>
-          </div>
-
-          {/* Font selector for dissector */}
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-end gap-4 pb-6 border-b border-gray-100 dark:border-slate-800">
           <div className="flex items-center gap-2 text-xs">
             <span className="text-gray-500 dark:text-slate-400">Render in:</span>
             <select
@@ -88,7 +63,7 @@ export const TypographyGuide: React.FC = () => {
             >
               {MONLAM_FONTS.map((f) => (
                 <option key={f.id} value={f.id}>
-                  {f.name}
+                  {fontAssetLabel(f)}
                 </option>
               ))}
             </select>
@@ -228,7 +203,7 @@ export const TypographyGuide: React.FC = () => {
                     className="w-4 h-4 rounded-full"
                     style={{ backgroundColor: activeComponent.color }}
                   ></span>
-                  <h4 className="font-bold text-gray-900 dark:text-slate-100 text-base">{activeComponent.name}</h4>
+                  <p className="font-bold text-gray-900 dark:text-slate-100 text-base">{activeComponent.name}</p>
                 </div>
                 <span className="text-sm font-semibold text-gray-700 dark:text-slate-300 tibetan-text">
                   {activeComponent.tibetanName} ({activeComponent.wylieName})
@@ -270,14 +245,6 @@ export const TypographyGuide: React.FC = () => {
 
       {/* SECTION 2: THE FOUR VOWELS (དབྱངས་བཞི) */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-700 p-6 sm:p-8 shadow-xs">
-        <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300">
-          Module 2: Diacritics
-        </span>
-        <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mt-2">The Four Vowel Diacritics (དབྱངས་བཞི)</h3>
-        <p className="text-xs text-gray-500 dark:text-slate-400 mt-1 mb-6">
-          Tibetan is an abugida where each consonant carries the inherent vowel /a/. The four explicit diacritic signs alter this vowel:
-        </p>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {TIBETAN_VOWELS.map((v) => (
             <div
@@ -289,9 +256,9 @@ export const TypographyGuide: React.FC = () => {
                   {v.example.split(' ')[0]}
                 </span>
               </div>
-              <h4 className="font-bold text-gray-900 dark:text-slate-100 text-sm">
+              <p className="font-bold text-gray-900 dark:text-slate-100 text-sm">
                 {v.name} <span className="tibetan-text text-gray-600 dark:text-slate-400 font-normal">({v.tibetanName})</span>
-              </h4>
+              </p>
               <div className="text-xs text-gray-500 dark:text-slate-400 space-y-1">
                 <div>Sound: <strong className="text-gray-800 dark:text-slate-200">/{v.vowel}/</strong></div>
                 <div>Position: <strong>{v.position}</strong></div>
@@ -304,14 +271,6 @@ export const TypographyGuide: React.FC = () => {
 
       {/* SECTION 3: SUBJOINED & SUPERSCRIPT CONSONANT STACKS */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-700 p-6 sm:p-8 shadow-xs">
-        <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300">
-          Module 3: Subjoining & Superscripts
-        </span>
-        <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mt-2">Consonant Clusters & Subjoined Forms</h3>
-        <p className="text-xs text-gray-500 dark:text-slate-400 mt-1 mb-6">
-          Subjoined letters (འདོགས་ཅན) attach underneath consonants, while superscripts (མགོ་ཅན) sit on the crown.
-        </p>
-
         {/* Subjoined Tabs */}
         <div className="space-y-6">
           <div className="flex items-center gap-2 border-b border-gray-200 dark:border-slate-700 pb-2 overflow-x-auto">
@@ -332,14 +291,9 @@ export const TypographyGuide: React.FC = () => {
 
           {/* Subjoined Examples Grid */}
           <div className="bg-gray-50 dark:bg-slate-800/50 p-6 rounded-xl border border-gray-200 dark:border-slate-700">
-            <div className="mb-4">
-              <h4 className="font-bold text-gray-900 dark:text-slate-100 text-sm">
-                {SUBJOINED_LETTERS[selectedSubjoinGroup].name} - {SUBJOINED_LETTERS[selectedSubjoinGroup].tibetanName}
-              </h4>
-              <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">
-                {SUBJOINED_LETTERS[selectedSubjoinGroup].description}
-              </p>
-            </div>
+            <p className="mb-4 text-xs text-gray-500 dark:text-slate-400">
+              {SUBJOINED_LETTERS[selectedSubjoinGroup].description}
+            </p>
 
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-3">
               {SUBJOINED_LETTERS[selectedSubjoinGroup].examples.map((ex, i) => (
@@ -362,17 +316,7 @@ export const TypographyGuide: React.FC = () => {
 
       {/* SECTION 4: WEB OPENTYPE TYPOGRAPHY & CSS IMPLEMENTATION */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-700 p-6 sm:p-8 shadow-xs">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-gray-100 dark:border-slate-800">
-          <div>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 dark:bg-purple-950/50 text-purple-800 dark:text-purple-300">
-              Module 4: Engineering & CSS
-            </span>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mt-2">Web Browser Typography & CSS Setup</h3>
-            <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
-              Copy-pasteable CSS snippet with OpenType layout feature rules for cross-browser fidelity.
-            </p>
-          </div>
-
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-end gap-4 pb-4 border-b border-gray-100 dark:border-slate-800">
           <button
             onClick={handleCopyCss}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg text-xs font-medium transition"

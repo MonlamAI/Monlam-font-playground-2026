@@ -4,6 +4,7 @@ import { FontCard } from './FontCard';
 import { FontSampleCard } from './FontSampleCard';
 import { Sparkles, Info } from 'lucide-react';
 import { resolveFontPreviewText } from '../utils/resolvePreviewText';
+import { useI18n } from '../i18n/I18nProvider';
 
 interface FontCatalogProps {
   fonts: FontItem[];
@@ -12,6 +13,7 @@ interface FontCatalogProps {
   presets: PresetText[];
   fontSize: number;
   lineHeight: number;
+  fontWeight: number;
   viewMode: 'grid' | 'list' | 'sample';
   selectedFonts: FontItem[];
   onToggleSelect: (font: FontItem) => void;
@@ -28,6 +30,7 @@ export const FontCatalog: React.FC<FontCatalogProps> = ({
   presets,
   fontSize,
   lineHeight,
+  fontWeight,
   viewMode,
   selectedFonts,
   onToggleSelect,
@@ -36,21 +39,20 @@ export const FontCatalog: React.FC<FontCatalogProps> = ({
   onOpenGlyphs,
   onResetFilters
 }) => {
+  const { t } = useI18n();
   const isSelected = (id: string) => selectedFonts.some((f) => f.id === id);
   const isCompared = (id: string) => comparedFonts.some((f) => f.id === id);
 
   const tipText =
-    viewMode === 'sample'
-      ? 'Sample posters update live when you change the preview text or presets above'
-      : 'Click on any preview text inside cards to type & test directly in real-time';
+    viewMode === 'sample' ? t('catalog.tipSample') : t('catalog.tipRealtime');
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-sm text-gray-500 dark:text-slate-400">
+    <div className="w-full min-w-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="mb-6 w-full min-w-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-sm text-gray-500 dark:text-slate-400">
         <div>
-          <span className="font-semibold text-gray-900 dark:text-slate-100">{fonts.length}</span> typefaces found
+          {t('catalog.typefacesFound', { count: fonts.length })}
           <span className="ml-2 text-xs text-gray-400 dark:text-slate-500">
-            • Curated Monlam IT & Himalayan Unicode Collection
+            • {t('catalog.collectionHint')}
           </span>
         </div>
 
@@ -65,19 +67,17 @@ export const FontCatalog: React.FC<FontCatalogProps> = ({
           <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center mx-auto text-gray-400 dark:text-slate-500 mb-3">
             <Info className="w-6 h-6" />
           </div>
-          <h3 className="text-base font-semibold text-gray-900 dark:text-slate-100">No typefaces match your filter</h3>
-          <p className="text-sm text-gray-500 dark:text-slate-400 mt-1 max-w-md mx-auto">
-            Try searching for a different keyword like "Uchen", "Cursive", "Drutsa", or reset your search filter.
-          </p>
+          <h3 className="text-base font-semibold text-gray-900 dark:text-slate-100">{t('catalog.noMatchTitle')}</h3>
+          <p className="text-sm text-gray-500 dark:text-slate-400 mt-1 max-w-md mx-auto">{t('catalog.noMatchBody')}</p>
           <button
             onClick={onResetFilters}
             className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition"
           >
-            Reset Filters
+            {t('common.resetFilters')}
           </button>
         </div>
       ) : viewMode === 'sample' ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="w-full min-w-0 grid grid-cols-1 md:grid-cols-2 gap-5">
           {fonts.map((font, index) => (
             <FontSampleCard
               key={font.id}
@@ -85,6 +85,7 @@ export const FontCatalog: React.FC<FontCatalogProps> = ({
               previewText={resolveFontPreviewText(font, activePresetId, presets, previewText)}
               fontSize={fontSize}
               lineHeight={lineHeight}
+              fontWeight={fontWeight}
               posterIndex={index}
               isSelected={isSelected(font.id)}
               onToggleSelect={onToggleSelect}
@@ -97,8 +98,8 @@ export const FontCatalog: React.FC<FontCatalogProps> = ({
         <div
           className={
             viewMode === 'grid'
-              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-              : 'space-y-4'
+              ? 'w-full min-w-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+              : 'w-full min-w-0 space-y-4'
           }
         >
           {fonts.map((font) => (
@@ -109,6 +110,7 @@ export const FontCatalog: React.FC<FontCatalogProps> = ({
               activePresetId={activePresetId}
               fontSize={fontSize}
               lineHeight={lineHeight}
+              fontWeight={fontWeight}
               isSelected={isSelected(font.id)}
               onToggleSelect={onToggleSelect}
               isCompared={isCompared(font.id)}

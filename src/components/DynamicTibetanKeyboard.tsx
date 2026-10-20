@@ -7,6 +7,7 @@ import {
   resolveSpaceChars,
   type KeyboardOsLayout
 } from '../utils/keyboardLayout';
+import { useI18n } from '../i18n/I18nProvider';
 
 export interface DynamicTibetanKeyboardProps {
   keyboardTitle: string;
@@ -190,6 +191,7 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
   onKeyClick,
   expectedChar
 }) => {
+  const { t, locale } = useI18n();
   const space = resolveSpaceChars(keyboardLayout);
   const spaceChar = shiftPressed ? space.shiftChar : space.char;
   const spaceIsTsheg = space.char === '་' || space.char === '༌';
@@ -263,10 +265,14 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
                   : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700'
               }`}
             >
-              {shiftPressed ? 'SHIFT: ON' : hintNeedsShift ? 'SHIFT: NEEDED' : 'SHIFT: OFF'}
+              {shiftPressed
+                ? t('typing.shiftOn')
+                : hintNeedsShift
+                  ? t('typing.shiftNeeded')
+                  : t('typing.shiftOff')}
             </button>
-            <span className="text-xs text-gray-500 dark:text-slate-400 hidden sm:inline">
-              Keys follow the selected OS layout
+            <span className="text-xs text-gray-500 dark:text-slate-400 hidden sm:inline tibetan-text">
+              {t('typing.keysFollowOs')}
             </span>
           </div>
         </div>
@@ -274,7 +280,7 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
         <div className="flex flex-wrap items-center gap-3">
           <label className="flex items-center gap-2 min-w-0">
             <span className="text-[11px] font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wide shrink-0">
-              Keyboard
+              {t('typing.keyboardLabel')}
             </span>
             <select
               value={selectedKeyboardId}
@@ -282,11 +288,11 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
               className="text-xs font-medium bg-white border border-gray-300 rounded-lg px-2 py-1.5 text-gray-900 max-w-[16rem] dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
             >
               {availableKeyboards.length === 0 ? (
-                <option value="">Monlam Bodyig 2025 Keyboard</option>
+                <option value="">{t('typing.fallbackKeyboard')}</option>
               ) : (
                 availableKeyboards.map((k) => (
                   <option key={k.id} value={k.id}>
-                    {k.name}
+                    {locale === 'bo' && k.tibetanName ? k.tibetanName : k.name}
                   </option>
                 ))
               )}
@@ -295,7 +301,7 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
 
           <div className="flex items-center gap-1.5">
             <span className="text-[11px] font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wide">
-              Layout
+              {t('typing.layoutLabel')}
             </span>
             <div className="flex items-center rounded-lg border border-gray-300 p-0.5 bg-white dark:border-slate-600 dark:bg-slate-800/80">
               <button
@@ -308,7 +314,7 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
                 }`}
               >
                 <Monitor className="w-3.5 h-3.5" />
-                Windows Layout
+                {t('typing.layoutWindows')}
               </button>
               <button
                 type="button"
@@ -320,7 +326,7 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
                 }`}
               >
                 <Command className="w-3.5 h-3.5" />
-                Mac Layout
+                {t('typing.layoutMac')}
               </button>
             </div>
           </div>
@@ -334,32 +340,32 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
             {/* Number row + Backspace */}
             <div className="flex gap-1.5 items-stretch">
               {renderCharRow(numberRow)}
-              <ModifierKey label="Backspace" symbol="←" wide="lg" />
+              <ModifierKey label={t('typing.keyBackspace')} symbol="←" wide="lg" />
             </div>
 
             {/* Tab + QWERTY */}
             <div className="flex gap-1.5 items-stretch">
-              <ModifierKey label="Tab" symbol="⇥" wide="md" />
+              <ModifierKey label={t('typing.keyTab')} symbol="⇥" wide="md" />
               {renderCharRow(qwertyRow)}
             </div>
 
             {/* Caps + ASDF + Enter */}
             <div className="flex gap-1.5 items-stretch">
               <ModifierKey
-                label="Caps Lok"
+                label={t('typing.keyCapsLock')}
                 symbol="⇪"
                 wide="lg"
                 active={capsLock}
                 onClick={onToggleCaps}
               />
               {renderCharRow(asdfRow)}
-              <ModifierKey label="Enter" symbol="↵" wide="lg" />
+              <ModifierKey label={t('typing.keyEnter')} symbol="↵" wide="lg" />
             </div>
 
             {/* Shift + ZXCV + Shift */}
             <div className="flex gap-1.5 items-stretch">
               <ModifierKey
-                label="Shift"
+                label={t('typing.keyShift')}
                 symbol="↑"
                 wide="xl"
                 active={shiftPressed || hintNeedsShift}
@@ -367,7 +373,7 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
               />
               {renderCharRow(zxcvRow)}
               <ModifierKey
-                label="Shift"
+                label={t('typing.keyShift')}
                 symbol="↑"
                 wide="xl"
                 active={shiftPressed || hintNeedsShift}
@@ -393,7 +399,7 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
                 }`}
               >
                 <span className="text-sm font-medium text-gray-800 dark:text-slate-100">
-                  Space{' '}
+                  {t('typing.keySpace')}{' '}
                   <span className="tibetan-text font-monlam-ouchan-1">ཚེག་དང་བར་སྟོང་།</span>
                 </span>
               </button>
@@ -420,10 +426,10 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
 
       {expectedChar && hintKey ? (
         <div className="mt-3 text-center text-xs text-gray-500 dark:text-slate-400 flex flex-wrap items-center justify-center gap-2">
-          <span>Next key:</span>
+          <span className="tibetan-text">{t('typing.nextKey')}</span>
           <span className="px-2 py-0.5 rounded bg-sky-100 text-sky-800 font-mono font-bold border border-sky-300 dark:bg-sky-500/20 dark:text-sky-300 dark:border-sky-500/30">
-            {hintKey === ' ' ? 'SPACE' : hintKey.toUpperCase()}
-            {hintNeedsShift ? ' + Shift' : ''}
+            {hintKey === ' ' ? t('typing.nextKeySpace') : hintKey.toUpperCase()}
+            {hintNeedsShift ? t('typing.nextKeyShiftSuffix') : ''}
           </span>
           <span className="tibetan-text font-monlam-ouchan-1 text-sky-800 dark:text-sky-200 text-sm">
             {expectedChar}

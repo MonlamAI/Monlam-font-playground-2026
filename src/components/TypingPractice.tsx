@@ -3,7 +3,10 @@ import { Keyboard, CheckCircle2, Sparkles, Copy, Check, ArrowRight, BookOpen, Ro
 import { TYPING_DRILLS } from '../data/tibetanData';
 import { convertWylieToTibetan } from '../utils/wylieConverter';
 import { MONLAM_FONTS } from '../data/fontsData';
+import { fontAssetLabel } from '../utils/fontDisplay';
 import { DynamicTibetanKeyboard } from './DynamicTibetanKeyboard';
+import { useI18n } from '../i18n/I18nProvider';
+import type { TypingDrill } from '../types/font';
 import { useTypingKeyboard } from '../hooks/useTypingKeyboard';
 import {
   layoutKeyFromCode,
@@ -14,7 +17,14 @@ interface TypingPracticeProps {
   onSendToPlayground: (text: string) => void;
 }
 
+function drillText(d: TypingDrill, field: 'title' | 'hint', t: (key: string) => string): string {
+  const key = `typing.drills.${d.id}.${field}`;
+  const localized = t(key);
+  return localized === key ? d[field] : localized;
+}
+
 export const TypingPractice: React.FC<TypingPracticeProps> = ({ onSendToPlayground }) => {
+  const { t } = useI18n();
   const [activeTab, setActiveTab] = React.useState<'tutor' | 'wylie'>('tutor');
   const [currentDrillIndex, setCurrentDrillIndex] = React.useState(0);
   const [userInput, setUserInput] = React.useState('');
@@ -116,10 +126,8 @@ export const TypingPractice: React.FC<TypingPracticeProps> = ({ onSendToPlaygrou
               <Keyboard className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-slate-100">Tibetan Typography & Typing Tutor</h2>
-              <p className="text-xs text-gray-500 dark:text-slate-400">
-                Master the selected keyboard layout or convert live Wylie transliteration into authentic Unicode.
-              </p>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-slate-100 tibetan-text">{t('typing.title')}</h2>
+              <p className="text-xs text-gray-500 dark:text-slate-400 tibetan-text">{t('typing.subtitle')}</p>
             </div>
           </div>
         </div>
@@ -133,7 +141,7 @@ export const TypingPractice: React.FC<TypingPracticeProps> = ({ onSendToPlaygrou
                 : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100'
             }`}
           >
-            Typing Tutor Drills
+            <span className="tibetan-text">{t('typing.tabTutor')}</span>
           </button>
           <button
             onClick={() => setActiveTab('wylie')}
@@ -143,7 +151,7 @@ export const TypingPractice: React.FC<TypingPracticeProps> = ({ onSendToPlaygrou
                 : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100'
             }`}
           >
-            Live Wylie Converter
+            <span className="tibetan-text">{t('typing.tabWylie')}</span>
           </button>
         </div>
       </div>
@@ -153,14 +161,16 @@ export const TypingPractice: React.FC<TypingPracticeProps> = ({ onSendToPlaygrou
           <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-xs">
             <div className="flex flex-col gap-3 pb-4 border-b border-gray-100 dark:border-slate-800">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <span className="text-xs font-semibold text-gray-500 dark:text-slate-400">Drills:</span>
+                <span className="text-xs font-semibold text-gray-500 dark:text-slate-400 tibetan-text">
+                  {t('typing.drillsLabel')}
+                </span>
                 <div className="flex items-center gap-4 text-xs font-semibold">
                   <div className="flex items-center gap-1.5 text-blue-600">
-                    <span>Speed:</span>
-                    <span className="text-sm font-mono font-bold">{wpm} WPM</span>
+                    <span className="tibetan-text">{t('typing.speed')}</span>
+                    <span className="text-sm font-mono font-bold">{t('typing.wpm', { count: wpm })}</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-emerald-600">
-                    <span>Accuracy:</span>
+                    <span className="tibetan-text">{t('typing.accuracy')}</span>
                     <span className="text-sm font-mono font-bold">{accuracy}%</span>
                   </div>
                 </div>
@@ -173,13 +183,13 @@ export const TypingPractice: React.FC<TypingPracticeProps> = ({ onSendToPlaygrou
                       setCurrentDrillIndex(idx);
                       handleResetDrill();
                     }}
-                    className={`px-2.5 py-1 text-xs rounded-md transition font-medium ${
+                    className={`px-2.5 py-1 text-xs rounded-md transition font-medium tibetan-text ${
                       currentDrillIndex === idx
                         ? 'bg-blue-600 text-white shadow-xs'
                         : 'bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700'
                     }`}
                   >
-                    {idx + 1}. {d.title}
+                    {idx + 1}. {drillText(d, 'title', t)}
                   </button>
                 ))}
               </div>
@@ -187,7 +197,7 @@ export const TypingPractice: React.FC<TypingPracticeProps> = ({ onSendToPlaygrou
 
             <div className="py-6">
               <div className="text-xs font-medium text-gray-500 dark:text-slate-400 mb-2 flex items-center justify-between">
-                <span>Target Tibetan Script:</span>
+                <span className="tibetan-text">{t('typing.targetLabel')}</span>
                 <span className="text-gray-400 dark:text-slate-500 font-mono text-[11px]">{currentDrill.wylieGuide}</span>
               </div>
 
@@ -225,13 +235,13 @@ export const TypingPractice: React.FC<TypingPracticeProps> = ({ onSendToPlaygrou
                   onChange={handleInputChange}
                   onKeyDown={handleMappedKeyDown}
                   disabled={isFinished}
-                  placeholder="Type the Tibetan characters above using your keyboard or click virtual keys below..."
+                  placeholder={t('typing.inputPlaceholder')}
                   className="w-full px-4 py-3 bg-white dark:bg-slate-900 border-2 border-blue-400 dark:border-blue-600 rounded-xl text-xl sm:text-2xl text-gray-900 dark:text-slate-100 tibetan-text font-monlam-ouchan-1 focus:outline-hidden focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition shadow-inner"
                   autoFocus
                 />
                 <button
                   onClick={handleResetDrill}
-                  title="Reset typing drill"
+                  title={t('typing.resetDrill')}
                   className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-300 bg-gray-100 dark:bg-slate-800 rounded-lg transition"
                 >
                   <RotateCcw className="w-4 h-4" />
@@ -240,19 +250,19 @@ export const TypingPractice: React.FC<TypingPracticeProps> = ({ onSendToPlaygrou
 
               <div className="flex items-center justify-between text-xs text-gray-500 dark:text-slate-400">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-semibold text-gray-700 dark:text-slate-300">Tip:</span>
-                  <span>{currentDrill.hint}</span>
+                  <span className="font-semibold text-gray-700 dark:text-slate-300 tibetan-text">{t('typing.tipLabel')}</span>
+                  <span className="tibetan-text">{drillText(currentDrill, 'hint', t)}</span>
                 </div>
                 {isFinished && (
                   <div className="flex items-center gap-2">
                     <span className="text-emerald-600 font-bold flex items-center gap-1">
-                      <CheckCircle2 className="w-4 h-4" /> Completed!
+                      <CheckCircle2 className="w-4 h-4" /> <span className="tibetan-text">{t('typing.completed')}</span>
                     </span>
                     <button
                       onClick={handleNextDrill}
-                      className="px-3 py-1 bg-emerald-600 text-white rounded-md font-semibold hover:bg-emerald-700 transition"
+                      className="px-3 py-1 bg-emerald-600 text-white rounded-md font-semibold hover:bg-emerald-700 transition tibetan-text"
                     >
-                      Next Drill →
+                      {t('typing.nextDrill')}
                     </button>
                   </div>
                 )}
@@ -284,34 +294,41 @@ export const TypingPractice: React.FC<TypingPracticeProps> = ({ onSendToPlaygrou
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-6 bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-xs space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-gray-900 dark:text-slate-100 text-sm">Romanized Wylie Input:</h3>
-              <span className="text-xs text-gray-400 dark:text-slate-500">Standard Extended Wylie (EWTS)</span>
+              <h3 className="font-bold text-gray-900 dark:text-slate-100 text-sm tibetan-text">{t('typing.wylieInputLabel')}</h3>
+              <span className="text-xs text-gray-400 dark:text-slate-500">{t('typing.wylieStandard')}</span>
             </div>
 
             <textarea
               rows={5}
               value={wylieInput}
               onChange={(e) => setWylieInput(e.target.value)}
-              placeholder="Type in Wylie, e.g. 'bod yig', 'om mani padme hum', 'bkra shis bde legs'..."
+              placeholder={t('typing.wyliePlaceholder')}
               className="w-full p-3 font-mono text-sm bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
             />
 
             <div className="space-y-1.5">
-              <span className="text-xs text-gray-500 dark:text-slate-400 font-medium">Quick examples:</span>
+              <span className="text-xs text-gray-500 dark:text-slate-400 font-medium tibetan-text">
+                {t('typing.quickExamples')}
+              </span>
               <div className="flex flex-wrap gap-1.5 text-xs">
-                {[
-                  { label: 'Om Mani Padme Hum', val: 'om ma ni pad me hum' },
-                  { label: 'Tashi Delek', val: 'bkra shis bde legs' },
-                  { label: 'Bod Yig (Tibetan)', val: 'bod yig' },
-                  { label: 'Buddha Dharma Sangha', val: "sangs rgyas chos dge 'dun" },
-                  { label: 'All Sentient Beings', val: 'sems can thams cad bde ba dang ldan par gyur cig' }
-                ].map((sample) => (
+                {(
+                  [
+                    { labelKey: 'typing.samples.omMani', val: 'om ma ni pad me hum' },
+                    { labelKey: 'typing.samples.tashiDelek', val: 'bkra shis bde legs' },
+                    { labelKey: 'typing.samples.bodYig', val: 'bod yig' },
+                    { labelKey: 'typing.samples.buddhaDharma', val: "sangs rgyas chos dge 'dun" },
+                    {
+                      labelKey: 'typing.samples.sentientBeings',
+                      val: 'sems can thams cad bde ba dang ldan par gyur cig'
+                    }
+                  ] as const
+                ).map((sample) => (
                   <button
-                    key={sample.label}
+                    key={sample.labelKey}
                     onClick={() => setWylieInput(sample.val)}
                     className="px-2.5 py-1 bg-gray-50 dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700 rounded-md transition"
                   >
-                    {sample.label}
+                    {t(sample.labelKey)}
                   </button>
                 ))}
               </div>
@@ -320,7 +337,7 @@ export const TypingPractice: React.FC<TypingPracticeProps> = ({ onSendToPlaygrou
             <div className="p-3 bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-800/50 rounded-lg text-xs space-y-2 text-blue-900 dark:text-blue-200">
               <div className="font-semibold flex items-center gap-1">
                 <BookOpen className="w-3.5 h-3.5" />
-                <span>Wylie Quick Guide:</span>
+                <span className="tibetan-text">{t('typing.wylieGuideTitle')}</span>
               </div>
               <div className="grid grid-cols-2 gap-x-2 gap-y-1 font-mono text-[11px]">
                 <div>ka = ཀ | kha = ཁ | ga = ག</div>
@@ -338,7 +355,7 @@ export const TypingPractice: React.FC<TypingPracticeProps> = ({ onSendToPlaygrou
               <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-slate-800 mb-4">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-amber-500 dark:text-amber-400" />
-                  <h3 className="font-bold text-gray-900 dark:text-slate-100 text-sm">Converted Tibetan Unicode:</h3>
+                  <h3 className="font-bold text-gray-900 dark:text-slate-100 text-sm tibetan-text">{t('typing.convertedLabel')}</h3>
                 </div>
 
                 <select
@@ -348,7 +365,7 @@ export const TypingPractice: React.FC<TypingPracticeProps> = ({ onSendToPlaygrou
                 >
                   {MONLAM_FONTS.map((f) => (
                     <option key={f.id} value={f.id}>
-                      {f.name}
+                      {fontAssetLabel(f)}
                     </option>
                   ))}
                 </select>
@@ -358,7 +375,7 @@ export const TypingPractice: React.FC<TypingPracticeProps> = ({ onSendToPlaygrou
                 <div
                   className={`${chosenFont.cssClass} tibetan-text text-3xl sm:text-4xl text-gray-900 dark:text-slate-100 leading-relaxed text-center break-words`}
                 >
-                  {convertedTibetan || '...'}
+                  {convertedTibetan || t('typing.convertedEmpty')}
                 </div>
               </div>
             </div>
@@ -369,14 +386,14 @@ export const TypingPractice: React.FC<TypingPracticeProps> = ({ onSendToPlaygrou
                 className="flex items-center gap-1.5 px-3 py-2 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 rounded-lg text-xs font-semibold transition"
               >
                 {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-                <span>{copied ? 'Copied to Clipboard!' : 'Copy Unicode'}</span>
+                <span className="tibetan-text">{copied ? t('typing.copiedUnicode') : t('typing.copyUnicode')}</span>
               </button>
 
               <button
                 onClick={() => onSendToPlayground(convertedTibetan)}
                 className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs transition"
               >
-                <span>Send to Font Playground</span>
+                <span className="tibetan-text">{t('typing.sendPlayground')}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>

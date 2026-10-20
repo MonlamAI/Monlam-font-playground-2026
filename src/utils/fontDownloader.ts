@@ -109,14 +109,14 @@ export async function downloadSelectedFontsZip(fonts: FontItem[]) {
   </style>
 </head>
 <body>
-  <h1>Monlam Tibetan Fonts Preview (མོན་ལམ་ཡིག་གཟུགས)</h1>
+  <h1>Monlam Tibetan Fonts Preview (སྨོན་ལམ་ཡིག་གཟུགས)</h1>
   <p>Included fonts in this package: ${fonts.map((f) => f.name).join(', ')}</p>
   <hr style="margin: 2rem 0; border: none; border-top: 1px solid #e5e7eb;">
   ${fonts
     .map(
       (f) => `
     <div class="card">
-      <h2>${f.name} (${f.tibetanName})</h2>
+      <h2>${f.tibetanName} (${f.name})</h2>
       <div class="${f.cssClass} sample">ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ། བཀྲ་ཤིས་བདེ་ལེགས་ཕུན་སུམ་ཚོགས།</div>
     </div>`
     )
@@ -131,7 +131,7 @@ Designer: Venerable Geshe Lobsang Monlam / Monlam IT Research Centre
 Website: https://monlamit.com
 
 ## Selected Fonts:
-${fonts.map((f) => `- ${f.name} (${f.tibetanName}) - ${f.category} style`).join('\n')}
+${fonts.map((f) => `- ${f.tibetanName} (${f.name}) - ${f.category} style`).join('\n')}
 
 ## How to Install:
 - **Windows**: Right-click the .ttf files inside the 'fonts/' folder and choose "Install for all users".

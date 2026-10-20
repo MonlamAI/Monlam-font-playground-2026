@@ -63,13 +63,13 @@ export const GlyphModal: React.FC<GlyphModalProps> = ({ font, onClose }) => {
         <div className="p-6 border-b border-gray-100 dark:border-slate-800 flex items-start justify-between bg-gray-50/80 dark:bg-slate-900/80">
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="font-bold text-gray-900 dark:text-slate-100 text-lg">{font.name}</h3>
+              <p className="font-bold text-gray-900 dark:text-slate-100 text-lg tibetan-text">{font.tibetanName}</p>
               <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300">
                 {font.category}
               </span>
             </div>
-            <div className="text-xs text-gray-500 dark:text-slate-400 mt-1 flex items-center gap-2">
-              <span className="tibetan-text font-medium text-gray-700 dark:text-slate-300">{font.tibetanName}</span>
+            <div className="text-xs text-gray-500 dark:text-slate-400 mt-1 flex items-center gap-2 flex-wrap">
+              <span>({font.name})</span>
               <span>•</span>
               <span>By {font.designer}</span>
               <span>•</span>

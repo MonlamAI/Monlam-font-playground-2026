@@ -24,9 +24,15 @@ function contentForConfig(
   return applyExcludedChars(base, config?.excludedChars);
 }
 
+/** Sidebar sample box — same text on every card. */
+export const PRESET_ID_CUSTOM = 'custom';
+/** Special fonts: each card uses that font's configured sampleText. */
+export const PRESET_ID_FONT_SAMPLE = 'font-sample';
+
 /**
  * Resolve the preview sample text for a specific font + active preset.
- * - `custom`: each font's own sampleText
+ * - `custom`: global text from the Sample text box (all cards)
+ * - `font-sample`: each font's own sampleText (special-font mode)
  * - Normal fonts: global preset (optional per-font override/exclusions)
  * - Special fonts: only enabled presets; otherwise first enabled or sampleText
  */
@@ -36,7 +42,10 @@ export function resolveFontPreviewText(
   presets: PresetText[],
   globalPreviewText: string
 ): string {
-  if (activePresetId === 'custom') {
+  if (activePresetId === PRESET_ID_CUSTOM) {
+    return globalPreviewText;
+  }
+  if (activePresetId === PRESET_ID_FONT_SAMPLE) {
     return font.sampleText || globalPreviewText;
   }
 
@@ -61,7 +70,7 @@ export function resolveFontPreviewText(
 }
 
 export function isPresetEnabledForFont(font: FontItem, presetId: string): boolean {
-  if (presetId === 'custom') return true;
+  if (presetId === PRESET_ID_CUSTOM || presetId === PRESET_ID_FONT_SAMPLE) return true;
   const kind = font.fontKind || 'normal';
   const configs = font.presetConfigs || [];
   if (kind !== 'special' || configs.length === 0) return true;

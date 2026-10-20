@@ -2,6 +2,7 @@ import React from 'react';
 import { Bell, Keyboard, Type, X } from 'lucide-react';
 import type { CatalogUpdateDiff } from '../utils/catalogUpdates';
 import { formatUpdateHeadline, formatUpdateSummary } from '../utils/catalogUpdates';
+import { useI18n } from '../i18n/I18nProvider';
 
 const AUTO_COLLAPSE_MS = 5000;
 

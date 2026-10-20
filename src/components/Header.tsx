@@ -13,6 +13,9 @@ import {
 } from 'lucide-react';
 import { FontItem } from '../types/font';
 import { useTheme } from '../hooks/useTheme';
+import { FEATURE_TYPING_QUEST, FEATURE_TYPOGRAPHY_GUIDE } from '../config/features';
+import { useI18n } from '../i18n/I18nProvider';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export type AppTab = 'catalog' | 'compare' | 'typing' | 'quest' | 'guide' | 'install';
 
@@ -32,6 +35,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenFeedback
 }) => {
   const { isDark, toggleTheme } = useTheme();
+  const { t } = useI18n();
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 transition-colors">
@@ -49,21 +53,21 @@ export const Header: React.FC<HeaderProps> = ({
               width={36}
               height={36}
             />
-            <div className="leading-none">
-              <div className="flex items-center gap-1.5 whitespace-nowrap">
-                <span className="font-semibold text-base sm:text-lg tracking-tight text-gray-900 dark:text-slate-100">
-                  Monlam Fonts
-                </span>
-                <span className="px-1.5 py-0.5 text-[10px] sm:text-xs font-medium bg-amber-100 text-amber-900 dark:bg-amber-950/50 dark:text-amber-200 rounded-full border border-amber-200/60 dark:border-amber-800/60">
-                  Playground
-                </span>
-              </div>
+            <div className="leading-none min-w-0">
               <p
-                className="mt-1 text-[11px] text-gray-500 dark:text-slate-400 tibetan-text font-monlam-ouchan-1 whitespace-nowrap"
+                className="tibetan-text font-monlam-ouchan-1 font-semibold text-base sm:text-lg tracking-tight text-gray-900 dark:text-slate-100 whitespace-nowrap"
                 style={{ lineHeight: 1.35, wordBreak: 'normal' }}
               >
-                མོན་ལམ་བོད་ཡིག་གཟུགས་ཀྱི་ཚོད་ལྟའི་སྡིངས་ཆ།
+                {t('site.titleTibetan')}
               </p>
+              <div className="flex items-center gap-1.5 mt-1 whitespace-nowrap">
+                <span className="text-[11px] sm:text-xs font-medium text-gray-500 dark:text-slate-400 tracking-tight">
+                  {t('site.titleEnglish')}
+                </span>
+                <span className="px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-900 dark:bg-amber-950/50 dark:text-amber-200 rounded-full border border-amber-200/60 dark:border-amber-800/60 tibetan-text">
+                  {t('site.badgePlayground')}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -78,7 +82,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <Type className="w-4 h-4" />
-              <span>Typefaces</span>
+              <span>{t('nav.typefaces')}</span>
             </button>
 
             <button
@@ -90,7 +94,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <GitCompare className="w-4 h-4" />
-              <span>Compare</span>
+              <span>{t('nav.compare')}</span>
             </button>
 
             <button
@@ -102,32 +106,36 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <Keyboard className="w-4 h-4" />
-              <span>Typing Practice</span>
+              <span>{t('nav.typing')}</span>
             </button>
 
-            <button
-              onClick={() => setActiveTab('quest')}
-              className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                activeTab === 'quest'
-                  ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 font-semibold'
-                  : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-              }`}
-            >
-              <Gamepad2 className="w-4 h-4" />
-              <span>Typing Quest</span>
-            </button>
+            {FEATURE_TYPING_QUEST ? (
+              <button
+                onClick={() => setActiveTab('quest')}
+                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                  activeTab === 'quest'
+                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 font-semibold'
+                    : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <Gamepad2 className="w-4 h-4" />
+                <span>{t('nav.quest')}</span>
+              </button>
+            ) : null}
 
-            <button
-              onClick={() => setActiveTab('guide')}
-              className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                activeTab === 'guide'
-                  ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 font-semibold'
-                  : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-              }`}
-            >
-              <BookOpen className="w-4 h-4" />
-              <span>Typography Guide</span>
-            </button>
+            {FEATURE_TYPOGRAPHY_GUIDE ? (
+              <button
+                onClick={() => setActiveTab('guide')}
+                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                  activeTab === 'guide'
+                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 font-semibold'
+                    : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <BookOpen className="w-4 h-4" />
+                <span>{t('nav.guide')}</span>
+              </button>
+            ) : null}
 
             <button
               onClick={() => setActiveTab('install')}
@@ -138,7 +146,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <Download className="w-4 h-4" />
-              <span>Download & Install</span>
+              <span>{t('nav.install')}</span>
             </button>
           </nav>
 
@@ -148,7 +156,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={toggleTheme}
-                aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+                aria-label={isDark ? t('theme.toLight') : t('theme.toDark')}
                 className="group relative inline-flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-600 dark:text-slate-300 shadow-sm transition active:scale-95"
               >
                 {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -156,14 +164,14 @@ export const Header: React.FC<HeaderProps> = ({
                   role="tooltip"
                   className="pointer-events-none absolute top-full left-1/2 z-50 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-[11px] font-medium text-white opacity-0 shadow-sm transition-none group-hover:opacity-100 dark:bg-slate-100 dark:text-slate-900"
                 >
-                  {isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+                  {isDark ? t('theme.toLight') : t('theme.toDark')}
                 </span>
               </button>
 
               <button
                 type="button"
                 onClick={onOpenFeedback}
-                aria-label="Send feedback"
+                aria-label={t('nav.feedback')}
                 className="group relative inline-flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-600 dark:text-slate-300 shadow-sm transition active:scale-95"
               >
                 <MessageSquarePlus className="w-4 h-4" />
@@ -171,10 +179,12 @@ export const Header: React.FC<HeaderProps> = ({
                   role="tooltip"
                   className="pointer-events-none absolute top-full left-1/2 z-50 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-[11px] font-medium text-white opacity-0 shadow-sm transition-none group-hover:opacity-100 dark:bg-slate-100 dark:text-slate-900"
                 >
-                  Send feedback
+                  {t('nav.feedback')}
                 </span>
               </button>
             </div>
+
+            <LanguageSwitcher />
 
             {/* Selected Fonts Drawer Button */}
             <button
@@ -182,7 +192,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="relative flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-medium shadow-sm transition active:scale-95"
             >
               <ShoppingBag className="w-4 h-4" />
-              <span className="hidden sm:inline">Cart</span>
+              <span className="hidden sm:inline tibetan-text">{t('cart.label')}</span>
               <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white text-blue-700 text-xs font-bold">
                 {selectedFonts.length}
               </span>
@@ -200,7 +210,7 @@ export const Header: React.FC<HeaderProps> = ({
                 : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
             }`}
           >
-            Typefaces
+            {t('nav.typefaces')}
           </button>
           <button
             onClick={() => setActiveTab('compare')}
@@ -210,7 +220,7 @@ export const Header: React.FC<HeaderProps> = ({
                 : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
             }`}
           >
-            Compare
+            {t('nav.compare')}
           </button>
           <button
             onClick={() => setActiveTab('typing')}
@@ -220,28 +230,32 @@ export const Header: React.FC<HeaderProps> = ({
                 : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
             }`}
           >
-            Typing Tutor
+            {t('nav.typingMobile')}
           </button>
-          <button
-            onClick={() => setActiveTab('quest')}
-            className={`px-3 py-1.5 whitespace-nowrap rounded-md ${
-              activeTab === 'quest'
-                ? 'bg-blue-600 text-white font-medium'
-                : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
-            }`}
-          >
-            Typing Quest
-          </button>
-          <button
-            onClick={() => setActiveTab('guide')}
-            className={`px-3 py-1.5 whitespace-nowrap rounded-md ${
-              activeTab === 'guide'
-                ? 'bg-blue-600 text-white font-medium'
-                : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
-            }`}
-          >
-            Typography Guide
-          </button>
+          {FEATURE_TYPING_QUEST ? (
+            <button
+              onClick={() => setActiveTab('quest')}
+              className={`px-3 py-1.5 whitespace-nowrap rounded-md ${
+                activeTab === 'quest'
+                  ? 'bg-blue-600 text-white font-medium'
+                  : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
+              }`}
+            >
+              {t('nav.quest')}
+            </button>
+          ) : null}
+          {FEATURE_TYPOGRAPHY_GUIDE ? (
+            <button
+              onClick={() => setActiveTab('guide')}
+              className={`px-3 py-1.5 whitespace-nowrap rounded-md ${
+                activeTab === 'guide'
+                  ? 'bg-blue-600 text-white font-medium'
+                  : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
+              }`}
+            >
+              {t('nav.guide')}
+            </button>
+          ) : null}
           <button
             onClick={() => setActiveTab('install')}
             className={`px-3 py-1.5 whitespace-nowrap rounded-md ${
@@ -250,14 +264,14 @@ export const Header: React.FC<HeaderProps> = ({
                 : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
             }`}
           >
-            Download & Install
+            {t('nav.install')}
           </button>
           <button
             onClick={onOpenFeedback}
             className="px-3 py-1.5 whitespace-nowrap rounded-md bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300 inline-flex items-center gap-1"
           >
             <MessageSquarePlus className="w-3.5 h-3.5" />
-            Feedback
+            {t('nav.feedback')}
           </button>
         </div>
       </div>

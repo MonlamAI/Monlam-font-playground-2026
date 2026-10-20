@@ -1,5 +1,5 @@
 import type { Db } from './db';
-import { MONLAM_FONTS, PRESET_TEXTS } from '../src/data/fontsData.ts';
+import { DEFAULT_PRESET_ID, MONLAM_FONTS, PRESET_TEXTS } from '../src/data/fontsData.ts';
 import {
   TIBETAN_KEYBOARD_LAYOUT,
   TIBETAN_KEYBOARD_LAYOUT_WINDOWS,
@@ -48,6 +48,29 @@ export function seedPresetsIfEmpty(db: Db) {
   console.log(`Seeded ${PRESET_TEXTS.length} preview presets`);
 }
 
+/** Keep “The 30 Consonants” first in preset lists (catalog default). */
+export function ensureDefaultPresetOrder(db: Db) {
+  const hasAlphabet = db.prepare('SELECT id FROM presets WHERE id = ?').get(DEFAULT_PRESET_ID);
+  if (!hasAlphabet) return;
+
+  const first = db
+    .prepare(
+      "SELECT id FROM presets WHERE status = 'published' ORDER BY sort_order ASC, title ASC LIMIT 1"
+    )
+    .get() as { id: string } | undefined;
+  if (first?.id === DEFAULT_PRESET_ID) return;
+
+  const rows = db
+    .prepare('SELECT id FROM presets ORDER BY sort_order ASC, title ASC')
+    .all() as { id: string }[];
+  const ids = [DEFAULT_PRESET_ID, ...rows.map((r) => r.id).filter((id) => id !== DEFAULT_PRESET_ID)];
+  const update = db.prepare('UPDATE presets SET sort_order = ? WHERE id = ?');
+  const tx = db.transaction(() => {
+    ids.forEach((id, index) => update.run(index, id));
+  });
+  tx();
+}
+
 /** Wipe and reseed fonts/keyboards from Bodyig 4.0.1 local assets. */
 export function reseedBodyigAssets(db: Db) {
   const now = new Date().toISOString();
@@ -83,7 +106,7 @@ export function reseedBodyigAssets(db: Db) {
     insertKeyboard.run(
       DEFAULT_KEYBOARD_ID,
       'Monlam Bodyig 3.1 Keyboard',
-      'མོན་ལམ་བོད་ཡིག་༣.༡་མཐེབ་གཞོང་།',
+      'སྨོན་ལམ་བོད་ཡིག་༣.༡་མཐེབ་གཞོང་།',
       'Monlam Bodyig 3.1 Windows installer (Monlam_Bodyig_3.1.exe) — MLBYHMLY layout (c=ཀ, j=་ tsheg, Space=space).',
       'Monlam Bodyig QWERTY',
       'Tibetan',
@@ -100,7 +123,7 @@ export function reseedBodyigAssets(db: Db) {
     insertKeyboard.run(
       KEYBOARD_2025_ID,
       'Monlam Bodyig 2025 Keyboard',
-      'མོན་ལམ་བོད་ཡིག་མཐེབ་གཞོང་།',
+      'སྨོན་ལམ་བོད་ཡིག་མཐེབ་གཞོང་།',
       'Official Mac keyboard layout bundle from Monlam Bodyig 4.0.1 (Monlam bodyig 2025.bundle).',
       'Monlam Bodyig QWERTY',
       'Tibetan',
@@ -161,6 +184,7 @@ export function reseedBodyigAssets(db: Db) {
 
 export function seedIfEmpty(db: Db) {
   seedPresetsIfEmpty(db);
+  ensureDefaultPresetOrder(db);
   const fontCount = db.prepare('SELECT COUNT(*) as c FROM fonts').get() as { c: number };
   if (fontCount.c > 0) return;
   reseedBodyigAssets(db);

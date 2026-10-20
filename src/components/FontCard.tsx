@@ -2,6 +2,8 @@ import React from 'react';
 import { Download, GitCompare, Eye, Check, Plus, ExternalLink } from 'lucide-react';
 import { FontItem } from '../types/font';
 import { downloadSingleFont } from '../utils/fontDownloader';
+import { useI18n } from '../i18n/I18nProvider';
+import { fontCardTitlePair, fontCategoryLabel } from '../utils/fontDisplay';
 
 interface FontCardProps {
   font: FontItem;
@@ -9,6 +11,7 @@ interface FontCardProps {
   activePresetId?: string;
   fontSize: number;
   lineHeight: number;
+  fontWeight: number;
   isSelected: boolean;
   onToggleSelect: (font: FontItem) => void;
   isCompared: boolean;
@@ -23,6 +26,7 @@ export const FontCard: React.FC<FontCardProps> = ({
   activePresetId,
   fontSize,
   lineHeight,
+  fontWeight,
   isSelected,
   onToggleSelect,
   isCompared,
@@ -30,6 +34,8 @@ export const FontCard: React.FC<FontCardProps> = ({
   onOpenGlyphs,
   centerPreview = false
 }) => {
+  const { t, locale } = useI18n();
+  const titles = fontCardTitlePair(font, locale);
   const [localText, setLocalText] = React.useState<string | null>(null);
   const [copied, setCopied] = React.useState(false);
 
@@ -50,38 +56,51 @@ export const FontCard: React.FC<FontCardProps> = ({
     setTimeout(() => setCopied(false), 1500);
   };
 
+  const footerActionBtn =
+    'inline-flex h-8 shrink-0 items-center justify-center gap-1 rounded-md font-medium transition px-2 min-w-0';
+
   return (
     <div
-      className={`font-card group relative bg-white dark:bg-slate-900 rounded-xl border transition-all duration-200 flex flex-col justify-between overflow-hidden ${
+      className={`font-card group relative w-full min-w-0 bg-white dark:bg-slate-900 rounded-xl border transition-all duration-200 flex flex-col justify-between overflow-hidden ${
         isSelected
           ? 'border-blue-500 ring-2 ring-blue-500/20 shadow-md'
           : 'border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600 shadow-xs hover:shadow-md'
       }`}
     >
       {/* Top Header */}
-      <div className="p-4 sm:p-5 border-b border-gray-100 dark:border-slate-800 flex items-start justify-between gap-3 bg-gray-50/50 dark:bg-slate-900/50">
-        <div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="font-semibold text-gray-900 dark:text-slate-100 text-base tracking-tight hover:text-blue-600 dark:hover:text-blue-400 transition">
-              {font.name}
+      <div className="p-4 sm:p-5 border-b border-gray-100 dark:border-slate-800 flex items-start justify-between gap-3 bg-gray-50/50 dark:bg-slate-900/50 min-h-[4.75rem]">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 min-w-0 flex-nowrap">
+            <h3
+              className={`font-semibold text-gray-900 dark:text-slate-100 text-base tracking-tight hover:text-blue-600 dark:hover:text-blue-400 transition truncate min-w-0 ${
+                titles.primaryIsTibetan ? 'tibetan-text' : ''
+              }`}
+            >
+              {titles.primary}
             </h3>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 font-medium border border-blue-200/50 dark:border-blue-800">
-              {font.category}
+            <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 font-medium border border-blue-200/50 dark:border-blue-800 shrink-0 whitespace-nowrap">
+              {fontCategoryLabel(font.category, t)}
             </span>
             {font.fontKind === 'special' && (
-              <span className="text-xs px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 font-medium border border-amber-200/50 dark:border-amber-800">
-                Special
+              <span className="text-xs px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 font-medium border border-amber-200/50 dark:border-amber-800 shrink-0 whitespace-nowrap">
+                {t('common.special')}
               </span>
             )}
           </div>
 
-          <div className="flex items-center gap-2 mt-1">
-            <span className="text-sm text-gray-600 dark:text-slate-400 tibetan-text font-medium">
-              {font.tibetanName}
+          <div className="flex items-center gap-2 mt-1 min-w-0 flex-nowrap overflow-hidden">
+            <span
+              className={`text-sm text-gray-600 dark:text-slate-400 truncate min-w-0 ${
+                !titles.primaryIsTibetan ? 'tibetan-text' : ''
+              }`}
+            >
+              {titles.secondary}
             </span>
-            <span className="text-gray-300 dark:text-slate-600">•</span>
-            <span className="text-xs text-gray-500 dark:text-slate-400">
-              {font.stylesCount} {font.stylesCount === 1 ? 'style' : 'styles'}
+            <span className="text-gray-300 dark:text-slate-600 shrink-0">•</span>
+            <span className="text-xs text-gray-500 dark:text-slate-400 shrink-0 whitespace-nowrap">
+              {t(font.stylesCount === 1 ? 'common.styles_one' : 'common.styles_other', {
+                count: font.stylesCount
+              })}
             </span>
           </div>
         </div>
@@ -89,7 +108,7 @@ export const FontCard: React.FC<FontCardProps> = ({
         {/* Selection Checkbox */}
         <button
           onClick={() => onToggleSelect(font)}
-          title={isSelected ? 'Remove from download bag' : 'Add to download bag'}
+          title={isSelected ? t('catalog.removeFromBag') : t('catalog.addToBag')}
           className={`flex items-center justify-center w-8 h-8 rounded-lg border transition ${
             isSelected
               ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
@@ -109,6 +128,7 @@ export const FontCard: React.FC<FontCardProps> = ({
           style={{
             fontSize: `${fontSize}px`,
             lineHeight: lineHeight,
+            fontWeight,
             ...(font.fileUrl
               ? { fontFamily: `'${font.name}', 'Noto Serif Tibetan', 'Jomolhari', serif` }
               : {})
@@ -122,44 +142,46 @@ export const FontCard: React.FC<FontCardProps> = ({
       </div>
 
       {/* Card Footer Toolbar */}
-      <div className="px-4 py-3 bg-gray-50/80 dark:bg-slate-800/50 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between gap-2 text-xs">
-        <div className="flex items-center gap-1.5">
-          {/* Compare Button */}
+      <div className="px-4 py-3 bg-gray-50/80 dark:bg-slate-800/50 border-t border-gray-100 dark:border-slate-800 flex flex-nowrap items-center justify-between gap-2 text-xs min-h-[3.25rem]">
+        <div className="flex flex-nowrap items-center gap-1.5 shrink min-w-0">
           <button
+            type="button"
             onClick={() => onToggleCompare(font)}
-            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-md font-medium transition ${
+            title={isCompared ? t('catalog.removeCompare') : t('catalog.addCompare')}
+            aria-label={isCompared ? t('catalog.removeCompare') : t('catalog.addCompare')}
+            className={`${footerActionBtn} w-[5.75rem] ${
               isCompared
                 ? 'bg-indigo-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700'
             }`}
           >
-            <GitCompare className="w-3.5 h-3.5" />
-            <span>{isCompared ? 'Comparing' : 'Compare'}</span>
+            <GitCompare className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">{t('catalog.cardActionCompare')}</span>
           </button>
 
-          {/* Glyphs inspection */}
           <button
+            type="button"
             onClick={() => onOpenGlyphs(font)}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-white dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700 transition font-medium"
-            title="Inspect full glyph set, Unicode codes, and metrics"
+            title={t('catalog.openGlyphs')}
+            aria-label={t('catalog.openGlyphs')}
+            className={`${footerActionBtn} w-[5.75rem] bg-white dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700`}
           >
-            <Eye className="w-3.5 h-3.5" />
-            <span>Glyphs</span>
+            <Eye className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">{t('catalog.cardActionGlyphs')}</span>
           </button>
         </div>
 
-        {/* Download Font Asset */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleDownload}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 hover:border-blue-300 dark:hover:border-blue-700 font-medium transition"
-            title={`Download ${font.filename} (${font.fileSize})`}
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Download</span>
-            <span className="text-[10px] opacity-75 font-mono">.ttf</span>
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={handleDownload}
+          title={`${t('catalog.cardActionDownload')} ${font.filename} (${font.fileSize})`}
+          aria-label={`${t('catalog.cardActionDownload')} ${font.filename}`}
+          className={`${footerActionBtn} w-[8rem] bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 hover:border-blue-300 dark:hover:border-blue-700`}
+        >
+          <Download className="w-3.5 h-3.5 shrink-0" />
+          <span className="truncate">{t('catalog.cardActionDownload')}</span>
+          <span className="text-[10px] opacity-75 font-mono shrink-0">.ttf</span>
+        </button>
       </div>
     </div>
   );

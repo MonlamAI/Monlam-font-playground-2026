@@ -140,8 +140,8 @@ export const BattleAiMode: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 }`}
               >
                 <div className="text-3xl mb-2">{bot.avatar}</div>
-                <div className="font-bold text-gray-900 dark:text-white text-sm">{bot.name}</div>
-                <div className="text-xs tibetan-text font-monlam-ouchan-1 text-blue-600 dark:text-blue-400">{bot.tibetanName}</div>
+                <div className="text-sm tibetan-text font-monlam-ouchan-1 font-bold text-gray-900 dark:text-white">{bot.tibetanName}</div>
+                <div className="text-[11px] font-medium text-gray-500 dark:text-slate-400">{bot.name}</div>
                 <div className="text-xs text-gray-500 dark:text-slate-400 mt-2 font-mono">{bot.wpm} WPM Pace</div>
                 <p className="text-[11px] text-gray-400 dark:text-slate-500 mt-1">{bot.description}</p>
               </div>

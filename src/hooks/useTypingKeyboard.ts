@@ -7,6 +7,7 @@ import {
   type KeyboardOsLayout
 } from '../utils/keyboardLayout';
 import type { KeyMap } from '../data/tibetanData';
+import { useI18n } from '../i18n/I18nProvider';
 
 /** Default on-screen keyboard: Monlam Bodyig 2025. */
 export const DEFAULT_KEYBOARD_ID = 'monlam-bodyig-2025';
@@ -34,6 +35,7 @@ export interface UseTypingKeyboardResult {
 
 /** Shared CMS keyboard + OS layout state (synced via localStorage with Typing Practice). */
 export function useTypingKeyboard(): UseTypingKeyboardResult {
+  const { locale, t } = useI18n();
   const [availableKeyboards, setAvailableKeyboards] = React.useState<KeyboardAsset[]>([]);
   const [selectedKeyboardId, setSelectedKeyboardId] = React.useState('');
   const [osLayout, setOsLayout] = React.useState<KeyboardOsLayout>(() => {
@@ -48,7 +50,10 @@ export function useTypingKeyboard(): UseTypingKeyboardResult {
 
   const practiceKeyboard =
     availableKeyboards.find((k) => k.id === selectedKeyboardId) || availableKeyboards[0] || null;
-  const keyboardTitle = practiceKeyboard?.name || 'Monlam Bodyig 2025 Keyboard';
+  const keyboardTitle =
+    locale === 'bo' && practiceKeyboard?.tibetanName
+      ? practiceKeyboard.tibetanName
+      : practiceKeyboard?.name || t('typing.fallbackKeyboard');
   const keyboardLayout = resolveKeyboardLayout(practiceKeyboard, osLayout);
 
   React.useEffect(() => {
