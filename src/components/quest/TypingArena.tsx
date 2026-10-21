@@ -256,7 +256,7 @@ export const TypingArena: React.FC<TypingArenaProps> = ({
                 {level.name}
               </h2>
             </div>
-            <p className="text-[11px] text-gray-500 dark:text-slate-400 tibetan-text font-monlam-ouchan-1">
+            <p className="text-[11px] text-gray-500 dark:text-slate-400 tibetan-text font-app">
               {level.tibetanName}
             </p>
           </div>

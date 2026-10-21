@@ -147,7 +147,7 @@ export const StackPuzzleMode: React.FC<{ onBack: () => void }> = ({ onBack }) =>
         {/* Giant Stack Display */}
         <div className="text-center py-6">
           <div className="inline-block p-6 rounded-3xl bg-white dark:bg-slate-900/80 border border-blue-200 dark:border-blue-500/30 shadow-xl">
-            <span className="tibetan-text font-monlam-ouchan-1 text-7xl sm:text-8xl text-blue-600 dark:text-blue-300 font-bold">
+            <span className="tibetan-text font-app text-7xl sm:text-8xl text-blue-600 dark:text-blue-300 font-bold">
               {currentPuzzle.stack}
             </span>
           </div>
@@ -211,7 +211,7 @@ export const StackPuzzleMode: React.FC<{ onBack: () => void }> = ({ onBack }) =>
                 value={typedInput}
                 onChange={e => handleInputChange(e.target.value)}
                 placeholder="Type this stack here..."
-                className="w-full px-5 py-3 rounded-2xl bg-white dark:bg-slate-900 border border-blue-300 dark:border-blue-500/50 text-gray-900 dark:text-white tibetan-text font-monlam-ouchan-1 text-xl text-center focus:outline-none focus:ring-2 focus:ring-amber-400"
+                className="w-full px-5 py-3 rounded-2xl bg-white dark:bg-slate-900 border border-blue-300 dark:border-blue-500/50 text-gray-900 dark:text-white tibetan-text font-app text-xl text-center focus:outline-none focus:ring-2 focus:ring-amber-400"
                 autoFocus
               />
               <p className="text-[11px] text-gray-400 dark:text-slate-500 mt-2">

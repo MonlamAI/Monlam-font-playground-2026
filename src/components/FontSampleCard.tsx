@@ -189,7 +189,7 @@ export const FontSampleCard: React.FC<FontSampleCardProps> = ({
               ? { fontFamily: `'${font.name}', 'Noto Serif Tibetan', 'Jomolhari', serif` }
               : {})
           }}
-          className={`${font.cssClass} tibetan-text ${theme.text} break-words w-full select-text text-center`}
+          className={`${font.cssClass} tibetan-text ${theme.text} break-words whitespace-pre-line w-full select-text text-center`}
         >
           {previewText}
         </p>

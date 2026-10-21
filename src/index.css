@@ -2,13 +2,46 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@font-face {
+  font-family: "Monlam TB Slim";
+  src: url("/fonts/MonlamTBslim.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   :root {
+    --font-app: "Monlam TB Slim", "Noto Sans Tibetan", ui-sans-serif, system-ui, sans-serif;
     --tibetan-line-height: 1.85;
+    --app-line-height: 1.5;
+  }
+
+  html[data-locale="bo"] {
+    --tibetan-line-height: 2;
+    --app-line-height: 2;
+  }
+
+  html[data-locale="en"] {
+    --tibetan-line-height: 1.85;
+    --app-line-height: 1.5;
   }
 
   html {
     color-scheme: light;
+  }
+
+  body {
+    font-family: var(--font-app);
+    line-height: var(--app-line-height);
+  }
+
+  button,
+  input,
+  textarea,
+  select,
+  label {
+    font-family: inherit;
   }
 
   html.dark {
@@ -33,6 +66,11 @@
   }
 }
 
+/* App UI Tibetan / mixed copy (catalog previews use per-font classes instead). */
+.font-app {
+  font-family: var(--font-app);
+}
+
 /* Tibetan OpenType Typography Enhancement */
 .tibetan-text {
   text-rendering: optimizeLegibility;
@@ -42,6 +80,27 @@
   font-variant-ligatures: contextual common-ligatures;
   line-height: var(--tibetan-line-height);
   word-break: break-all;
+}
+
+/* Catalog preview: per-typeface families (override app UI font on the same node). */
+.font-monlam-ouchan-1,
+.font-monlam-ouchan-2,
+.font-monlam-ouchan-3,
+.font-monlam-ouchan-4,
+.font-monlam-ouchan-5,
+.font-monlam-lakdi-ouchen,
+.font-monlam-chouk,
+.font-monlam-chouk-matik,
+.font-monlam-tsikmachok,
+.font-monlam-dutsa-1,
+.font-monlam-dutsa-2,
+.font-monlam-paytsik,
+.font-monlam-tiktong,
+.font-monlam-tikrang,
+.font-monlam-sans,
+.font-monlam-lanza,
+.font-monlam-yigchung {
+  line-height: inherit;
 }
 
 /* Specific Font Families — Monlam Bodyig 4.0.1 */

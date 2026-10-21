@@ -2,11 +2,11 @@
   "site": {
     "titleEnglish": "སྨོན་ལམ་ཡིག་གཟུགས",
     "badgePlayground": "ཚོད་ལྟའི་སྡིངས་ཆ།",
-    "titleTibetan": "སྨོན་ལམ་བོད་ཡིག་གཟུགས་ཀྱི་ཚོད་ལྟའི་སྡིངས་ཆ།"
+    "titleTibetan": "སྨོན་ལམ་བོད་ཡིག་དྲ་ཚིགས།"
   },
   "nav": {
     "typefaces": "ཡིག་གཟུགས།",
-    "compare": "བསྡུར་བ།",
+    "compare": "གཤིབ་བསྡུར།",
     "typing": "འབྲི་སྦྱོང་།",
     "typingMobile": "འབྲི་སྦྱོང་།",
     "quest": "འབྲི་རྩེད་མོ།",
@@ -26,7 +26,7 @@
     "toDark": "མུན་པའི་བཀོད་པར་བརྗེ་བ།"
   },
   "cart": {
-    "label": "ཉོ་ཁུར།",
+    "label": "བསྡུ་ཉར།",
     "drawerTitle": "བདམས་པའི་ཡིག་གཟུགས་ཡིག་ཆ།",
     "chosenCount_one": "ཡིག་གཟུགས {{count}} བདམས་ཟིན།",
     "chosenCount_other": "ཡིག་གཟུགས {{count}} བདམས་ཟིན།",
@@ -50,11 +50,11 @@
     "download": "ཕབ་ལེན",
     "downloadTtf": ".ttf ཕབ་ལེན།",
     "comparing": "བསྡུར་བཞིན་པ།",
-    "compare": "བསྡུར་བ།",
+    "compare": "གཤིབ་བསྡུར།",
     "glyphs": "ཡི་གེའི་རེའུ་མིག",
-    "special": "ཁྱད་པར་ཅན།",
-    "styles_one": "ཉམས་{{count}}",
-    "styles_other": "ཉམས་{{count}}",
+    "special": "དམིགས་བསལ།",
+    "styles_one": "ཉམས་།{{count}}",
+    "styles_other": "ཉམས་།{{count}}",
     "resetFilters": "ཚགས་ཆ་སླར་གསོ།",
     "cancel": "འདོར་བ།",
     "close": "ཁ་བསྡམས།",
@@ -85,7 +85,7 @@
     "fontSampleHint": "ཁྱད་པར་ཅན་གཡིག་གཟུགས་དཔེ་མཚོན",
     "scriptStyle": "བྲིས་རྒྱུད",
     "fontKindNormal": "སྤྱིར་བཏང་།",
-    "fontKindSpecial": "ཁྱད་པར་ཅན།",
+    "fontKindSpecial": "དམིགས་བསལ།",
     "fontKindAll": "ཚང་མ",
     "reset": "ཚགས་ཆ་སླར་གསོ།",
     "resetAll": "ཚང་མ་སླར་ གསོ་།",
@@ -105,13 +105,13 @@
     "viewSample": "ཡིག་གཟུགས་དཔེ་མཚོན",
     "presetCustomSuffix": " · རང་བཞིན",
     "categoryAll": "ཚང་མ",
-    "categoryUchen": "དབུ་ཅན",
+    "categoryUchen": "དབུ་ཅན།",
     "categoryUme": "འཁྱུག་ཡིག",
     "categoryDrutsa": "འབྲུ་ཚ",
     "categoryTsugring": "ཚུགས་རིང",
     "categoryPetsug": "དཔེ་ཚུགས",
     "categoryModern": "མགོ་མེད",
-    "categoryStandard": "ཚད་ལྡན"
+    "categoryStandard": "ཚད་ལྡན།"
   },
   "compare": {
     "title": "ཡིག་གཟུགས གཡས་གཡོན་བསྡུར་བ།",
@@ -152,7 +152,7 @@
     "metricValueChiseled": "འབྲུ་ཚ"
   },
   "catalog": {
-    "searchPlaceholder": "ཡིག་གཟུགས · བྲིས རྒྱུད · སྔོན་བཞག …",
+    "searchPlaceholder": "འཚོལ་ཞིབ།",
     "typefacesFound": "ཡིག་གཟུགས {{count}} ཐོབ་ཐང",
     "collectionHint": "Monlam IT · Himalayan Unicode · ཡིག་གཟུགས",
     "tipRealtime": "ཡིག་གཟུགས་ཀྱི་བྱང་བུའི སྔོན་ལྟ་ཡིག ལ་བྲི་རོགས།",
@@ -165,7 +165,7 @@
     "removeCompare": "བསྡུར་བ། སུབ་པ།",
     "copySample": "དཔེ་མཚོན་ཡིག འདྲ་བཤུས།",
     "openGlyphs": "ཡི་གེའི་རེའུ་མིག",
-    "cardActionCompare": "བསྡུར་བ",
+    "cardActionCompare": "གཤིབ་བསྡུར།",
     "cardActionGlyphs": "ཡི་གེ",
     "cardActionDownload": "ཕབ་ལེན"
   },

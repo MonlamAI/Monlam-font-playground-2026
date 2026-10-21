@@ -55,19 +55,11 @@ export const Header: React.FC<HeaderProps> = ({
             />
             <div className="leading-none min-w-0">
               <p
-                className="tibetan-text font-monlam-ouchan-1 font-semibold text-base sm:text-lg tracking-tight text-gray-900 dark:text-slate-100 whitespace-nowrap"
+                className="tibetan-text font-app font-semibold text-base sm:text-lg tracking-tight text-gray-900 dark:text-slate-100 whitespace-nowrap"
                 style={{ lineHeight: 1.35, wordBreak: 'normal' }}
               >
                 {t('site.titleTibetan')}
               </p>
-              <div className="flex items-center gap-1.5 mt-1 whitespace-nowrap">
-                <span className="text-[11px] sm:text-xs font-medium text-gray-500 dark:text-slate-400 tracking-tight">
-                  {t('site.titleEnglish')}
-                </span>
-                <span className="px-1.5 py-0.5 text-[10px] font-medium bg-amber-100 text-amber-900 dark:bg-amber-950/50 dark:text-amber-200 rounded-full border border-amber-200/60 dark:border-amber-800/60 tibetan-text">
-                  {t('site.badgePlayground')}
-                </span>
-              </div>
             </div>
           </div>
 

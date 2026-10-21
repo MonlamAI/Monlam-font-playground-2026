@@ -1,5 +1,5 @@
 import React from 'react';
-import { Languages } from 'lucide-react';
+import { Globe } from 'lucide-react';
 import { useI18n } from '../i18n/I18nProvider';
 import type { AppLocale } from '../i18n/localeStorage';
 
@@ -43,7 +43,7 @@ export const LanguageSwitcher: React.FC = () => {
         {t('lang.en')}
       </button>
       <span className="sr-only">{t('lang.label')}</span>
-      <Languages className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500 mx-1 hidden sm:block" aria-hidden />
+      <Globe className="w-3.5 h-3.5 text-gray-400 dark:text-slate-500 mx-1 hidden sm:block" aria-hidden />
     </div>
   );
 };

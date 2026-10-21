@@ -17,3 +17,4 @@ server/uploads/**
 !server/uploads/feedback/.gitkeep
 public/fonts/**
 !public/fonts/.gitkeep
+!public/fonts/MonlamTBslim.woff2

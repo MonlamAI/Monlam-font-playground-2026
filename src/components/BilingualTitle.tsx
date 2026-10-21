@@ -3,9 +3,9 @@ import React from 'react';
 type BilingualSize = 'sm' | 'md' | 'lg';
 
 const tibetanPrimary: Record<BilingualSize, string> = {
-  sm: 'tibetan-text font-monlam-ouchan-1 font-semibold text-sm text-gray-900 dark:text-slate-100 leading-snug',
-  md: 'tibetan-text font-monlam-ouchan-1 font-semibold text-base sm:text-lg text-gray-900 dark:text-slate-100 leading-snug',
-  lg: 'tibetan-text font-monlam-ouchan-1 font-semibold text-xl sm:text-2xl text-gray-900 dark:text-slate-100 leading-snug'
+  sm: 'tibetan-text font-app font-semibold text-sm text-gray-900 dark:text-slate-100',
+  md: 'tibetan-text font-app font-semibold text-base sm:text-lg text-gray-900 dark:text-slate-100',
+  lg: 'tibetan-text font-app font-semibold text-xl sm:text-2xl text-gray-900 dark:text-slate-100'
 };
 
 const englishSecondary: Record<BilingualSize, string> = {

@@ -1,7 +1,7 @@
 /** English UI copy (secondary language). Keys mirror `bo.ts`. */
 const en = {
   site: {
-    titleTibetan: 'སྨོན་ལམ་བོད་ཡིག་གཟུགས་ཀྱི་ཚོད་ལྟའི་སྡིངས་ཆ།',
+    titleTibetan: 'སྨོན་ལམ་བོད་ཡིག་དྲ་ཚིགས།',
     titleEnglish: 'Monlam Fonts',
     badgePlayground: 'Playground'
   },

@@ -63,7 +63,7 @@ export const LevelCompleteModal: React.FC<LevelCompleteModalProps> = ({
           <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
             {isSuccess ? (level.isBoss ? 'Guardian Defeated!' : 'Level Cleared!') : 'Keep Practicing!'}
           </h2>
-          <p className="text-blue-600 dark:text-blue-400 tibetan-text font-monlam-ouchan-1 text-lg mt-1">{level.tibetanName}</p>
+          <p className="text-blue-600 dark:text-blue-400 tibetan-text font-app text-lg mt-1">{level.tibetanName}</p>
         </div>
 
         {/* Three-Star Rating Display */}

@@ -101,7 +101,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
               </span>
               <span className="text-xs text-gray-500 dark:text-slate-400">Total XP: <strong className="text-gray-900 dark:text-white">{stats.xp.toLocaleString()}</strong></span>
             </div>
-            <p className="tibetan-text font-monlam-ouchan-1 text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mt-1">
+            <p className="tibetan-text font-app text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mt-1">
               {currentRank.tibetanTitle}
             </p>
             <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-slate-400 mt-0.5">
@@ -195,7 +195,7 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({
                   {ach.icon}
                 </div>
                 <div>
-                  <div className="tibetan-text font-monlam-ouchan-1 font-bold text-xs text-gray-900 dark:text-white">{ach.tibetanTitle}</div>
+                  <div className="tibetan-text font-app font-bold text-xs text-gray-900 dark:text-white">{ach.tibetanTitle}</div>
                   <div className="text-[11px] font-medium text-gray-500 dark:text-slate-400">{ach.title}</div>
                   <p className="text-[11px] text-gray-500 dark:text-slate-400 mt-1 leading-snug">
                     {ach.description}

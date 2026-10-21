@@ -92,7 +92,7 @@ export const LearnCurriculum: React.FC<LearnCurriculumProps> = ({
               ].map((group, idx) => (
                 <div key={idx} className="p-4 rounded-2xl bg-white dark:bg-slate-950/80 border border-gray-200 dark:border-slate-800/80 space-y-2">
                   <div className="text-[10px] uppercase font-bold text-gray-400 dark:text-slate-500">{group.row}</div>
-                  <div className="tibetan-text font-monlam-ouchan-1 text-2xl text-blue-600 dark:text-blue-300 font-bold">{group.letters}</div>
+                  <div className="tibetan-text font-app text-2xl text-blue-600 dark:text-blue-300 font-bold">{group.letters}</div>
                   <div className="text-[11px] text-gray-500 dark:text-slate-400 font-mono">{group.wylie}</div>
                   <button
                     onClick={() => onLaunchLevel(group.lvl)}
@@ -124,7 +124,7 @@ export const LearnCurriculum: React.FC<LearnCurriculumProps> = ({
                 { name: 'Naro (ན་རོ)', symbol: 'ོ', example: 'ཀོ (Ko)', sound: 'o as in "home"', wylie: 'o', lvl: 14 },
               ].map((v, idx) => (
                 <div key={idx} className="p-5 rounded-2xl bg-white dark:bg-slate-950/80 border border-gray-200 dark:border-slate-800 text-center space-y-2">
-                  <div className="tibetan-text font-monlam-ouchan-1 text-4xl text-blue-600 dark:text-blue-300 font-bold">{v.example}</div>
+                  <div className="tibetan-text font-app text-4xl text-blue-600 dark:text-blue-300 font-bold">{v.example}</div>
                   <div className="font-bold text-gray-900 dark:text-white text-xs">{v.name}</div>
                   <div className="text-[11px] text-gray-500 dark:text-slate-400">{v.sound}</div>
                   <div className="text-[10px] text-gray-400 dark:text-slate-500 font-mono">Wylie: {v.wylie}</div>
@@ -153,7 +153,7 @@ export const LearnCurriculum: React.FC<LearnCurriculumProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
               <div className="p-5 rounded-2xl bg-white dark:bg-slate-950/80 border border-gray-200 dark:border-slate-800 space-y-2">
                 <div className="text-xs font-bold text-cyan-400">Superscripts (མགོ་ཅན)</div>
-                <div className="tibetan-text font-monlam-ouchan-1 text-2xl text-blue-600 dark:text-blue-300">རྐ ལྐ སྐ</div>
+                <div className="tibetan-text font-app text-2xl text-blue-600 dark:text-blue-300">རྐ ལྐ སྐ</div>
                 <p className="text-[11px] text-gray-500 dark:text-slate-400">
                   Letters ར (Ra), ལ (La), and ས (Sa) can sit as the crown above root letters.
                 </p>
@@ -167,7 +167,7 @@ export const LearnCurriculum: React.FC<LearnCurriculumProps> = ({
 
               <div className="p-5 rounded-2xl bg-white dark:bg-slate-950/80 border border-gray-200 dark:border-slate-800 space-y-2">
                 <div className="text-xs font-bold text-rose-400">Subjoined (འདོགས་ཅན)</div>
-                <div className="tibetan-text font-monlam-ouchan-1 text-2xl text-blue-600 dark:text-blue-300">ཀྱ ཀྲ ཀླ ཀྭ</div>
+                <div className="tibetan-text font-app text-2xl text-blue-600 dark:text-blue-300">ཀྱ ཀྲ ཀླ ཀྭ</div>
                 <p className="text-[11px] text-gray-500 dark:text-slate-400">
                   Ya-tag (ྱ), Ra-tag (ྲ), La-tag (ླ), and Wa-zur (ྭ) attach below.
                 </p>
@@ -181,7 +181,7 @@ export const LearnCurriculum: React.FC<LearnCurriculumProps> = ({
 
               <div className="p-5 rounded-2xl bg-white dark:bg-slate-950/80 border border-gray-200 dark:border-slate-800 space-y-2">
                 <div className="text-xs font-bold text-blue-600 dark:text-blue-400">Complex Conjuncts</div>
-                <div className="tibetan-text font-monlam-ouchan-1 text-2xl text-blue-600 dark:text-blue-300">བསྒྲ སྤྲ རྒྱ</div>
+                <div className="tibetan-text font-app text-2xl text-blue-600 dark:text-blue-300">བསྒྲ སྤྲ རྒྱ</div>
                 <p className="text-[11px] text-gray-500 dark:text-slate-400">
                   Multiple layers combining prefixes, heads, roots, subjoined forms, and suffixes.
                 </p>
@@ -204,19 +204,19 @@ export const LearnCurriculum: React.FC<LearnCurriculumProps> = ({
             <h3 className="text-lg font-extrabold text-gray-900 dark:text-white">Tibetan Punctuation Marks</h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
               <div className="p-4 rounded-2xl bg-white dark:bg-slate-950/80 border border-gray-200 dark:border-slate-800 space-y-1">
-                <span className="tibetan-text font-monlam-ouchan-1 text-3xl text-blue-600 dark:text-blue-300">་</span>
+                <span className="tibetan-text font-app text-3xl text-blue-600 dark:text-blue-300">་</span>
                 <div className="font-bold text-gray-900 dark:text-white text-xs">Tsek (ཚེག)</div>
                 <div className="text-[11px] text-gray-500 dark:text-slate-400">The sacred dot dividing each syllable. Typed with SPACE.</div>
               </div>
 
               <div className="p-4 rounded-2xl bg-white dark:bg-slate-950/80 border border-gray-200 dark:border-slate-800 space-y-1">
-                <span className="tibetan-text font-monlam-ouchan-1 text-3xl text-blue-600 dark:text-blue-300">།</span>
+                <span className="tibetan-text font-app text-3xl text-blue-600 dark:text-blue-300">།</span>
                 <div className="font-bold text-gray-900 dark:text-white text-xs">Shad (ཤད)</div>
                 <div className="text-[11px] text-gray-500 dark:text-slate-400">Vertical bar acting as comma, colon, or period.</div>
               </div>
 
               <div className="p-4 rounded-2xl bg-white dark:bg-slate-950/80 border border-gray-200 dark:border-slate-800 space-y-1">
-                <span className="tibetan-text font-monlam-ouchan-1 text-3xl text-blue-600 dark:text-blue-300">༄༅། །</span>
+                <span className="tibetan-text font-app text-3xl text-blue-600 dark:text-blue-300">༄༅། །</span>
                 <div className="font-bold text-gray-900 dark:text-white text-xs">Yigo & Head Marks (མགོ་རྒྱན)</div>
                 <div className="text-[11px] text-gray-500 dark:text-slate-400">Decorative opening flourishes for sacred manuscripts.</div>
               </div>

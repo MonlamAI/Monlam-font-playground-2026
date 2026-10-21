@@ -146,13 +146,13 @@ function BilingualStack({
 
 const CATEGORIES: { labelKey: string; value: FontCategory; tibetan: string }[] = [
   { labelKey: 'filters.categoryAll', value: 'All', tibetan: 'ཚང་མ།' },
-  { labelKey: 'filters.categoryUchen', value: 'Uchen', tibetan: 'དབུ་ཅན' },
+  { labelKey: 'filters.categoryUchen', value: 'Uchen', tibetan: 'དབུ་ཅན།' },
   { labelKey: 'filters.categoryUme', value: 'Umê', tibetan: 'འཁྱུག་ཡིག' },
   { labelKey: 'filters.categoryDrutsa', value: 'Drutsa', tibetan: 'འབྲུ་ཚ' },
   { labelKey: 'filters.categoryTsugring', value: 'Tsugring', tibetan: 'ཚུགས་རིང' },
   { labelKey: 'filters.categoryPetsug', value: 'Petsug', tibetan: 'དཔེ་ཚུགས' },
   { labelKey: 'filters.categoryModern', value: 'Modern', tibetan: 'མགོ་མེད' },
-  { labelKey: 'filters.categoryStandard', value: 'Standard', tibetan: 'ཚད་ལྡན' },
+  { labelKey: 'filters.categoryStandard', value: 'Standard', tibetan: 'ཚད་ལྡན།' },
 ];
 
 export const ControlsBar: React.FC<ControlsBarProps> = ({
@@ -319,9 +319,9 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
                   setPreviewText(e.target.value);
                   setActivePresetId(PRESET_ID_CUSTOM);
                 }}
-                rows={3}
+                rows={5}
                 placeholder={t('filters.previewPlaceholder')}
-                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-800 hover:bg-gray-100/80 dark:hover:bg-slate-700/80 focus:bg-white dark:focus:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent tibetan-text resize-none transition"
+                className="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-800 hover:bg-gray-100/80 dark:hover:bg-slate-700/80 focus:bg-white dark:focus:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent tibetan-text whitespace-pre-line resize-none transition"
               />
 
               <div className="space-y-2">

@@ -31,7 +31,7 @@ export const AppFooter: React.FC<AppFooterProps> = ({ onNavigate, onOpenFeedback
               </div>
             </div>
             <p className="leading-relaxed text-gray-600 dark:text-slate-400 max-w-md tibetan-text">{t('footer.about')}</p>
-            <p className="tibetan-text text-gray-400 dark:text-slate-500 font-monlam-ouchan-1">{t('footer.aboutTibetan')}</p>
+            <p className="tibetan-text text-gray-400 dark:text-slate-500 font-app">{t('footer.aboutTibetan')}</p>
           </div>
 
           <div className="space-y-2">

@@ -477,14 +477,23 @@ export const MONLAM_FONTS: FontItem[] = [
   }
 ];
 
-/** Default catalog / card preview preset (The 30 Consonants). */
-export const DEFAULT_PRESET_ID = 'alphabet';
+/** Default catalog / card preview preset. */
+export const DEFAULT_PRESET_ID = 'jamyang-praise';
 
 export function resolveDefaultPreset(presets: PresetText[]): PresetText {
   return presets.find((p) => p.id === DEFAULT_PRESET_ID) ?? presets[0];
 }
 
 export const PRESET_TEXTS: PresetText[] = [
+  {
+    id: 'jamyang-praise',
+    title: 'Praise of Mañjuśrī',
+    tibetanTitle: 'འཇམ་དབྱངས་བསྟོད་པ།',
+    content:
+      'དཀར་མཛེས་ཨ་ཡིག་ལས་འཁྲུངས་ཡེ་ཤེས་གཏེར།།\nཕས་རྒོལ་ཝ་སྐྱེས་ཟིལ་གནོན་གདོང་ལྔ་བཞིན།།\nཆགས་ཐོགས་ཀུན་བྲལ་མཚུངས་མེད་འཇམ་དབྱངས་རྗེ།།\nམ་ཧཱ་མཁས་པའི་གཙོ་བོ་ཉིད་གྱུར་ཅིག།།',
+    translation:
+      'Born from the white, beautiful letter A—the treasure of wisdom; like the five-faced conqueror of Māra and the gods; peerless Mañjuśrī, free from all attachment—may I become the chief of great adepts.'
+  },
   {
     id: 'alphabet',
     title: 'The 30 Consonants',

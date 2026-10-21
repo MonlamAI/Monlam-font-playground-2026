@@ -80,7 +80,7 @@ export const DailyChallengeMode: React.FC<{ onBack: () => void }> = ({ onBack })
         </div>
 
         <div>
-          <p className="tibetan-text font-monlam-ouchan-1 text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
+          <p className="tibetan-text font-app text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
             {dailyLevel.tibetanName}
           </p>
           <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-slate-400 mt-1">

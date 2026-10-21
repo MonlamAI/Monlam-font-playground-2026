@@ -160,13 +160,13 @@ function CharKey({
     >
       <div className="flex justify-between items-start gap-0.5 w-full min-h-0">
         <span className={latinClass}>{upper}</span>
-        <span className="tibetan-text font-monlam-ouchan-1 text-[11px] sm:text-[13px] text-gray-900 dark:text-slate-100 leading-none shrink-0">
+        <span className="tibetan-text font-app text-[11px] sm:text-[13px] text-gray-900 dark:text-slate-100 leading-none shrink-0">
           {tibetanShift}
         </span>
       </div>
       <div className="flex justify-between items-end gap-0.5 w-full min-h-0">
         <span className={latinClass}>{lower}</span>
-        <span className="tibetan-text font-monlam-ouchan-1 text-[13px] sm:text-[15px] font-semibold text-gray-950 dark:text-white leading-none shrink-0">
+        <span className="tibetan-text font-app text-[13px] sm:text-[15px] font-semibold text-gray-950 dark:text-white leading-none shrink-0">
           {tibetanBase}
         </span>
       </div>
@@ -400,7 +400,7 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
               >
                 <span className="text-sm font-medium text-gray-800 dark:text-slate-100">
                   {t('typing.keySpace')}{' '}
-                  <span className="tibetan-text font-monlam-ouchan-1">ཚེག་དང་བར་སྟོང་།</span>
+                  <span className="tibetan-text font-app">ཚེག་དང་བར་སྟོང་།</span>
                 </span>
               </button>
               <BlankKey match="backspace" />
@@ -416,7 +416,7 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
       {spaceIsTsheg ? (
         <div className="mt-3 flex flex-col items-center text-center gap-1">
           <span className="text-gray-700 dark:text-slate-300 text-sm leading-none">↓</span>
-          <p className="tibetan-text font-monlam-ouchan-1 text-xs sm:text-sm text-gray-800 dark:text-slate-200 max-w-xl leading-relaxed">
+          <p className="tibetan-text font-app text-xs sm:text-sm text-gray-800 dark:text-slate-200 max-w-xl leading-relaxed">
             ཚེག་ནི་ནམ་རྒྱུན་གྱི་ Space མནན་ན་ཡོང་།
             <br />
             བར་སྟོང་འཇོག་སྐབས་ Shift དང་མཉམ་དུ་ Space གནོན་དགོས།
@@ -431,7 +431,7 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
             {hintKey === ' ' ? t('typing.nextKeySpace') : hintKey.toUpperCase()}
             {hintNeedsShift ? t('typing.nextKeyShiftSuffix') : ''}
           </span>
-          <span className="tibetan-text font-monlam-ouchan-1 text-sky-800 dark:text-sky-200 text-sm">
+          <span className="tibetan-text font-app text-sky-800 dark:text-sky-200 text-sm">
             {expectedChar}
           </span>
         </div>

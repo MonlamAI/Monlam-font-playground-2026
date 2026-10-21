@@ -209,7 +209,7 @@ export const ArcadeFallingWords: React.FC<{ onBack: () => void }> = ({ onBack })
             className="absolute -translate-x-1/2 p-2.5 rounded-2xl bg-white dark:bg-slate-900/90 border border-blue-300 dark:border-blue-500/40 shadow-lg text-center transition-transform pointer-events-none"
             style={{ left: `${w.x}%`, top: `${w.y}%` }}
           >
-            <div className="tibetan-text font-monlam-ouchan-1 text-2xl font-bold text-blue-600 dark:text-blue-300">
+            <div className="tibetan-text font-app text-2xl font-bold text-blue-600 dark:text-blue-300">
               {w.word}
             </div>
             <div className="text-[10px] text-gray-500 dark:text-slate-400 font-mono mt-0.5">
@@ -230,7 +230,7 @@ export const ArcadeFallingWords: React.FC<{ onBack: () => void }> = ({ onBack })
             onChange={e => handleInputChange(e.target.value)}
             disabled={gameOver}
             placeholder="Type falling Tibetan word or Wylie..."
-            className="w-full px-5 py-3 rounded-2xl bg-white dark:bg-slate-900/95 border border-blue-300 dark:border-blue-500/50 text-gray-900 dark:text-white tibetan-text font-monlam-ouchan-1 text-lg text-center focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-xl"
+            className="w-full px-5 py-3 rounded-2xl bg-white dark:bg-slate-900/95 border border-blue-300 dark:border-blue-500/50 text-gray-900 dark:text-white tibetan-text font-app text-lg text-center focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-xl"
           />
         </div>
 

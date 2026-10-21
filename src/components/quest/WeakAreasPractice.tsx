@@ -82,7 +82,7 @@ export const WeakAreasPractice: React.FC<{ onBack: () => void }> = ({ onBack }) 
             <Sparkles className="w-3.5 h-3.5" />
             AI Adaptive Diagnostic Engine
           </div>
-          <p className="tibetan-text font-monlam-ouchan-1 text-2xl font-extrabold text-gray-900 dark:text-white">
+          <p className="tibetan-text font-app text-2xl font-extrabold text-gray-900 dark:text-white">
             ནོར་འཛོལ་དམིགས་སྦྱོང་།
           </p>
           <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-slate-400 mt-1">
@@ -102,7 +102,7 @@ export const WeakAreasPractice: React.FC<{ onBack: () => void }> = ({ onBack }) 
                 className="p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-rose-500/30 flex items-center justify-between"
               >
                 <div>
-                  <span className="tibetan-text font-monlam-ouchan-1 text-3xl text-blue-600 dark:text-blue-300 font-bold block">
+                  <span className="tibetan-text font-app text-3xl text-blue-600 dark:text-blue-300 font-bold block">
                     {token}
                   </span>
                   <span className="text-[10px] text-gray-400 dark:text-slate-500 uppercase font-mono">

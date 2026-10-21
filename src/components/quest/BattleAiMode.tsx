@@ -140,7 +140,7 @@ export const BattleAiMode: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 }`}
               >
                 <div className="text-3xl mb-2">{bot.avatar}</div>
-                <div className="text-sm tibetan-text font-monlam-ouchan-1 font-bold text-gray-900 dark:text-white">{bot.tibetanName}</div>
+                <div className="text-sm tibetan-text font-app font-bold text-gray-900 dark:text-white">{bot.tibetanName}</div>
                 <div className="text-[11px] font-medium text-gray-500 dark:text-slate-400">{bot.name}</div>
                 <div className="text-xs text-gray-500 dark:text-slate-400 mt-2 font-mono">{bot.wpm} WPM Pace</div>
                 <p className="text-[11px] text-gray-400 dark:text-slate-500 mt-1">{bot.description}</p>
@@ -203,7 +203,7 @@ export const BattleAiMode: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             onClick={() => inputRef.current?.focus()}
             className="p-6 rounded-2xl bg-white dark:bg-slate-900/40 border border-gray-200 dark:border-slate-800 text-center select-none cursor-text"
           >
-            <div className="tibetan-text font-monlam-ouchan-1 text-2xl sm:text-3xl leading-relaxed text-gray-400 dark:text-slate-500">
+            <div className="tibetan-text font-app text-2xl sm:text-3xl leading-relaxed text-gray-400 dark:text-slate-500">
               {targetChars.map((ch, idx) => {
                 let color = 'text-gray-400 dark:text-slate-600';
                 if (idx < playerProgress) color = 'text-emerald-400 font-bold';

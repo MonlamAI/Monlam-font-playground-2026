@@ -11,9 +11,10 @@
     <meta property="og:description" content="Interactive Google Fonts-inspired playground for Monlam IT Tibetan typefaces. Real-time side-by-side font comparison, typing practice tutor, complex Tibetan typography guide, and font & keyboard asset downloader." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="/fonts/MonlamTBslim.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Tibetan:wght@100..900&family=Noto+Serif+Tibetan:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tibetan:wght@100..900&family=Noto+Serif+Tibetan:wght@100..900&display=swap" rel="stylesheet">
     <script>
       (function () {
         try {
@@ -22,6 +23,11 @@
           if (dark) document.documentElement.classList.add('dark');
           document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
         } catch (e) {}
+        try {
+          var loc = localStorage.getItem('monlam-ui-locale');
+          document.documentElement.dataset.locale =
+            loc === 'en' || loc === 'bo' ? loc : 'bo';
+        } catch (e2) {}
       })();
     </script>
   </head>

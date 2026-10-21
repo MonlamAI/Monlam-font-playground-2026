@@ -129,7 +129,7 @@ export const AssessmentModal: React.FC<AssessmentModalProps> = ({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-sm text-gray-900 dark:text-white">{tier.title}</span>
-                      <span className="tibetan-text font-monlam-ouchan-1 text-xs text-blue-600 dark:text-blue-400 font-semibold">{tier.tibetan}</span>
+                      <span className="tibetan-text font-app text-xs text-blue-600 dark:text-blue-400 font-semibold">{tier.tibetan}</span>
                     </div>
                     <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300">
                       Starts World {tier.recommendWorld}

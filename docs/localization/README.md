@@ -1,5 +1,22 @@
 # Localization files
 
+## Completed EN ↔ BO translations (Excel)
+
+**[Monlam-Playground-Translations-EN-BO.xlsx](./Monlam-Playground-Translations-EN-BO.xlsx)**
+
+| Column | Content |
+|--------|---------|
+| **Serial Number** | 1…n |
+| **Tibetan Keywords** | Merged `bo` locale string (`bo.json` + fallbacks) |
+| **English Keywords** | `en.ts` source string |
+
+Regenerate after i18n changes:
+
+```bash
+npx tsx scripts/export-translations-excel.mts
+docs/localization/.venv/bin/python scripts/polish-translations-excel.py
+```
+
 ## App keywords (English)
 
 **[Monlam-Playground-App-Keywords-English.xlsx](./Monlam-Playground-App-Keywords-English.xlsx)**

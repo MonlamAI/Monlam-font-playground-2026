@@ -80,7 +80,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
               <div className="text-xs font-bold text-gray-900 dark:text-white whitespace-nowrap">
                 World {world.id}
               </div>
-              <div className="text-[11px] text-gray-500 dark:text-slate-400 tibetan-text font-monlam-ouchan-1 truncate max-w-[110px]">
+              <div className="text-[11px] text-gray-500 dark:text-slate-400 tibetan-text font-app truncate max-w-[110px]">
                 {world.tibetanName}
               </div>
             </button>
@@ -95,7 +95,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
             <div className="flex items-center gap-2 text-xs font-semibold text-blue-600 dark:text-blue-400">
               <span>{selectedWorld.icon} World {selectedWorld.id}</span>
               <span>•</span>
-              <span className="tibetan-text font-monlam-ouchan-1 text-sm">{selectedWorld.tibetanName}</span>
+              <span className="tibetan-text font-app text-sm">{selectedWorld.tibetanName}</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
               {selectedWorld.name}
@@ -177,7 +177,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                 <h3 className="text-xs font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:text-blue-300 transition-colors line-clamp-1">
                   {level.name}
                 </h3>
-                <div className="text-sm tibetan-text font-monlam-ouchan-1 text-blue-600 dark:text-blue-400 font-semibold truncate mt-0.5">
+                <div className="text-sm tibetan-text font-app text-blue-600 dark:text-blue-400 font-semibold truncate mt-0.5">
                   {level.tibetanName}
                 </div>
 

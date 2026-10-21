@@ -202,7 +202,7 @@ export const TypingPractice: React.FC<TypingPracticeProps> = ({ onSendToPlaygrou
               </div>
 
               <div className="bg-gray-50 dark:bg-slate-800/50 p-6 rounded-xl border border-gray-200 dark:border-slate-700 select-none overflow-x-auto">
-                <div className="tibetan-text font-monlam-ouchan-1 text-3xl sm:text-4xl text-gray-800 dark:text-slate-100 tracking-wide flex flex-wrap gap-1 items-center">
+                <div className="tibetan-text font-app text-3xl sm:text-4xl text-gray-800 dark:text-slate-100 tracking-wide flex flex-wrap gap-1 items-center">
                   {currentDrill.targetText.split('').map((char, i) => {
                     let colorClass = 'text-gray-800 dark:text-slate-100';
                     let bgClass = '';
@@ -236,7 +236,7 @@ export const TypingPractice: React.FC<TypingPracticeProps> = ({ onSendToPlaygrou
                   onKeyDown={handleMappedKeyDown}
                   disabled={isFinished}
                   placeholder={t('typing.inputPlaceholder')}
-                  className="w-full px-4 py-3 bg-white dark:bg-slate-900 border-2 border-blue-400 dark:border-blue-600 rounded-xl text-xl sm:text-2xl text-gray-900 dark:text-slate-100 tibetan-text font-monlam-ouchan-1 focus:outline-hidden focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition shadow-inner"
+                  className="w-full px-4 py-3 bg-white dark:bg-slate-900 border-2 border-blue-400 dark:border-blue-600 rounded-xl text-xl sm:text-2xl text-gray-900 dark:text-slate-100 tibetan-text font-app focus:outline-hidden focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900 transition shadow-inner"
                   autoFocus
                 />
                 <button
