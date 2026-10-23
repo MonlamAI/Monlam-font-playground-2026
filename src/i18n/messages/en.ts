@@ -249,8 +249,7 @@ const en = {
   },
   typing: {
     title: 'Tibetan Typography & Typing Tutor',
-    subtitle:
-      'Master the selected keyboard layout or convert live Wylie transliteration into authentic Unicode.',
+    subtitle: 'Master the selected keyboard layout with guided Tibetan typing drills.',
     tabTutor: 'Typing Tutor Drills',
     tabWylie: 'Live Wylie Converter',
     drillsLabel: 'Drills:',

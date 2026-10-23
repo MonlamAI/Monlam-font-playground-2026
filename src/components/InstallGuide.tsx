@@ -3,7 +3,6 @@ import {
   Download,
   Laptop,
   Apple,
-  Terminal,
   Smartphone,
   Sparkles,
   ExternalLink,
@@ -32,7 +31,7 @@ interface InstallGuideProps {
 
 export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
   const { t, locale } = useI18n();
-  const [activeOs, setActiveOs] = React.useState<'windows' | 'mac' | 'linux' | 'mobile'>('windows');
+  const [activeOs, setActiveOs] = React.useState<'windows' | 'mac'>('windows');
   const [assetListOpen, setAssetListOpen] = React.useState(false);
 
   const macDownload = OFFICIAL_BODYIG_DOWNLOADS.find((d) => d.platform === 'mac')!;
@@ -73,80 +72,6 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
       badge: stepBadge(3),
       title: t('install.steps.mac3Title'),
       body: <p className="tibetan-text">{t('install.steps.mac3Body')}</p>
-    }
-  ];
-
-  const mobileSteps: InstallStep[] = [
-    {
-      badge: (
-        <div className="w-8 h-8 rounded-lg bg-gray-200 dark:bg-slate-700 flex items-center justify-center">
-          <Apple className="w-4 h-4 text-gray-800 dark:text-slate-200" />
-        </div>
-      ),
-      title: t('install.steps.mobileIosTitle'),
-      body: <p className="tibetan-text">{t('install.steps.mobileIosBody')}</p>
-    },
-    {
-      badge: (
-        <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-950/50 flex items-center justify-center">
-          <Smartphone className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-        </div>
-      ),
-      title: t('install.steps.mobileAndroidTitle'),
-      body: <p className="tibetan-text">{t('install.steps.mobileAndroidBody')}</p>
-    }
-  ];
-
-  const linuxTerminal = (lines: React.ReactNode) => (
-    <div className="mt-3 bg-slate-950 text-slate-100 p-4 rounded-xl font-mono text-xs space-y-1">{lines}</div>
-  );
-
-  const linuxSteps: InstallStep[] = [
-    {
-      badge: stepBadge(1),
-      title: t('install.steps.linux1Title'),
-      body: (
-        <>
-          <p className="tibetan-text">{t('install.steps.linux1Body')}</p>
-          {linuxTerminal(
-            <>
-              <div className="text-emerald-400"># Create local font directory and copy TTF files</div>
-              <div>mkdir -p ~/.local/share/fonts/monlam</div>
-              <div>cp *.ttf ~/.local/share/fonts/monlam/</div>
-            </>
-          )}
-        </>
-      )
-    },
-    {
-      badge: stepBadge(2),
-      title: t('install.steps.linux2Title'),
-      body: (
-        <>
-          <p className="tibetan-text">{t('install.steps.linux2Body')}</p>
-          {linuxTerminal(
-            <>
-              <div className="text-emerald-400"># Rebuild the font cache</div>
-              <div>fc-cache -f -v</div>
-            </>
-          )}
-        </>
-      )
-    },
-    {
-      badge: stepBadge(3),
-      title: t('install.steps.linux3Title'),
-      body: (
-        <>
-          <p className="tibetan-text">{t('install.steps.linux3Body')}</p>
-          {linuxTerminal(
-            <>
-              <div className="text-emerald-400"># IBus m17n Tibetan input</div>
-              <div>sudo apt install ibus-m17n m17n-db</div>
-            </>
-          )}
-        </>
-      )
     }
   ];
 
@@ -307,31 +232,11 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
               <Apple className="w-3.5 h-3.5" />
               <span>{t('install.osMac')}</span>
             </button>
-            <button
-              onClick={() => setActiveOs('linux')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-                activeOs === 'linux' ? 'bg-white dark:bg-slate-900 shadow-xs text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100'
-              }`}
-            >
-              <Terminal className="w-3.5 h-3.5" />
-              <span>{t('install.osLinux')}</span>
-            </button>
-            <button
-              onClick={() => setActiveOs('mobile')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-                activeOs === 'mobile' ? 'bg-white dark:bg-slate-900 shadow-xs text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100'
-              }`}
-            >
-              <Smartphone className="w-3.5 h-3.5" />
-              <span>{t('install.osMobile')}</span>
-            </button>
           </div>
         </div>
 
         {activeOs === 'windows' && <InstallStepsCarousel steps={windowsSteps} resetKey="windows" />}
         {activeOs === 'mac' && <InstallStepsCarousel steps={macSteps} resetKey="mac" />}
-        {activeOs === 'mobile' && <InstallStepsCarousel steps={mobileSteps} resetKey="mobile" />}
-        {activeOs === 'linux' && <InstallStepsCarousel steps={linuxSteps} resetKey="linux" />}
       </div>
 
       {/* INDIVIDUAL FONT ASSET DIRECT DOWNLOAD TABLE */}

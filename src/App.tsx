@@ -182,16 +182,10 @@ export default function App() {
     setFontWeight(400);
   };
 
-  const handleSendToPlayground = (text: string) => {
-    setPreviewText(text);
-    setActivePresetId(PRESET_ID_CUSTOM);
-    setActiveTab('catalog');
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex flex-col justify-between text-gray-900 dark:text-slate-100 selection:bg-blue-100 selection:text-blue-900 dark:selection:bg-blue-900/60 dark:selection:text-blue-100">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex flex-col text-gray-900 dark:text-slate-100 selection:bg-blue-100 selection:text-blue-900 dark:selection:bg-blue-900/60 dark:selection:text-blue-100">
       <PublishedFontFaces fonts={allFonts} />
-      <div>
+      <div className="flex-1 flex flex-col">
         {/* Navigation Header */}
         <Header
           activeTab={activeTab}
@@ -202,7 +196,7 @@ export default function App() {
         />
 
         {/* Tab Views */}
-        <main className="pb-16">
+        <main className="pb-6 flex-1">
           {activeTab === 'catalog' && (
             <ControlsBar
               searchQuery={searchQuery}
@@ -279,7 +273,7 @@ export default function App() {
           )}
 
           {activeTab === 'typing' && (
-            <TypingPractice onSendToPlayground={handleSendToPlayground} />
+            <TypingPractice />
           )}
 
           {FEATURE_TYPING_QUEST && activeTab === 'quest' && <TypingQuest />}
@@ -319,7 +313,7 @@ export default function App() {
         onViewKeyboards={() => setActiveTab('install')}
       />
 
-      <AppFooter onNavigate={setActiveTab} onOpenFeedback={() => setIsFeedbackOpen(true)} />
+      <AppFooter />
     </div>
   );
 }

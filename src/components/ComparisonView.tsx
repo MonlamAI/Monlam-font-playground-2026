@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontItem } from '../types/font';
-import { GitCompare, Plus, X, Layers, Sliders, Sparkles, Download, Check, Bold } from 'lucide-react';
+import { GitCompare, Plus, X, Download, Check, Bold } from 'lucide-react';
 import { PRESET_TEXTS } from '../data/fontsData';
 import { downloadSingleFont } from '../utils/fontDownloader';
 import { fontAssetLabel, fontCategoryLabel, fontMetricLabel } from '../utils/fontDisplay';
@@ -33,15 +33,8 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
   const [syncText, setSyncText] = React.useState('ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ། བོད་ཀྱི་ཡི་གེ་དང་རིག་གཞུང་།');
   const [fontSize, setFontSize] = React.useState(42);
   const [lineHeight, setLineHeight] = React.useState(1.85);
-  const [isOverlayMode, setIsOverlayMode] = React.useState(false);
-  const [overlayFont1, setOverlayFont1] = React.useState<string>(comparedFonts[0]?.id || allFonts[0]?.id || '');
-  const [overlayFont2, setOverlayFont2] = React.useState<string>(comparedFonts[1]?.id || allFonts[1]?.id || '');
-
   // Available fonts to add (not yet in comparedFonts)
   const availableFonts = allFonts.filter((f) => !comparedFonts.some((cf) => cf.id === f.id));
-
-  const f1 = allFonts.find((f) => f.id === overlayFont1) || allFonts[0];
-  const f2 = allFonts.find((f) => f.id === overlayFont2) || allFonts[1];
 
   const setGridFont = (slot: number, fontId: string) => {
     const font = allFonts.find((f) => f.id === fontId);
@@ -62,40 +55,15 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      {/* Top Banner & Mode Toggle */}
+      {/* Top Banner */}
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 p-5 shadow-xs mb-6">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300">
-                <GitCompare className="w-5 h-5" />
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 dark:text-slate-100 tibetan-text">{t('compare.title')}</h2>
-                <p className="text-xs text-gray-500 dark:text-slate-400 tibetan-text">{t('compare.subtitle')}</p>
-              </div>
-            </div>
+        <div className="flex items-center gap-2">
+          <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300">
+            <GitCompare className="w-5 h-5" />
           </div>
-
-          {/* Mode Switcher: Side-by-Side Columns vs Optical Overlay */}
-          <div className="flex items-center gap-2 bg-gray-100 dark:bg-slate-800 p-1 rounded-lg">
-            <button
-              onClick={() => setIsOverlayMode(false)}
-              className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${
-                !isOverlayMode ? 'bg-white dark:bg-slate-900 shadow-xs text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100'
-              }`}
-            >
-              {t('compare.modeGrid')}
-            </button>
-            <button
-              onClick={() => setIsOverlayMode(true)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition ${
-                isOverlayMode ? 'bg-white dark:bg-slate-900 shadow-xs text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100'
-              }`}
-            >
-              <Layers className="w-3.5 h-3.5" />
-              <span>{t('compare.modeOverlay')}</span>
-            </button>
+          <div>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-slate-100 tibetan-text">{t('compare.title')}</h2>
+            <p className="text-xs text-gray-500 dark:text-slate-400 tibetan-text">{t('compare.subtitle')}</p>
           </div>
         </div>
 
@@ -176,7 +144,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
             </div>
 
             {/* Add Font to Compare Dropdown */}
-            {availableFonts.length > 0 && !isOverlayMode && (
+            {availableFonts.length > 0 && (
               <div className="ml-auto flex items-center gap-2">
                 <span className="text-gray-500 dark:text-slate-400">{t('compare.addFont')}</span>
                 <select
@@ -203,131 +171,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
         </div>
       </div>
 
-      {/* VIEW MODE 1: OPTICAL OVERLAY DIFF MODE */}
-      {isOverlayMode ? (
-        <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-xs">
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-gray-100 dark:border-slate-800">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <span className="w-3.5 h-3.5 rounded-full bg-blue-600 inline-block"></span>
-                <span className="text-xs font-semibold text-gray-700 dark:text-slate-300">{t('compare.overlayBase')}</span>
-                <select
-                  value={overlayFont1}
-                  onChange={(e) => setOverlayFont1(e.target.value)}
-                  className="text-xs font-medium border border-gray-200 dark:border-slate-700 rounded-lg p-1.5 bg-gray-50 dark:bg-slate-800 dark:text-slate-200"
-                >
-                  {allFonts.map((f) => (
-                    <option key={f.id} value={f.id}>
-                      {fontAssetLabel(f)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <span className="text-gray-400 dark:text-slate-500 font-bold text-xs tibetan-text">{t('compare.vs')}</span>
-
-              <div className="flex items-center gap-2">
-                <span className="w-3.5 h-3.5 rounded-full bg-rose-600 inline-block"></span>
-                <span className="text-xs font-semibold text-gray-700 dark:text-slate-300">{t('compare.overlayTop')}</span>
-                <select
-                  value={overlayFont2}
-                  onChange={(e) => setOverlayFont2(e.target.value)}
-                  className="text-xs font-medium border border-gray-200 dark:border-slate-700 rounded-lg p-1.5 bg-gray-50 dark:bg-slate-800 dark:text-slate-200"
-                >
-                  {allFonts.map((f) => (
-                    <option key={f.id} value={f.id}>
-                      {fontAssetLabel(f)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className="text-xs text-gray-500 dark:text-slate-400">
-              {t('compare.overlayHint')}
-            </div>
-          </div>
-
-          {/* Overlay Rendering Area */}
-          <div className="relative py-12 px-6 flex items-center justify-center min-h-[220px] bg-gray-900 dark:bg-black rounded-xl overflow-hidden mt-6">
-            {/* Guide Baseline Lines */}
-            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-b border-dashed border-gray-700/60 pointer-events-none"></div>
-
-            {/* Layer 1 (Blue) */}
-            <div
-              style={{
-                fontSize: `${fontSize}px`,
-                lineHeight,
-                fontWeight,
-                ...(f1.fileUrl
-                  ? { fontFamily: `'${f1.name}', 'Noto Serif Tibetan', 'Jomolhari', serif` }
-                  : {})
-              }}
-              className={`absolute ${f1.cssClass} tibetan-text text-cyan-400 opacity-80 mix-blend-screen select-none text-center`}
-            >
-              {syncText}
-            </div>
-
-            {/* Layer 2 (Crimson/Pink) */}
-            <div
-              style={{
-                fontSize: `${fontSize}px`,
-                lineHeight,
-                fontWeight,
-                ...(f2.fileUrl
-                  ? { fontFamily: `'${f2.name}', 'Noto Serif Tibetan', 'Jomolhari', serif` }
-                  : {})
-              }}
-              className={`absolute ${f2.cssClass} tibetan-text text-rose-400 opacity-80 mix-blend-screen select-none text-center`}
-            >
-              {syncText}
-            </div>
-          </div>
-
-          {/* Metric Comparison Table */}
-          <div className="mt-8 border border-gray-200 dark:border-slate-700 rounded-xl overflow-hidden">
-            <div className="bg-gray-50 dark:bg-slate-800/50 px-4 py-3 border-b border-gray-200 dark:border-slate-700 font-semibold text-xs text-gray-700 dark:text-slate-300">
-              {t('compare.metricsTitle')}
-            </div>
-            <div className="grid grid-cols-3 p-4 gap-4 text-xs divide-x divide-gray-100 dark:divide-slate-800">
-              <div>
-                <span className="text-gray-400 dark:text-slate-500 block mb-1">{t('compare.metricCol')}</span>
-                <div className="font-medium text-gray-800 dark:text-slate-200 space-y-2">
-                  <div>{t('compare.metricStrokeType')}</div>
-                  <div>{t('compare.metricStrokeContrast')}</div>
-                  <div>{t('compare.metricAscender')}</div>
-                  <div>{t('compare.metricDescender')}</div>
-                  <div>{t('compare.metricSpacing')}</div>
-                </div>
-              </div>
-              <div className="pl-4">
-                <span className="text-blue-600 font-semibold block mb-1 tibetan-text">{f1.tibetanName}</span>
-                <span className="text-gray-500 dark:text-slate-400 text-[10px] block mb-1">({f1.name})</span>
-                <div className="space-y-2 text-gray-700 dark:text-slate-300">
-                  <div>{fontMetricLabel('strokeType', f1.metrics.strokeType, t)}</div>
-                  <div>{fontMetricLabel('strokeContrast', f1.metrics.strokeContrast, t)}</div>
-                  <div>{f1.metrics.ascenderRatio}x</div>
-                  <div>{f1.metrics.descenderRatio}x</div>
-                  <div>{f1.metrics.spacing}</div>
-                </div>
-              </div>
-              <div className="pl-4">
-                <span className="text-rose-600 font-semibold block mb-1 tibetan-text">{f2.tibetanName}</span>
-                <span className="text-gray-500 dark:text-slate-400 text-[10px] block mb-1">({f2.name})</span>
-                <div className="space-y-2 text-gray-700 dark:text-slate-300">
-                  <div>{fontMetricLabel('strokeType', f2.metrics.strokeType, t)}</div>
-                  <div>{fontMetricLabel('strokeContrast', f2.metrics.strokeContrast, t)}</div>
-                  <div>{f2.metrics.ascenderRatio}x</div>
-                  <div>{f2.metrics.descenderRatio}x</div>
-                  <div>{f2.metrics.spacing}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : (
-        /* VIEW MODE 2: SIDE-BY-SIDE COLUMNS */
-        <div className="space-y-6">
+      <div className="space-y-6">
           {comparedFonts.length === 0 ? (
             <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 p-8">
               <p className="text-gray-500 dark:text-slate-400 text-sm tibetan-text">{t('compare.emptyTitle')}</p>
@@ -455,7 +299,6 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
             </div>
           )}
         </div>
-      )}
     </div>
   );
 };
