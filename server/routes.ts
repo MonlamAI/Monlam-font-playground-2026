@@ -8,6 +8,7 @@ import {
   rowToFeedback,
   rowToFeedbackAttachment,
   rowToPreset,
+  rowToScriptStyle,
   loadFontPresetConfigs
 } from './db';
 import { requireAdmin, loginAdmin, logoutAdmin, meAdmin } from './auth';
@@ -106,6 +107,32 @@ function slugify(name: string) {
     .slice(0, 48);
 }
 
+function scriptStyleExists(db: Db, categoryId: string): boolean {
+  if (!categoryId?.trim()) return false;
+  const row = db.prepare('SELECT id FROM script_styles WHERE id = ?').get(categoryId.trim());
+  return Boolean(row);
+}
+
+function assertScriptStyle(db: Db, categoryId: string | undefined, fallback: string): string {
+  const id = (categoryId || fallback).trim();
+  if (!scriptStyleExists(db, id)) {
+    throw new Error(`Unknown script style “${id}”. Add it under Admin → Script styles first.`);
+  }
+  return id;
+}
+
+function listScriptStylesWithCounts(db: Db) {
+  const rows = db
+    .prepare('SELECT * FROM script_styles ORDER BY sort_order ASC, name ASC')
+    .all() as Record<string, unknown>[];
+  return rows.map((row) => {
+    const countRow = db
+      .prepare('SELECT COUNT(*) AS c FROM fonts WHERE category = ?')
+      .get(row.id as string) as { c: number };
+    return rowToScriptStyle(row, countRow.c);
+  });
+}
+
 export function createAdminRouter(db: Db) {
   const router = Router();
 
@@ -138,6 +165,13 @@ export function createAdminRouter(db: Db) {
   router.post('/fonts', (req, res) => {
     const body = req.body || {};
     const now = new Date().toISOString();
+    let category: string;
+    try {
+      category = assertScriptStyle(db, body.category, 'Uchen');
+    } catch (e) {
+      res.status(400).json({ error: e instanceof Error ? e.message : 'Invalid script style' });
+      return;
+    }
     const id = body.id || `${slugify(body.name || 'font')}-${randomUUID().slice(0, 8)}`;
     const cssClass =
       body.cssClass ||
@@ -160,7 +194,7 @@ export function createAdminRouter(db: Db) {
       id,
       name: body.name || 'Untitled Font',
       tibetan_name: body.tibetanName || '',
-      category: body.category || 'Uchen',
+      category,
       font_kind: fontKind,
       designer: body.designer || '',
       release_year: body.releaseYear || String(new Date().getFullYear()),
@@ -218,6 +252,15 @@ export function createAdminRouter(db: Db) {
     }
     const body = req.body || {};
     const now = new Date().toISOString();
+    let category = String(existing.category || 'Uchen');
+    if (body.category !== undefined) {
+      try {
+        category = assertScriptStyle(db, body.category, category);
+      } catch (e) {
+        res.status(400).json({ error: e instanceof Error ? e.message : 'Invalid script style' });
+        return;
+      }
+    }
     const fontKind =
       body.fontKind === 'special'
         ? 'special'
@@ -255,7 +298,7 @@ export function createAdminRouter(db: Db) {
       id: req.params.id,
       name: body.name ?? existing.name,
       tibetan_name: body.tibetanName ?? existing.tibetan_name,
-      category: body.category ?? existing.category,
+      category,
       font_kind: fontKind,
       designer: body.designer ?? existing.designer,
       release_year: body.releaseYear ?? existing.release_year,
@@ -688,6 +731,184 @@ export function createAdminRouter(db: Db) {
     });
   });
 
+  // —— Script styles ——
+  router.get('/script-styles', (_req, res) => {
+    res.json(listScriptStylesWithCounts(db));
+  });
+
+  router.get('/script-styles/:id', (req, res) => {
+    const row = db.prepare('SELECT * FROM script_styles WHERE id = ?').get(req.params.id) as
+      | Record<string, unknown>
+      | undefined;
+    if (!row) {
+      res.status(404).json({ error: 'Script style not found' });
+      return;
+    }
+    const countRow = db
+      .prepare('SELECT COUNT(*) AS c FROM fonts WHERE category = ?')
+      .get(req.params.id) as { c: number };
+    res.json(rowToScriptStyle(row, countRow.c));
+  });
+
+  router.post('/script-styles', (req, res) => {
+    const body = req.body || {};
+    const now = new Date().toISOString();
+    const name = String(body.name || '').trim();
+    if (!name) {
+      res.status(400).json({ error: 'English name is required' });
+      return;
+    }
+    const rawId = String(body.id || '').trim();
+    const id = rawId || slugify(name) || `style-${randomUUID().slice(0, 8)}`;
+    const maxOrder = db.prepare('SELECT COALESCE(MAX(sort_order), -1) AS m FROM script_styles').get() as {
+      m: number;
+    };
+    try {
+      db.prepare(`
+        INSERT INTO script_styles (id, name, tibetan_name, sort_order, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `).run(
+        id,
+        name,
+        body.tibetanName || '',
+        body.sortOrder ?? maxOrder.m + 1,
+        now,
+        now
+      );
+    } catch (e) {
+      res.status(400).json({
+        error: e instanceof Error ? e.message : 'Could not create script style (duplicate id?)'
+      });
+      return;
+    }
+    const row = db.prepare('SELECT * FROM script_styles WHERE id = ?').get(id) as Record<
+      string,
+      unknown
+    >;
+    res.status(201).json(rowToScriptStyle(row, 0));
+  });
+
+  router.put('/script-styles/:id', (req, res) => {
+    const existing = db.prepare('SELECT * FROM script_styles WHERE id = ?').get(req.params.id) as
+      | Record<string, unknown>
+      | undefined;
+    if (!existing) {
+      res.status(404).json({ error: 'Script style not found' });
+      return;
+    }
+    const body = req.body || {};
+    const now = new Date().toISOString();
+    const newId = String(body.newId || '').trim();
+    const id = req.params.id;
+
+    if (newId && newId !== id) {
+      if (db.prepare('SELECT id FROM script_styles WHERE id = ?').get(newId)) {
+        res.status(400).json({ error: 'Another script style already uses that id' });
+        return;
+      }
+      const tx = db.transaction(() => {
+        db.prepare(`
+          INSERT INTO script_styles (id, name, tibetan_name, sort_order, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?)
+        `).run(
+          newId,
+          body.name ?? existing.name,
+          body.tibetanName ?? existing.tibetan_name,
+          body.sortOrder ?? existing.sort_order,
+          existing.created_at,
+          now
+        );
+        db.prepare('UPDATE fonts SET category = ? WHERE category = ?').run(newId, id);
+        db.prepare('DELETE FROM script_styles WHERE id = ?').run(id);
+      });
+      try {
+        tx();
+      } catch (e) {
+        res.status(400).json({ error: e instanceof Error ? e.message : 'Could not rename id' });
+        return;
+      }
+      const row = db.prepare('SELECT * FROM script_styles WHERE id = ?').get(newId) as Record<
+        string,
+        unknown
+      >;
+      const countRow = db.prepare('SELECT COUNT(*) AS c FROM fonts WHERE category = ?').get(newId) as {
+        c: number;
+      };
+      res.json(rowToScriptStyle(row, countRow.c));
+      return;
+    }
+
+    db.prepare(`
+      UPDATE script_styles SET
+        name = ?,
+        tibetan_name = ?,
+        sort_order = ?,
+        updated_at = ?
+      WHERE id = ?
+    `).run(
+      body.name ?? existing.name,
+      body.tibetanName ?? existing.tibetan_name,
+      body.sortOrder ?? existing.sort_order,
+      now,
+      id
+    );
+    const row = db.prepare('SELECT * FROM script_styles WHERE id = ?').get(id) as Record<
+      string,
+      unknown
+    >;
+    const countRow = db.prepare('SELECT COUNT(*) AS c FROM fonts WHERE category = ?').get(id) as {
+      c: number;
+    };
+    res.json(rowToScriptStyle(row, countRow.c));
+  });
+
+  router.delete('/script-styles/:id', (req, res) => {
+    const existing = db.prepare('SELECT * FROM script_styles WHERE id = ?').get(req.params.id) as
+      | Record<string, unknown>
+      | undefined;
+    if (!existing) {
+      res.status(404).json({ error: 'Script style not found' });
+      return;
+    }
+    const countRow = db.prepare('SELECT COUNT(*) AS c FROM fonts WHERE category = ?').get(
+      req.params.id
+    ) as { c: number };
+    if (countRow.c > 0) {
+      res.status(400).json({
+        error: `${countRow.c} typeface(s) still use this style. Reassign them in Fonts or below before deleting.`
+      });
+      return;
+    }
+    db.prepare('DELETE FROM script_styles WHERE id = ?').run(req.params.id);
+    res.json({ ok: true });
+  });
+
+  router.put('/script-styles/:id/fonts', (req, res) => {
+    const styleId = req.params.id;
+    if (!db.prepare('SELECT id FROM script_styles WHERE id = ?').get(styleId)) {
+      res.status(404).json({ error: 'Script style not found' });
+      return;
+    }
+    const fontIds = Array.isArray(req.body?.fontIds)
+      ? (req.body.fontIds as unknown[]).map((x) => String(x)).filter(Boolean)
+      : [];
+    const now = new Date().toISOString();
+    const update = db.prepare('UPDATE fonts SET category = ?, updated_at = ? WHERE id = ?');
+    const tx = db.transaction(() => {
+      for (const fontId of fontIds) {
+        update.run(styleId, now, fontId);
+      }
+    });
+    tx();
+    const fonts = db
+      .prepare('SELECT * FROM fonts WHERE category = ? ORDER BY name ASC')
+      .all(styleId) as Record<string, unknown>[];
+    res.json({
+      styleId,
+      fonts: fonts.map((r) => fontWithConfigs(db, r))
+    });
+  });
+
   // —— Presets ——
   router.get('/presets', (_req, res) => {
     const rows = db
@@ -888,6 +1109,10 @@ export function createPublicRouter(db: Db) {
         : db.prepare('SELECT * FROM presets ORDER BY sort_order ASC, title ASC')
     ).all() as Record<string, unknown>[];
     res.json(rows.map(rowToPreset));
+  });
+
+  router.get('/script-styles', (_req, res) => {
+    res.json(listScriptStylesWithCounts(db));
   });
 
   router.get('/fonts', (req, res) => {

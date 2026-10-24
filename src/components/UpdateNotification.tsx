@@ -20,11 +20,13 @@ interface UpdateNotificationProps {
 function ItemList({
   label,
   icon,
-  items
+  items,
+  t
 }: {
   label: string;
   icon: React.ReactNode;
   items: { id: string; name: string; version: string; kind: 'new' | 'updated' }[];
+  t: (key: string, params?: Record<string, string | number>) => string;
 }) {
   if (items.length === 0) return null;
   const shown = items.slice(0, 4);
@@ -46,13 +48,15 @@ function ItemList({
           >
             <span className="truncate font-medium">{item.name}</span>
             <span className="shrink-0 text-[9px] text-gray-400 dark:text-slate-500 font-mono">
-              {item.kind === 'new' ? 'New' : `v${item.version}`}
+              {item.kind === 'new'
+                ? t('updates.badgeNew')
+                : `${t('global.version')} ${item.version}`}
             </span>
           </li>
         ))}
         {remaining > 0 && (
           <li className="text-[10px] text-gray-400 dark:text-slate-500">
-            +{remaining} more
+            {t('updates.moreItems', { count: remaining })}
           </li>
         )}
       </ul>
@@ -70,6 +74,8 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({
   onViewFonts,
   onViewKeyboards
 }) => {
+  const { t } = useI18n();
+
   React.useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -139,14 +145,16 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({
             </p>
 
             <ItemList
-              label="Fonts"
+              label={t('updates.fontsLabel')}
               icon={<Type className="w-2.5 h-2.5" />}
               items={diff.fonts}
+              t={t}
             />
             <ItemList
-              label="Keyboards"
+              label={t('updates.keyboardsLabel')}
               icon={<Keyboard className="w-2.5 h-2.5" />}
               items={diff.keyboards}
+              t={t}
             />
           </div>
         </div>

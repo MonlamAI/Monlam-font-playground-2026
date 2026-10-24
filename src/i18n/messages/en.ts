@@ -5,6 +5,15 @@ const en = {
     titleEnglish: 'Monlam Fonts',
     badgePlayground: 'Playground'
   },
+  global: {
+    home: 'Home',
+    tools: 'Tools',
+    blog: 'Blog',
+    more: 'More',
+    language: 'Language',
+    theme: 'Theme',
+    version: 'Version'
+  },
   nav: {
     typefaces: 'Typefaces',
     compare: 'Compare',
@@ -23,6 +32,7 @@ const en = {
     switchToEn: 'Switch to English'
   },
   theme: {
+    label: 'Theme',
     toLight: 'Switch to light theme',
     toDark: 'Switch to dark theme'
   },
@@ -72,8 +82,8 @@ const en = {
     copied: 'Copied!',
     add: 'Add',
     remove: 'Remove',
-    regular: 'Regular',
-    medium: 'Medium',
+    regular: 'Thin',
+    medium: 'Regular',
     semibold: 'Semibold',
     bold: 'Bold',
     previous: 'Previous step',
@@ -135,11 +145,11 @@ const en = {
     presetCustomSuffix: ' · custom',
     categoryAll: 'All',
     categoryUchen: 'Uchen',
-    categoryUme: 'Umê & Chug',
+    categoryUme: 'Ume and Chug',
     categoryDrutsa: 'Drutsa',
     categoryTsugring: 'Tsugring',
-    categoryPetsug: 'Petsug',
-    categoryModern: 'Modern & Sans',
+    categoryPetsug: 'PayTsik',
+    categoryModern: 'Modern and Sans',
     categoryStandard: 'Standard'
   },
   compare: {
@@ -154,7 +164,8 @@ const en = {
     lineHeight: 'Line height:',
     boldness: 'Boldness:',
     addFont: 'Add to compare:',
-    chooseTypeface: '+ Choose typeface ({{count}} available)',
+    chooseTypeface: '+ Choose typeface ({{count}} in catalog)',
+    alreadyInCompare: 'in compare',
     overlayBase: 'Base layer (cyan/blue):',
     overlayTop: 'Overlay layer (crimson):',
     overlayHint:
@@ -188,7 +199,7 @@ const en = {
       'Get official Monlam IT Tibetan fonts, keyboard layouts, and step-by-step installation instructions for your operating system. Choose Mac or Windows for the complete Font & Keyboard Suite, or download individual .ttf assets below.',
     suiteBadge: 'Official Font & Keyboard Suite',
     suiteDescription:
-      'Official Monlam Font & Keyboard Complete Suite. Includes Tibetan Unicode typefaces (including PayTsik, Lanja, Tsugma Akhyug, and Uchen Lagbris) and keyboard installers for your operating system.',
+      'Official Monlam Font & Keyboard complete suite. Includes Tibetan Unicode typefaces (including PayTsik, Lanza, Tsikmachok, and Lakdi Ouchen) and keyboard installers for your operating system.',
     selectOs: 'Select your operating system:',
     sourceLink: 'Source: monlamit.com/software/2',
     assetsBadge: 'Individual & selected assets',
@@ -295,7 +306,7 @@ const en = {
     nextKeyShiftSuffix: ' + Shift',
     drills: {
       'drill-1': {
-        title: 'Basic Consonants (First Two Rows)',
+        title: 'Basic consonants (First two rows)',
         hint: 'Type standard consonants. Press space or tsheg key between each syllable.'
       },
       'drill-2': {
@@ -311,11 +322,11 @@ const en = {
         hint: 'Subjoined consonants are triggered by the subjoin modifier or typing cluster in Wylie.'
       },
       'drill-5': {
-        title: 'Sacred Compassion Mantra',
+        title: 'Six Syllable Mantra',
         hint: 'Contains anusvara (oM) and subjoined d+me in padme.'
       },
       'drill-6': {
-        title: 'Tibetan Greeting & Auspicious Wishes',
+        title: 'Tibetan Greetings & Auspicious Wishes',
         hint: 'Notice the prefix b- in bkra-shis and bde-legs.'
       },
       'drill-7': {
@@ -344,6 +355,26 @@ const en = {
       numerals: 'Numerals & digits (བོད་ཀྱི་ཨང་ཀི)',
       punctuation: 'Punctuation & head marks (ཡིག་མགོ་དང་ཤད)'
     }
+  },
+  feedbackModal: {
+    badge: 'We read every submission',
+    title: 'Feedback',
+    subtitle:
+      'Suggestions, issues, or ideas — attach screenshots or short videos if helpful.',
+    messageLabel: 'Your feedback',
+    messagePlaceholder: 'Describe your suggestion, issue, or experience…',
+    emailLabel: 'Contact email',
+    emailOptional: '(optional)',
+    attachments: 'Attachments',
+    attachmentsHint:
+      'Up to {{max}} files · max {{maxMb}} each · JPEG, PNG, GIF, WebP, MP4, WebM, MOV',
+    chooseFiles: 'Choose images or videos',
+    submit: 'Submit Feedback',
+    submitting: 'Submitting…',
+    closeAria: 'Close feedback',
+    successTitle: 'Feedback submitted successfully',
+    successSavedEmail: 'Saved and emailed to the Monlam team.',
+    successSavedCms: 'Saved for the team to review in the CMS.'
   },
   feedback: {
     title: 'Send feedback',
@@ -384,7 +415,7 @@ const en = {
     googleFonts: 'Google Fonts Tibetan',
     licence: 'Licence policies',
     unicodeBlock: 'Unicode Tibetan block: U+0F00 – U+0FFF',
-    copyright: '© {{year}} Monlam Font Playground. Built with React, Vite & Tailwind CSS.',
+    copyright: '© {{year}} Monlam Font Playground.',
     admin: 'Admin',
     madeWith: 'Made with',
     forCommunity: 'for the Himalayan Tibetan community worldwide.'
@@ -403,6 +434,17 @@ const en = {
   licence: {
     title: 'Licence & usage policies',
     back: 'Back to playground'
+  },
+  memory: {
+    fact: 'Fact',
+    preference: 'Preference',
+    addMemory: 'Add Memory',
+    instruction: 'Instruction',
+    goal: 'Goal',
+    export: 'Export',
+    clearAllMemory: 'Clear all memory',
+    backToSettings: 'Back to settings',
+    manageMemoryTitle: 'Manage Memory: What Melong remembers about you'
   }
 } as const;
 

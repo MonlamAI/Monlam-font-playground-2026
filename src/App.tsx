@@ -29,6 +29,7 @@ import {
   PRESET_ID_FONT_SAMPLE
 } from './utils/resolvePreviewText';
 import { FEATURE_TYPING_QUEST, FEATURE_TYPOGRAPHY_GUIDE } from './config/features';
+import { ScriptStylesProvider } from './contexts/ScriptStylesContext';
 
 export default function App() {
   const { fonts: allFonts } = usePublishedFonts();
@@ -85,11 +86,18 @@ export default function App() {
   // Compared fonts for side-by-side mode
   const [comparedFonts, setComparedFonts] = useState<FontItem[]>([]);
 
+  /** Keep compare slots in sync with published catalog (CMS uploads / re-fetch). */
   useEffect(() => {
-    if (comparedFonts.length === 0 && allFonts.length >= 2) {
-      setComparedFonts([allFonts[0], allFonts[3] || allFonts[1]]);
-    }
-  }, [allFonts, comparedFonts.length]);
+    if (allFonts.length === 0) return;
+    setComparedFonts((prev) => {
+      if (prev.length === 0) {
+        return allFonts.length >= 2 ? [allFonts[0], allFonts[3] || allFonts[1]] : prev;
+      }
+      return prev
+        .map((f) => allFonts.find((a) => a.id === f.id))
+        .filter((f): f is FontItem => f !== undefined);
+    });
+  }, [allFonts]);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -183,6 +191,7 @@ export default function App() {
   };
 
   return (
+    <ScriptStylesProvider>
     <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex flex-col text-gray-900 dark:text-slate-100 selection:bg-blue-100 selection:text-blue-900 dark:selection:bg-blue-900/60 dark:selection:text-blue-100">
       <PublishedFontFaces fonts={allFonts} />
       <div className="flex-1 flex flex-col">
@@ -315,5 +324,6 @@ export default function App() {
 
       <AppFooter />
     </div>
+    </ScriptStylesProvider>
   );
 }

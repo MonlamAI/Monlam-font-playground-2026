@@ -2,12 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Upload, Save, ChevronDown, Plus } from 'lucide-react';
 import { adminApi } from './api';
-import type { FontAsset, KeyboardAsset, PresetAsset } from '../types/cms';
+import type { FontAsset, KeyboardAsset, PresetAsset, ScriptStyleAsset } from '../types/cms';
 import type { FontKind, FontPresetConfig } from '../types/font';
 import { FontPreview } from './FontPreview';
 import { StatusBadge } from './StatusBadge';
-
-const CATEGORIES = ['Uchen', 'Umê', 'Drutsa', 'Tsugring', 'Petsug', 'Modern', 'Standard'] as const;
 
 function configsFromPresets(presets: PresetAsset[], existing: FontPresetConfig[] = []): FontPresetConfig[] {
   return presets.map((p) => {
@@ -24,7 +22,7 @@ function configsFromPresets(presets: PresetAsset[], existing: FontPresetConfig[]
 const emptyForm = {
   name: '',
   tibetanName: '',
-  category: 'Uchen' as (typeof CATEGORIES)[number],
+  category: 'Uchen',
   fontKind: 'normal' as FontKind,
   designer: '',
   releaseYear: String(new Date().getFullYear()),
@@ -50,6 +48,7 @@ export function FontEditorPage() {
   const [font, setFont] = useState<FontAsset | null>(null);
   const [keyboards, setKeyboards] = useState<KeyboardAsset[]>([]);
   const [presets, setPresets] = useState<PresetAsset[]>([]);
+  const [scriptStyles, setScriptStyles] = useState<ScriptStyleAsset[]>([]);
   const [presetConfigs, setPresetConfigs] = useState<FontPresetConfig[]>([]);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -68,6 +67,7 @@ export function FontEditorPage() {
     let cancelled = false;
 
     adminApi.listKeyboards().then(setKeyboards).catch(() => undefined);
+    adminApi.listScriptStyles().then(setScriptStyles).catch(() => undefined);
 
     const load = async () => {
       try {
@@ -84,7 +84,7 @@ export function FontEditorPage() {
           setForm({
             name: fontAsset.name,
             tibetanName: fontAsset.tibetanName,
-            category: fontAsset.category as (typeof CATEGORIES)[number],
+            category: fontAsset.category,
             fontKind: fontAsset.fontKind || 'normal',
             designer: fontAsset.designer,
             releaseYear: fontAsset.releaseYear,
@@ -307,11 +307,17 @@ export function FontEditorPage() {
               <input className={`${field} tibetan-text`} value={form.tibetanName} onChange={set('tibetanName')} />
             </div>
             <div>
-              <label className={label}>Category</label>
+              <label className={label}>
+                Script style{' '}
+                <Link to="/admin/script-styles" className="text-blue-600 font-normal">
+                  (manage)
+                </Link>
+              </label>
               <select className={field} value={form.category} onChange={set('category')}>
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
+                {scriptStyles.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                    {s.tibetanName ? ` · ${s.tibetanName}` : ''}
                   </option>
                 ))}
               </select>

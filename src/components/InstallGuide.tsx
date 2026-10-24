@@ -19,7 +19,8 @@ import {
 } from '../data/officialDownloads';
 import { InstallStep, InstallStepsCarousel } from './InstallStepsCarousel';
 import { useI18n } from '../i18n/I18nProvider';
-import { fontCardTitlePair, fontCategoryLabel } from '../utils/fontDisplay';
+import { fontCardTitlePair } from '../utils/fontDisplay';
+import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
 
 const stepBadge = (n: number) => (
   <div className="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center text-sm">{n}</div>
@@ -31,6 +32,7 @@ interface InstallGuideProps {
 
 export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
   const { t, locale } = useI18n();
+  const { labelForCategory } = useScriptStylesContext();
   const [activeOs, setActiveOs] = React.useState<'windows' | 'mac'>('windows');
   const [assetListOpen, setAssetListOpen] = React.useState(false);
 
@@ -295,7 +297,7 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
                     {titles.secondary}
                   </span>
                   <div className="text-xs text-gray-400 dark:text-slate-500 mt-0.5 flex flex-wrap items-center gap-2">
-                    <span>{fontCategoryLabel(font.category, t)}</span>
+                    <span>{labelForCategory(font.category)}</span>
                     <span>•</span>
                     <span>{font.fileSize}</span>
                     <span>•</span>

@@ -529,7 +529,7 @@ export const PRESET_TEXTS: PresetText[] = [
   {
     id: 'complex-stacks',
     title: 'Complex Stacks & Sanskrit',
-    tibetanTitle: 'བརྩེགས་འདོགས་དང་སཾསྐྲྀཏ།',
+    tibetanTitle: 'བརྩེགས་ཡིག་དང་ལེགས་སྦྱར།',
     content:
       'བསྒྲུབས། བསྐྱེད། བརྩམས། བརྒྱན། མཁྱེན། ཀྵྨྲྱཱ། ཨོཾ་ཨཱཿཧཱུྃ་ཧྲཱིཿབཛྲ་གུ་རུ་པདྨ་སིདྡྷི་ཧཱུྃ།',
     translation:
@@ -538,14 +538,14 @@ export const PRESET_TEXTS: PresetText[] = [
   {
     id: 'numerals',
     title: 'Tibetan Numerals',
-    tibetanTitle: 'བོད་ཀྱི་ཨང་ཀི',
+    tibetanTitle: 'བོད་ཡིག་ཨང་ཀི།',
     content: '༡ ༢ ༣ ༤ ༥ ༦ ༧ ༨ ༩ ༠ ། ༡༠༨ ༢༠༢༦ ། ༡༩༥༩',
     translation: 'Traditional Tibetan numerical glyphs: 1 2 3 4 5 6 7 8 9 0'
   },
   {
     id: 'bilingual',
     title: 'Bilingual Quote',
-    tibetanTitle: 'དབྱིན་བོད་ཤན་སྦྱར།',
+    tibetanTitle: 'བོད་དབྱིན་ཤན་སྦྱར་གྱི་སྡོམ་ཚིག།',
     content:
       'བོད་ཀྱི་ཡི་གེ་དང་རིག་གནས། Tibetan Typography: Living Calligraphy Across Millennia.',
     translation: 'Tibetan script & culture: harmonious bilingual typesetting.'

@@ -24,6 +24,7 @@ import {
 import { useI18n } from '../i18n/I18nProvider';
 import { translate } from '../i18n/translate';
 import { localeBilingualPair, type LocaleTitlePair } from '../utils/fontDisplay';
+import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
 
 export type FontKindFilter = FontKind | 'all';
 
@@ -144,17 +145,6 @@ function BilingualStack({
   );
 }
 
-const CATEGORIES: { labelKey: string; value: FontCategory; tibetan: string }[] = [
-  { labelKey: 'filters.categoryAll', value: 'All', tibetan: 'ཚང་མ།' },
-  { labelKey: 'filters.categoryUchen', value: 'Uchen', tibetan: 'དབུ་ཅན།' },
-  { labelKey: 'filters.categoryUme', value: 'Umê', tibetan: 'འཁྱུག་ཡིག' },
-  { labelKey: 'filters.categoryDrutsa', value: 'Drutsa', tibetan: 'འབྲུ་ཚ' },
-  { labelKey: 'filters.categoryTsugring', value: 'Tsugring', tibetan: 'ཚུགས་རིང' },
-  { labelKey: 'filters.categoryPetsug', value: 'Petsug', tibetan: 'དཔེ་ཚུགས' },
-  { labelKey: 'filters.categoryModern', value: 'Modern', tibetan: 'མགོ་མེད' },
-  { labelKey: 'filters.categoryStandard', value: 'Standard', tibetan: 'ཚད་ལྡན།' },
-];
-
 export const ControlsBar: React.FC<ControlsBarProps> = ({
   searchQuery,
   setSearchQuery,
@@ -182,8 +172,24 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
   children
 }) => {
   const { t, locale } = useI18n();
+  const { styles: scriptStyles } = useScriptStylesContext();
   const [presetsOpen, setPresetsOpen] = React.useState(false);
   const [scriptStyleOpen, setScriptStyleOpen] = React.useState(false);
+
+  const scriptStyleFilters = React.useMemo(() => {
+    const allTitles = localeBilingualPair(
+      translate('en', 'filters.categoryAll'),
+      translate('bo', 'filters.categoryAll'),
+      locale
+    );
+    const dynamic = scriptStyles.map((s) =>
+      localeBilingualPair(s.name, s.tibetanName, locale)
+    );
+    return [{ value: 'All' as FontCategory, titles: allTitles }, ...scriptStyles.map((s, i) => ({
+      value: s.id as FontCategory,
+      titles: dynamic[i]!
+    }))];
+  }, [scriptStyles, locale]);
 
   const isSpecialMode = selectedFontKind === 'special';
   const specialOptions = React.useMemo(
@@ -545,13 +551,9 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
               </button>
               {scriptStyleOpen && (
                 <div className="flex flex-wrap gap-1.5">
-                  {CATEGORIES.map((cat) => {
+                  {scriptStyleFilters.map((cat) => {
                     const isSelected = selectedCategory === cat.value;
-                    const titles = localeBilingualPair(
-                      translate('en', cat.labelKey),
-                      translate('bo', cat.labelKey),
-                      locale
-                    );
+                    const titles = cat.titles;
                     return (
                       <button
                         key={cat.value}

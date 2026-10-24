@@ -10,6 +10,7 @@ import { KeyboardsPage } from './KeyboardsPage';
 import { KeyboardEditorPage } from './KeyboardEditorPage';
 import { FeedbackListPage, FeedbackDetailPage } from './FeedbackPages';
 import { PresetsPage } from './PresetsPage';
+import { ScriptStylesPage } from './ScriptStylesPage';
 
 export function AdminApp() {
   return (
@@ -21,6 +22,7 @@ export function AdminApp() {
           <Route path="fonts" element={<FontsPage />} />
           <Route path="fonts/:id" element={<FontEditorPage />} />
           <Route path="presets" element={<PresetsPage />} />
+          <Route path="script-styles" element={<ScriptStylesPage />} />
           <Route path="keyboards" element={<KeyboardsPage />} />
           <Route path="keyboards/:id" element={<KeyboardEditorPage />} />
           <Route path="feedback" element={<FeedbackListPage />} />

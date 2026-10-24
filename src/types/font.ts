@@ -1,12 +1,5 @@
-export type FontCategory =
-  | 'All'
-  | 'Uchen'
-  | 'Umê'
-  | 'Drutsa'
-  | 'Tsugring'
-  | 'Petsug'
-  | 'Modern'
-  | 'Standard';
+/** Sidebar filter: `All` or a script style id from CMS (`fonts.category`). */
+export type FontCategory = 'All' | string;
 
 export interface FontMetrics {
   ascenderRatio: number; // relative height for superscripts & top vowels
@@ -31,7 +24,7 @@ export interface FontItem {
   id: string;
   name: string;
   tibetanName: string;
-  category: Exclude<FontCategory, 'All'>;
+  category: string;
   /** Normal = full preset support; Special = per-font preset exceptions */
   fontKind?: FontKind;
   designer: string;

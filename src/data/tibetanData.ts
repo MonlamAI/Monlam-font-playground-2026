@@ -188,7 +188,7 @@ export const DISSECTED_SYLLABLE_BGRUBS: SyllableComponent[] = [
 export const TYPING_DRILLS: TypingDrill[] = [
   {
     id: 'drill-1',
-    title: 'Basic Consonants (First Two Rows)',
+    title: 'Basic consonants (First two rows)',
     level: 'Beginner',
     description: 'Practice the foundational 8 consonants of the Tibetan alphabet with tsheg delimiters.',
     targetText: 'ཀ་ཁ་ག་ང་། ཅ་ཆ་ཇ་ཉ།',
@@ -224,7 +224,7 @@ export const TYPING_DRILLS: TypingDrill[] = [
   },
   {
     id: 'drill-5',
-    title: 'Sacred Compassion Mantra',
+    title: 'Six Syllable Mantra',
     level: 'Advanced',
     description: 'Type the famous six-syllable mantra with proper tsheg and shad.',
     targetText: 'ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ།',
@@ -233,7 +233,7 @@ export const TYPING_DRILLS: TypingDrill[] = [
   },
   {
     id: 'drill-6',
-    title: 'Tibetan Greeting & Auspicious Wishes',
+    title: 'Tibetan Greetings & Auspicious Wishes',
     level: 'Advanced',
     description: 'Common social greeting and benediction.',
     targetText: 'བཀྲ་ཤིས་བདེ་ལེགས་ཞུ། ཁྱེད་རང་སྐུ་གཟུགས་བདེ་ཐང་ཡིན་པར་སྨོན།',

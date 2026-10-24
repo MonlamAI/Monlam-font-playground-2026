@@ -1,5 +1,6 @@
 import type { Db } from './db';
 import { DEFAULT_PRESET_ID, MONLAM_FONTS, PRESET_TEXTS } from '../src/data/fontsData.ts';
+import { DEFAULT_SCRIPT_STYLES } from '../src/data/scriptStyles.ts';
 import {
   TIBETAN_KEYBOARD_LAYOUT,
   TIBETAN_KEYBOARD_LAYOUT_WINDOWS,
@@ -280,9 +281,70 @@ export function reseedBodyigAssets(db: Db) {
   );
 }
 
+export function syncScriptStyles(db: Db) {
+  const now = new Date().toISOString();
+  const insert = db.prepare(`
+    INSERT INTO script_styles (id, name, tibetan_name, sort_order, created_at, updated_at)
+    VALUES (@id, @name, @tibetan_name, @sort_order, @created_at, @updated_at)
+  `);
+  const update = db.prepare(`
+    UPDATE script_styles SET
+      name = @name,
+      tibetan_name = @tibetan_name,
+      sort_order = @sort_order,
+      updated_at = @updated_at
+    WHERE id = @id
+  `);
+
+  const tx = db.transaction(() => {
+    for (const style of DEFAULT_SCRIPT_STYLES) {
+      const existing = db.prepare('SELECT id FROM script_styles WHERE id = ?').get(style.id);
+      const row = {
+        id: style.id,
+        name: style.name,
+        tibetan_name: style.tibetanName,
+        sort_order: style.sortOrder,
+        created_at: now,
+        updated_at: now
+      };
+      if (existing) {
+        update.run(row);
+      } else {
+        insert.run(row);
+      }
+    }
+
+    const orphanCategories = db
+      .prepare(
+        `SELECT DISTINCT category AS id FROM fonts
+         WHERE category NOT IN (SELECT id FROM script_styles)`
+      )
+      .all() as { id: string }[];
+    let order =
+      (
+        db.prepare('SELECT COALESCE(MAX(sort_order), -1) AS m FROM script_styles').get() as {
+          m: number;
+        }
+      ).m + 1;
+    for (const { id } of orphanCategories) {
+      if (!id?.trim()) continue;
+      insert.run({
+        id,
+        name: id,
+        tibetan_name: '',
+        sort_order: order++,
+        created_at: now,
+        updated_at: now
+      });
+    }
+  });
+  tx();
+}
+
 export function seedIfEmpty(db: Db) {
   seedPresetsIfEmpty(db);
   syncCatalogPresets(db);
+  syncScriptStyles(db);
   ensureDefaultPresetOrder(db);
   syncFontTibetanLabelsFromCatalog(db);
   const fontCount = db.prepare('SELECT COUNT(*) as c FROM fonts').get() as { c: number };

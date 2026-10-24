@@ -2,7 +2,8 @@ import React from 'react';
 import { Check, Plus, Download, GitCompare } from 'lucide-react';
 import { FontItem } from '../types/font';
 import { useI18n } from '../i18n/I18nProvider';
-import { fontCardTitlePair, fontCategoryLabel } from '../utils/fontDisplay';
+import { fontCardTitlePair } from '../utils/fontDisplay';
+import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
 import { downloadSingleFont } from '../utils/fontDownloader';
 
 interface FontSampleCardProps {
@@ -99,6 +100,7 @@ export const FontSampleCard: React.FC<FontSampleCardProps> = ({
   onToggleCompare
 }) => {
   const { t, locale } = useI18n();
+  const { labelForCategory } = useScriptStylesContext();
   const titles = fontCardTitlePair(font, locale);
   const theme = POSTER_THEMES[posterIndex % POSTER_THEMES.length];
   const sampleSize = Math.max(fontSize, 48);
@@ -123,15 +125,11 @@ export const FontSampleCard: React.FC<FontSampleCardProps> = ({
             <span
               className={`text-[10px] px-1.5 py-0.5 rounded-md font-medium border shrink-0 ${theme.accent}`}
             >
-              {fontCategoryLabel(font.category, t)}
+              {labelForCategory(font.category)}
             </span>
           </div>
-          <div className={`mt-1 flex items-center gap-2 text-xs ${theme.meta}`}>
+          <div className={`mt-1 text-xs ${theme.meta}`}>
             <span className={!titles.primaryIsTibetan ? 'tibetan-text' : ''}>{titles.secondary}</span>
-            <span className="opacity-50">·</span>
-            <span>
-              {font.stylesCount} {font.stylesCount === 1 ? 'style' : 'styles'}
-            </span>
           </div>
         </div>
 

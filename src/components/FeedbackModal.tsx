@@ -10,6 +10,7 @@ import {
   Loader2
 } from 'lucide-react';
 import type { FeedbackSubmitResponse } from '../types/feedback';
+import { useI18n } from '../i18n/I18nProvider';
 
 const MAX_FILES = 5;
 const MAX_BYTES = 50 * 1024 * 1024;
@@ -47,6 +48,7 @@ interface FeedbackModalProps {
 }
 
 export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
+  const { t } = useI18n();
   const [message, setMessage] = React.useState('');
   const [contactEmail, setContactEmail] = React.useState('');
   const [files, setFiles] = React.useState<File[]>([]);
@@ -205,16 +207,16 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
             <div className="min-w-0">
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 mb-1.5">
                 <MessageSquarePlus className="w-3 h-3" />
-                We read every submission
+                {t('feedbackModal.badge')}
               </div>
               <h2
                 id="feedback-modal-title"
                 className="text-lg font-bold text-gray-900 dark:text-slate-100 tracking-tight"
               >
-                Feedback
+                {t('feedbackModal.title')}
               </h2>
               <p className="mt-0.5 text-xs text-gray-500 dark:text-slate-400 leading-relaxed">
-                Suggestions, issues, or ideas — attach screenshots or short videos if helpful.
+                {t('feedbackModal.subtitle')}
               </p>
             </div>
             <button
@@ -222,7 +224,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
               onClick={handleClose}
               disabled={submitting}
               className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition disabled:opacity-50"
-              aria-label="Close feedback"
+              aria-label={t('feedbackModal.closeAria')}
             >
               <X className="w-5 h-5" />
             </button>
@@ -236,12 +238,12 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
               >
                 <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-200 font-semibold text-sm">
                   <CheckCircle2 className="w-4 h-4 shrink-0" />
-                  Feedback submitted successfully
+                  {t('feedbackModal.successTitle')}
                 </div>
                 <p className="text-xs text-emerald-700/90 dark:text-emerald-300/90 pl-6">
                   {success.emailSent
-                    ? 'Saved and emailed to the Monlam team.'
-                    : 'Saved for the team to review in the CMS.'}
+                    ? t('feedbackModal.successSavedEmail')
+                    : t('feedbackModal.successSavedCms')}
                 </p>
                 {success.emailWarning && (
                   <p className="text-xs text-amber-700 dark:text-amber-300 pl-6 flex items-start gap-1.5">
@@ -268,7 +270,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                   htmlFor="feedback-message"
                   className="block text-sm font-semibold text-gray-900 dark:text-slate-100 mb-1.5"
                 >
-                  Your feedback <span className="text-rose-500">*</span>
+                  {t('feedbackModal.messageLabel')} <span className="text-rose-500">*</span>
                 </label>
                 <textarea
                   id="feedback-message"
@@ -276,7 +278,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                   onChange={(e) => setMessage(e.target.value)}
                   rows={5}
                   maxLength={8000}
-                  placeholder="Describe your suggestion, issue, or experience…"
+                  placeholder={t('feedbackModal.messagePlaceholder')}
                   className="w-full rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50/80 dark:bg-slate-950/60 px-3.5 py-3 text-sm text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 resize-y min-h-[120px]"
                   required
                   autoFocus
@@ -291,26 +293,30 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                   htmlFor="feedback-email"
                   className="block text-sm font-semibold text-gray-900 dark:text-slate-100 mb-1.5"
                 >
-                  Contact email{' '}
-                  <span className="text-gray-400 dark:text-slate-500 font-normal">(optional)</span>
+                  {t('feedbackModal.emailLabel')}{' '}
+                  <span className="text-gray-400 dark:text-slate-500 font-normal">
+                    {t('feedbackModal.emailOptional')}
+                  </span>
                 </label>
                 <input
                   id="feedback-email"
                   type="email"
                   value={contactEmail}
                   onChange={(e) => setContactEmail(e.target.value)}
-                  placeholder="you@example.com"
+                  placeholder={t('feedback.emailPlaceholder')}
                   className="w-full rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50/80 dark:bg-slate-950/60 px-3.5 py-2.5 text-sm text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400"
                 />
               </div>
 
               <div>
                 <span className="block text-sm font-semibold text-gray-900 dark:text-slate-100 mb-1">
-                  Attachments
+                  {t('feedbackModal.attachments')}
                 </span>
                 <p className="text-xs text-gray-500 dark:text-slate-400 mb-2">
-                  Up to {MAX_FILES} files · max {formatBytes(MAX_BYTES)} each · JPEG, PNG, GIF, WebP,
-                  MP4, WebM, MOV
+                  {t('feedbackModal.attachmentsHint', {
+                    max: MAX_FILES,
+                    maxMb: formatBytes(MAX_BYTES)
+                  })}
                 </p>
 
                 <input
@@ -332,7 +338,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                 >
                   <Upload className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   <span className="font-medium text-gray-800 dark:text-slate-200 text-xs">
-                    Choose images or videos
+                    {t('feedbackModal.chooseFiles')}
                   </span>
                 </button>
 
@@ -386,10 +392,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
             </form>
           </div>
 
-          <div className="px-5 py-3.5 border-t border-gray-100 dark:border-slate-800 bg-gray-50/80 dark:bg-slate-950/40 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2.5 shrink-0">
-            <p className="text-[11px] text-gray-500 dark:text-slate-400 sm:max-w-[55%]">
-              Stored securely for the team; emailed when mail is configured.
-            </p>
+          <div className="px-5 py-3.5 border-t border-gray-100 dark:border-slate-800 bg-gray-50/80 dark:bg-slate-950/40 flex justify-end shrink-0">
             <button
               type="submit"
               form="feedback-modal-form"
@@ -399,12 +402,12 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
               {submitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Submitting…
+                  {t('feedbackModal.submitting')}
                 </>
               ) : (
                 <>
                   <MessageSquarePlus className="w-4 h-4" />
-                  Submit Feedback
+                  {t('feedbackModal.submit')}
                 </>
               )}
             </button>

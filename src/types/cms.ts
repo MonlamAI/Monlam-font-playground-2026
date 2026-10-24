@@ -1,4 +1,4 @@
-import { FontCategory, FontKind, FontMetrics, FontPresetConfig, PresetText } from './font';
+import { FontKind, FontMetrics, FontPresetConfig, PresetText } from './font';
 import type { KeyMap } from '../data/tibetanData';
 
 export type PublishStatus = 'draft' | 'published';
@@ -8,6 +8,23 @@ export interface PresetAsset extends PresetText {
   status: PublishStatus;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ScriptStyleAsset {
+  id: string;
+  name: string;
+  tibetanName: string;
+  sortOrder: number;
+  fontCount?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ScriptStyleAssetInput {
+  id?: string;
+  name: string;
+  tibetanName?: string;
+  sortOrder?: number;
 }
 
 export interface PresetAssetInput {
@@ -24,7 +41,7 @@ export interface FontAsset {
   id: string;
   name: string;
   tibetanName: string;
-  category: Exclude<FontCategory, 'All'>;
+  category: string;
   fontKind: FontKind;
   designer: string;
   releaseYear: string;
@@ -72,7 +89,7 @@ export interface KeyboardAsset {
 export interface FontAssetInput {
   name: string;
   tibetanName?: string;
-  category?: Exclude<FontCategory, 'All'>;
+  category?: string;
   fontKind?: FontKind;
   designer?: string;
   releaseYear?: string;

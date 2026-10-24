@@ -47,10 +47,10 @@ const CATEGORY_I18N: Record<FontCategory, string> = {
 
 /** Localized script-style badge (e.g. Uchen → དབུ་ཅན). */
 export function fontCategoryLabel(
-  category: FontCategory,
+  category: string,
   t: (key: string) => string
 ): string {
-  const key = CATEGORY_I18N[category];
+  const key = CATEGORY_I18N[category as FontCategory];
   return key ? t(key) : category;
 }
 

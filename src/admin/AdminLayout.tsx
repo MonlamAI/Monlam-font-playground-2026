@@ -6,6 +6,7 @@ import {
   Keyboard,
   MessageSquare,
   TextQuote,
+  Tags,
   LogOut,
   ArrowLeft,
   Moon,
@@ -54,6 +55,10 @@ export function AdminLayout() {
           <NavLink to="/admin/presets" className={linkClass}>
             <TextQuote className="w-4 h-4" />
             Presets
+          </NavLink>
+          <NavLink to="/admin/script-styles" className={linkClass}>
+            <Tags className="w-4 h-4" />
+            Script styles
           </NavLink>
           <NavLink to="/admin/keyboards" className={linkClass}>
             <Keyboard className="w-4 h-4" />

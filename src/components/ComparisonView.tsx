@@ -1,10 +1,11 @@
 import React from 'react';
 import { FontItem } from '../types/font';
-import { GitCompare, Plus, X, Download, Check, Bold } from 'lucide-react';
+import { GitCompare, Plus, X, Download, Check } from 'lucide-react';
 import { PRESET_TEXTS } from '../data/fontsData';
 import { downloadSingleFont } from '../utils/fontDownloader';
-import { fontAssetLabel, fontCategoryLabel, fontMetricLabel } from '../utils/fontDisplay';
+import { fontAssetLabel } from '../utils/fontDisplay';
 import { useI18n } from '../i18n/I18nProvider';
+import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
 
 interface ComparisonViewProps {
   allFonts: FontItem[];
@@ -30,11 +31,15 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
   onFontWeightChange
 }) => {
   const { t, locale } = useI18n();
+  const { labelForCategory } = useScriptStylesContext();
   const [syncText, setSyncText] = React.useState('ཨོཾ་མ་ཎི་པདྨེ་ཧཱུྃ། བོད་ཀྱི་ཡི་གེ་དང་རིག་གཞུང་།');
   const [fontSize, setFontSize] = React.useState(42);
   const [lineHeight, setLineHeight] = React.useState(1.85);
-  // Available fonts to add (not yet in comparedFonts)
-  const availableFonts = allFonts.filter((f) => !comparedFonts.some((cf) => cf.id === f.id));
+  const comparedIds = React.useMemo(
+    () => new Set(comparedFonts.map((f) => f.id)),
+    [comparedFonts]
+  );
+  const canAddMore = comparedFonts.length < allFonts.length;
 
   const setGridFont = (slot: number, fontId: string) => {
     const font = allFonts.find((f) => f.id === fontId);
@@ -127,10 +132,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="font-medium text-gray-700 dark:text-slate-300 inline-flex items-center gap-1">
-                <Bold className="w-3 h-3" />
-                {t('compare.boldness')}
-              </span>
+              <span className="font-medium text-gray-700 dark:text-slate-300">{t('compare.boldness')}</span>
               <input
                 type="range"
                 min="300"
@@ -144,24 +146,26 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
             </div>
 
             {/* Add Font to Compare Dropdown */}
-            {availableFonts.length > 0 && (
+            {allFonts.length > 0 && (
               <div className="ml-auto flex items-center gap-2">
                 <span className="text-gray-500 dark:text-slate-400">{t('compare.addFont')}</span>
                 <select
                   onChange={(e) => {
                     const found = allFonts.find((f) => f.id === e.target.value);
-                    if (found) onAddFont(found);
+                    if (found && !comparedIds.has(found.id)) onAddFont(found);
                     e.target.value = '';
                   }}
                   defaultValue=""
-                  className="px-2.5 py-1 text-xs bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 rounded-lg font-medium cursor-pointer"
+                  disabled={!canAddMore}
+                  className="px-2.5 py-1 text-xs bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 rounded-lg font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <option value="" disabled>
-                    {t('compare.chooseTypeface', { count: availableFonts.length })}
+                    {t('compare.chooseTypeface', { count: allFonts.length })}
                   </option>
-                  {availableFonts.map((f) => (
-                    <option key={f.id} value={f.id}>
+                  {allFonts.map((f) => (
+                    <option key={f.id} value={f.id} disabled={comparedIds.has(f.id)}>
                       {fontAssetLabel(f)}
+                      {comparedIds.has(f.id) ? ` — ${t('compare.alreadyInCompare')}` : ''}
                     </option>
                   ))}
                 </select>
@@ -219,7 +223,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                             ))}
                           </select>
                           <span className="px-1.5 py-0.5 text-[10px] font-medium bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 rounded-md shrink-0">
-                            {fontCategoryLabel(font.category, t)}
+                            {labelForCategory(font.category)}
                           </span>
                         </div>
                         <span className="text-xs text-gray-500 dark:text-slate-400">
@@ -268,23 +272,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                       </div>
                     </div>
 
-                    {/* Metrics Footer */}
-                    <div className="p-3 bg-gray-50/80 dark:bg-slate-800/50 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between text-xs text-gray-500 dark:text-slate-400">
-                      <div className="flex items-center gap-3">
-                        <span>
-                          {t('compare.contrast')}:{' '}
-                          <strong className="text-gray-700 dark:text-slate-300">
-                            {fontMetricLabel('strokeContrast', font.metrics.strokeContrast, t)}
-                          </strong>
-                        </span>
-                        <span>
-                          {t('compare.type')}:{' '}
-                          <strong className="text-gray-700 dark:text-slate-300">
-                            {fontMetricLabel('strokeType', font.metrics.strokeType, t)}
-                          </strong>
-                        </span>
-                      </div>
-
+                    <div className="p-3 bg-gray-50/80 dark:bg-slate-800/50 border-t border-gray-100 dark:border-slate-800 flex items-center justify-end text-xs text-gray-500 dark:text-slate-400">
                       <button
                         onClick={() => downloadSingleFont(font)}
                         className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"

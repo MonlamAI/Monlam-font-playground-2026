@@ -1,4 +1,13 @@
-import type { FontAsset, KeyboardAsset, FontAssetInput, KeyboardAssetInput, PresetAsset, PresetAssetInput } from '../types/cms';
+import type {
+  FontAsset,
+  KeyboardAsset,
+  FontAssetInput,
+  KeyboardAssetInput,
+  PresetAsset,
+  PresetAssetInput,
+  ScriptStyleAsset,
+  ScriptStyleAssetInput
+} from '../types/cms';
 import type { FontPresetConfig } from '../types/font';
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
@@ -115,11 +124,31 @@ export const adminApi = {
     request<FontAsset>(`/api/admin/fonts/${fontId}/preset-configs`, {
       method: 'PUT',
       body: JSON.stringify({ presetConfigs })
+    }),
+
+  listScriptStyles: () => request<ScriptStyleAsset[]>('/api/admin/script-styles'),
+  createScriptStyle: (data: ScriptStyleAssetInput) =>
+    request<ScriptStyleAsset>('/api/admin/script-styles', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+  updateScriptStyle: (id: string, data: Partial<ScriptStyleAssetInput> & { newId?: string }) =>
+    request<ScriptStyleAsset>(`/api/admin/script-styles/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    }),
+  deleteScriptStyle: (id: string) =>
+    request<{ ok: boolean }>(`/api/admin/script-styles/${id}`, { method: 'DELETE' }),
+  assignFontsToScriptStyle: (styleId: string, fontIds: string[]) =>
+    request<{ styleId: string; fonts: FontAsset[] }>(`/api/admin/script-styles/${styleId}/fonts`, {
+      method: 'PUT',
+      body: JSON.stringify({ fontIds })
     })
 };
 
 export const publicApi = {
   fonts: () => request<FontAsset[]>('/api/fonts?published=1'),
   keyboards: () => request<KeyboardAsset[]>('/api/keyboards?published=1'),
-  presets: () => request<PresetAsset[]>('/api/presets?published=1')
+  presets: () => request<PresetAsset[]>('/api/presets?published=1'),
+  scriptStyles: () => request<ScriptStyleAsset[]>('/api/script-styles')
 };

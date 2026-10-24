@@ -45,6 +45,8 @@ export const Header: React.FC<HeaderProps> = ({
           <div
             className="flex items-center gap-2.5 shrink-0 cursor-pointer"
             onClick={() => setActiveTab('catalog')}
+            role="link"
+            aria-label={t('global.home')}
           >
             <img
               src="/logos/bodyig.svg"

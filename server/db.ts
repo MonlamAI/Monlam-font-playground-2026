@@ -100,6 +100,15 @@ export function openDatabase(dbPath = process.env.DATABASE_PATH || defaultDbPath
       FOREIGN KEY (feedback_id) REFERENCES feedback(id) ON DELETE CASCADE
     );
 
+    CREATE TABLE IF NOT EXISTS script_styles (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      tibetan_name TEXT NOT NULL DEFAULT '',
+      sort_order INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+
     CREATE TABLE IF NOT EXISTS presets (
       id TEXT PRIMARY KEY,
       title TEXT NOT NULL,
@@ -209,6 +218,18 @@ export function rowToFont(
     fileUrl: (row.file_url as string) || null,
     keyboardId: (row.keyboard_id as string) || null,
     presetConfigs,
+    createdAt: row.created_at as string,
+    updatedAt: row.updated_at as string
+  };
+}
+
+export function rowToScriptStyle(row: Record<string, unknown>, fontCount?: number) {
+  return {
+    id: row.id as string,
+    name: row.name as string,
+    tibetanName: row.tibetan_name as string,
+    sortOrder: Number(row.sort_order),
+    ...(fontCount !== undefined ? { fontCount } : {}),
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string
   };

@@ -4,7 +4,8 @@ import { Download, GitCompare, Eye, Check, Plus } from 'lucide-react';
 import { FontItem } from '../types/font';
 import { downloadSingleFont } from '../utils/fontDownloader';
 import { useI18n } from '../i18n/I18nProvider';
-import { fontCardTitlePair, fontCategoryLabel } from '../utils/fontDisplay';
+import { fontCardTitlePair } from '../utils/fontDisplay';
+import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
 
 interface FontCardProps {
   font: FontItem;
@@ -98,6 +99,7 @@ export const FontCard: React.FC<FontCardProps> = ({
   singleLinePreview = false
 }) => {
   const { t, locale } = useI18n();
+  const { labelForCategory } = useScriptStylesContext();
   const titles = fontCardTitlePair(font, locale);
   const [localText, setLocalText] = React.useState<string | null>(null);
   const [copied, setCopied] = React.useState(false);
@@ -147,7 +149,7 @@ export const FontCard: React.FC<FontCardProps> = ({
               {titles.primary}
             </h3>
             <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 font-medium border border-blue-200/50 dark:border-blue-800 shrink-0 whitespace-nowrap">
-              {fontCategoryLabel(font.category, t)}
+              {labelForCategory(font.category)}
             </span>
             {font.fontKind === 'special' && (
               <span className="text-xs px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 font-medium border border-amber-200/50 dark:border-amber-800 shrink-0 whitespace-nowrap">
@@ -156,19 +158,13 @@ export const FontCard: React.FC<FontCardProps> = ({
             )}
           </div>
 
-          <div className="flex items-center gap-2 mt-1 min-w-0 flex-nowrap overflow-hidden">
+          <div className="mt-1 min-w-0 overflow-hidden">
             <span
-              className={`text-sm text-gray-600 dark:text-slate-400 truncate min-w-0 ${
+              className={`text-sm text-gray-600 dark:text-slate-400 truncate block ${
                 !titles.primaryIsTibetan ? 'tibetan-text' : ''
               }`}
             >
               {titles.secondary}
-            </span>
-            <span className="text-gray-300 dark:text-slate-600 shrink-0">•</span>
-            <span className="text-xs text-gray-500 dark:text-slate-400 shrink-0 whitespace-nowrap">
-              {t(font.stylesCount === 1 ? 'common.styles_one' : 'common.styles_other', {
-                count: font.stylesCount
-              })}
             </span>
           </div>
         </div>
