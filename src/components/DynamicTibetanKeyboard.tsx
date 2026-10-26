@@ -63,9 +63,9 @@ function latinPair(key: string): { upper: string; lower: string } {
 type KeyVisualState = 'idle' | 'hint' | 'last' | 'shiftOn';
 
 /** Shared widths so `~`, letter keys, and space-row blanks stay aligned. */
-const CHAR_KEY_WIDTH = 'w-[54px] shrink-0';
-const BACKSPACE_KEY_WIDTH = 'w-[72px] sm:w-[88px] shrink-0';
-const KEY_HEIGHT = 'h-[56px] sm:h-[62px]';
+const CHAR_KEY_WIDTH = 'w-[42px] sm:w-[48px] md:w-[54px] shrink-0';
+const BACKSPACE_KEY_WIDTH = 'w-[60px] sm:w-[72px] md:w-[88px] shrink-0';
+const KEY_HEIGHT = 'h-[48px] sm:h-[56px] md:h-[62px]';
 
 function charKeyClass(state: KeyVisualState): string {
   const base = `relative ${CHAR_KEY_WIDTH} ${KEY_HEIGHT} rounded border text-left transition select-none p-1.5 box-border`;
@@ -239,7 +239,7 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
     ));
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-[#eef5fc] p-4 sm:p-5 text-gray-900 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
+    <div className="rounded-2xl border border-gray-200 bg-[#eef5fc] p-3 sm:p-5 text-gray-900 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 min-w-0 max-w-full">
       {/* Controls */}
       <div className="flex flex-col gap-3 pb-3 mb-3 border-b border-blue-100 dark:border-slate-700">
         <div className="flex flex-wrap items-start justify-between gap-3">
@@ -285,7 +285,7 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
             <select
               value={selectedKeyboardId}
               onChange={(e) => onSelectKeyboard(e.target.value)}
-              className="text-xs font-medium bg-white border border-gray-300 rounded-lg px-2 py-1.5 text-gray-900 max-w-[16rem] dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
+              className="text-xs font-medium bg-white border border-gray-300 rounded-lg px-2 py-1.5 text-gray-900 w-full max-w-[16rem] min-w-0 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
             >
               {availableKeyboards.length === 0 ? (
                 <option value="">{t('typing.fallbackKeyboard')}</option>

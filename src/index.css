@@ -29,11 +29,19 @@
 
   html {
     color-scheme: light;
+    overflow-x: hidden;
   }
 
   body {
     font-family: var(--font-app);
     line-height: var(--app-line-height);
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  #root {
+    min-width: 0;
+    width: 100%;
   }
 
   button,

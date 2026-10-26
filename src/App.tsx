@@ -104,6 +104,15 @@ export default function App() {
   const [inspectingFont, setInspectingFont] = useState<FontItem | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const onChange = () => {
+      if (!mq.matches) setSidebarOpen(false);
+    };
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
   // Filtered fonts computation
   const filteredFonts = useMemo(() => {
     return allFonts.filter((font) => {
@@ -192,7 +201,7 @@ export default function App() {
 
   return (
     <ScriptStylesProvider>
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex flex-col text-gray-900 dark:text-slate-100 selection:bg-blue-100 selection:text-blue-900 dark:selection:bg-blue-900/60 dark:selection:text-blue-100">
+    <div className="min-h-screen min-w-0 w-full overflow-x-hidden bg-gray-50 dark:bg-slate-950 flex flex-col text-gray-900 dark:text-slate-100 selection:bg-blue-100 selection:text-blue-900 dark:selection:bg-blue-900/60 dark:selection:text-blue-100">
       <PublishedFontFaces fonts={allFonts} />
       <div className="flex-1 flex flex-col">
         {/* Navigation Header */}
@@ -205,7 +214,7 @@ export default function App() {
         />
 
         {/* Tab Views */}
-        <main className="pb-6 flex-1">
+        <main className="pb-6 flex-1 min-w-0 w-full">
           {activeTab === 'catalog' && (
             <ControlsBar
               searchQuery={searchQuery}

@@ -55,9 +55,9 @@ export const Header: React.FC<HeaderProps> = ({
               width={36}
               height={36}
             />
-            <div className="leading-none min-w-0">
+            <div className="leading-none min-w-0 max-w-[42vw] sm:max-w-[14rem] md:max-w-none">
               <p
-                className="tibetan-text font-app font-semibold text-base sm:text-lg tracking-tight text-gray-900 dark:text-slate-100 whitespace-nowrap"
+                className="tibetan-text font-app font-semibold text-sm sm:text-base md:text-lg tracking-tight text-gray-900 dark:text-slate-100 truncate md:whitespace-nowrap"
                 style={{ lineHeight: 1.35, wordBreak: 'normal' }}
               >
                 {t('site.titleTibetan')}

@@ -92,7 +92,7 @@ export const TypingPractice: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 min-w-0 w-full">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
           <div className="flex items-center gap-2">
@@ -108,13 +108,13 @@ export const TypingPractice: React.FC = () => {
       </div>
 
       <div className="space-y-6">
-        <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 p-4 sm:p-6 shadow-xs min-w-0">
           <div className="flex flex-col gap-3 pb-4 border-b border-gray-100 dark:border-slate-800">
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-3">
               <span className="text-xs font-semibold text-gray-500 dark:text-slate-400 tibetan-text">
                 {t('typing.drillsLabel')}
               </span>
-              <div className="flex items-center gap-4 text-xs font-semibold">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-semibold">
                 <div className="flex items-center gap-1.5 text-blue-600">
                   <span className="tibetan-text">{t('typing.speed')}</span>
                   <span className="text-sm font-mono font-bold">{t('typing.wpm', { count: wpm })}</span>
@@ -125,7 +125,7 @@ export const TypingPractice: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-wrap items-center gap-1.5">
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 -mx-1 px-1 max-w-full">
               {TYPING_DRILLS.map((d, idx) => (
                 <button
                   key={d.id}
@@ -133,7 +133,7 @@ export const TypingPractice: React.FC = () => {
                     setCurrentDrillIndex(idx);
                     handleResetDrill();
                   }}
-                  className={`px-2.5 py-1 text-xs rounded-md transition font-medium tibetan-text ${
+                  className={`px-2.5 py-1 text-xs rounded-md transition font-medium tibetan-text shrink-0 whitespace-nowrap ${
                     currentDrillIndex === idx
                       ? 'bg-blue-600 text-white shadow-xs'
                       : 'bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700'
@@ -146,9 +146,11 @@ export const TypingPractice: React.FC = () => {
           </div>
 
           <div className="py-6">
-            <div className="text-xs font-medium text-gray-500 dark:text-slate-400 mb-2 flex items-center justify-between">
+            <div className="text-xs font-medium text-gray-500 dark:text-slate-400 mb-2 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <span className="tibetan-text">{t('typing.targetLabel')}</span>
-              <span className="text-gray-400 dark:text-slate-500 font-mono text-[11px]">{currentDrill.wylieGuide}</span>
+              <span className="text-gray-400 dark:text-slate-500 font-mono text-[11px] break-all sm:break-normal sm:text-right">
+                {currentDrill.wylieGuide}
+              </span>
             </div>
 
             <div className="bg-gray-50 dark:bg-slate-800/50 p-6 rounded-xl border border-gray-200 dark:border-slate-700 select-none overflow-x-auto">
@@ -198,13 +200,13 @@ export const TypingPractice: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex items-center justify-between text-xs text-gray-500 dark:text-slate-400">
-              <div className="flex items-center gap-1.5">
-                <span className="font-semibold text-gray-700 dark:text-slate-300 tibetan-text">{t('typing.tipLabel')}</span>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-xs text-gray-500 dark:text-slate-400">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-1.5 min-w-0">
+                <span className="font-semibold text-gray-700 dark:text-slate-300 tibetan-text shrink-0">{t('typing.tipLabel')}</span>
                 <span className="tibetan-text">{drillText(currentDrill, 'hint', t)}</span>
               </div>
               {isFinished && (
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 shrink-0">
                   <span className="text-emerald-600 font-bold flex items-center gap-1">
                     <CheckCircle2 className="w-4 h-4" /> <span className="tibetan-text">{t('typing.completed')}</span>
                   </span>

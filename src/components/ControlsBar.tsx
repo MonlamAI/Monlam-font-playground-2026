@@ -234,7 +234,7 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
   ];
 
   return (
-    <div className="flex items-start w-full relative overflow-visible">
+    <div className="flex items-start w-full min-w-0 relative overflow-x-hidden">
       {/* Mobile overlay — full drawer only on small screens */}
       {sidebarOpen && (
         <button
@@ -584,59 +584,100 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
       {/* Main column: toolbar + catalog */}
       <div className="flex-1 min-w-0 flex flex-col">
         <div className="sticky top-16 z-30 bg-gray-50/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center gap-3">
-            <HoverTip
-              label={sidebarOpen ? t('filters.collapsePanel') : t('filters.title')}
-              placement="top"
-            >
-              <button
-                type="button"
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                aria-label={sidebarOpen ? t('filters.collapsePanel') : t('filters.expandPanel')}
-                className={`lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-full border transition ${
-                  sidebarOpen
-                    ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
-                    : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-300 border-gray-200 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-700'
-                }`}
+          <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+            <div className="flex items-center gap-2 w-full sm:w-auto min-w-0">
+              <HoverTip
+                label={sidebarOpen ? t('filters.collapsePanel') : t('filters.title')}
+                placement="top"
               >
-                <Filter className="w-4 h-4" />
-              </button>
-            </HoverTip>
+                <button
+                  type="button"
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                  aria-label={sidebarOpen ? t('filters.collapsePanel') : t('filters.expandPanel')}
+                  className={`lg:hidden inline-flex items-center justify-center w-9 h-9 shrink-0 rounded-full border transition ${
+                    sidebarOpen
+                      ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
+                      : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-300 border-gray-200 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  <Filter className="w-4 h-4" />
+                </button>
+              </HoverTip>
 
-            <div
-              className="inline-flex items-center p-0.5 rounded-full border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xs"
-              role="group"
-              aria-label={t('filters.fontKindAria')}
-            >
-              {FONT_KIND_OPTIONS.map((opt) => {
-                const isSelected = selectedFontKind === opt.value;
-                return (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() => setSelectedFontKind(opt.value)}
-                    className={`px-2.5 py-1 rounded-full text-xs font-medium transition ${
-                      isSelected
-                        ? opt.value === 'special'
-                          ? 'bg-amber-600 text-white'
-                          : 'bg-blue-600 text-white'
-                        : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100'
-                    }`}
-                  >
-                    {t(opt.labelKey)}
-                  </button>
-                );
-              })}
+              <div
+                className="inline-flex items-center p-0.5 rounded-full border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xs shrink-0"
+                role="group"
+                aria-label={t('filters.fontKindAria')}
+              >
+                {FONT_KIND_OPTIONS.map((opt) => {
+                  const isSelected = selectedFontKind === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setSelectedFontKind(opt.value)}
+                      className={`px-2 sm:px-2.5 py-1 rounded-full text-xs font-medium transition ${
+                        isSelected
+                          ? opt.value === 'special'
+                            ? 'bg-amber-600 text-white'
+                            : 'bg-blue-600 text-white'
+                          : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100'
+                      }`}
+                    >
+                      {t(opt.labelKey)}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="flex items-center border border-gray-200 dark:border-slate-700 rounded-lg p-0.5 bg-white dark:bg-slate-800 ml-auto sm:ml-0 sm:hidden shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setViewMode('grid')}
+                  aria-label={t('filters.viewGrid')}
+                  className={`p-1.5 rounded-md transition ${
+                    viewMode === 'grid'
+                      ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 shadow-xs'
+                      : 'text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100'
+                  }`}
+                >
+                  <LayoutGrid className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('list')}
+                  aria-label={t('filters.viewList')}
+                  className={`p-1.5 rounded-md transition ${
+                    viewMode === 'list'
+                      ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 shadow-xs'
+                      : 'text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100'
+                  }`}
+                >
+                  <List className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('sample')}
+                  aria-label={t('filters.viewSample')}
+                  className={`p-1.5 rounded-md transition ${
+                    viewMode === 'sample'
+                      ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 shadow-xs'
+                      : 'text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100'
+                  }`}
+                >
+                  <GalleryThumbnails className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
-            <div className="relative flex-1 min-w-[200px] max-w-xl">
+            <div className="relative w-full min-w-0 sm:flex-1 sm:max-w-xl order-3 sm:order-none">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-slate-500" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('catalog.searchPlaceholder')}
-                className="w-full pl-9 pr-9 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-full text-sm text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition shadow-xs"
+                className="w-full min-w-0 pl-9 pr-9 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-full text-sm text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition shadow-xs"
               />
               {searchQuery && (
                 <button
@@ -650,7 +691,7 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
               )}
             </div>
 
-            <div className="flex items-center border border-gray-200 dark:border-slate-700 rounded-lg p-0.5 bg-white dark:bg-slate-800 ml-auto">
+            <div className="hidden sm:flex items-center border border-gray-200 dark:border-slate-700 rounded-lg p-0.5 bg-white dark:bg-slate-800 sm:ml-auto shrink-0">
               <button
                 type="button"
                 onClick={() => setViewMode('grid')}

@@ -195,13 +195,13 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
         aria-hidden
       />
 
-      <div className="relative min-h-full flex items-start sm:items-center justify-center p-3 sm:p-6">
+      <div className="relative min-h-full flex items-end sm:items-center justify-center p-0 sm:p-6">
         <div
           ref={panelRef}
           role="dialog"
           aria-modal="true"
           aria-labelledby="feedback-modal-title"
-          className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700 overflow-hidden max-h-[min(92vh,880px)] flex flex-col"
+          className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700 overflow-hidden max-h-[min(92vh,880px)] flex flex-col"
         >
           <div className="flex items-start justify-between gap-3 px-5 py-4 border-b border-gray-100 dark:border-slate-800 shrink-0">
             <div className="min-w-0">
