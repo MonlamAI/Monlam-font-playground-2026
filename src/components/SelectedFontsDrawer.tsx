@@ -18,6 +18,7 @@ import {
   openOfficialDownload
 } from '../data/officialDownloads';
 import { useI18n } from '../i18n/I18nProvider';
+import { formatLocaleNumber } from '../utils/localeNumber';
 
 interface SelectedFontsDrawerProps {
   isOpen: boolean;
@@ -36,7 +37,8 @@ export const SelectedFontsDrawer: React.FC<SelectedFontsDrawerProps> = ({
   onClearAll,
   onOpenInstall
 }) => {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const cartCountLabel = formatLocaleNumber(selectedFonts.length, locale);
   const [activeTab, setActiveTab] = React.useState<'download' | 'embed'>('download');
   const [downloading, setDownloading] = React.useState(false);
   const [copiedLink, setCopiedLink] = React.useState(false);
@@ -89,7 +91,7 @@ export const SelectedFontsDrawer: React.FC<SelectedFontsDrawerProps> = ({
                 <h3 className="font-bold text-gray-900 dark:text-slate-100 text-base tibetan-text">{t('cart.drawerTitle')}</h3>
                 <p className="text-xs text-gray-500 dark:text-slate-400 tibetan-text">
                   {t(selectedFonts.length === 1 ? 'cart.chosenCount_one' : 'cart.chosenCount_other', {
-                    count: selectedFonts.length
+                    count: cartCountLabel
                   })}
                 </p>
               </div>
@@ -227,7 +229,7 @@ export const SelectedFontsDrawer: React.FC<SelectedFontsDrawerProps> = ({
                   <div className="space-y-4 text-xs text-gray-600 dark:text-slate-400 bg-blue-50/60 dark:bg-blue-950/40 p-4 rounded-xl border border-blue-200/60 dark:border-blue-800/50">
                     <div className="font-semibold text-blue-900 dark:text-blue-200 flex items-center gap-1.5">
                       <Sparkles className="w-4 h-4 text-amber-500 dark:text-amber-400" />
-                      <span>{t('cart.readyPackage', { count: selectedFonts.length })}</span>
+                      <span>{t('cart.readyPackage', { count: cartCountLabel })}</span>
                     </div>
                     <p className="leading-relaxed text-blue-800/80 dark:text-blue-300/80 tibetan-text">{t('cart.bundleDesc')}</p>
                   </div>
@@ -285,7 +287,7 @@ export const SelectedFontsDrawer: React.FC<SelectedFontsDrawerProps> = ({
                 <span>
                   {downloading
                     ? t('cart.creatingZip')
-                    : t('cart.downloadSelectedZip', { count: selectedFonts.length })}
+                    : t('cart.downloadSelectedZip', { count: cartCountLabel })}
                 </span>
               </button>
             </div>

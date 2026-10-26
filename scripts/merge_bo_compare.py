@@ -64,7 +64,7 @@ def main() -> None:
         "removeFromCompare": catalog["removeCompare"],
         "selected": selected,
         "select": C["add"],
-        "downloadTtf": ".ttf \u0f56\u0f72\u0f0b\u0f42\u0f62\u0f0d",
+        "downloadTtf": C["downloadTtf"],
         "vs": "\u0f51\u0f44\u0f0b",
         "metricValueContrastHigh": C["bold"],
         "metricValueContrastMedium": C["medium"],

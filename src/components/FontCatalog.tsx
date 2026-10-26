@@ -44,7 +44,7 @@ export const FontCatalog: React.FC<FontCatalogProps> = ({
   const isCompared = (id: string) => comparedFonts.some((f) => f.id === id);
 
   return (
-    <div className="w-full min-w-0 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4">
+    <div className="w-full min-w-0 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4 scroll-mt-[var(--site-header-h,5.5rem)]">
       {fonts.length === 0 ? (
         <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 p-8">
           <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center mx-auto text-gray-400 dark:text-slate-500 mb-3">

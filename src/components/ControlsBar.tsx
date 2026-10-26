@@ -12,8 +12,9 @@ import {
   PanelLeftClose,
   PanelLeft,
   ChevronDown,
-  Bold,
-  Tags
+  Tags,
+  ALargeSmall,
+  Gauge
 } from 'lucide-react';
 import { FontCategory, PresetText, FontKind, FontItem } from '../types/font';
 import {
@@ -234,7 +235,7 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
   ];
 
   return (
-    <div className="flex items-start w-full min-w-0 relative overflow-x-hidden">
+    <div className="flex items-start w-full min-w-0 relative overflow-x-clip">
       {/* Mobile overlay — full drawer only on small screens */}
       {sidebarOpen && (
         <button
@@ -247,7 +248,7 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
 
       {/* Preview panel: mobile drawer | desktop expanded (w-72) | desktop collapsed icon rail (w-14) */}
       <aside
-        className={`fixed top-16 z-50 h-[calc(100vh-4rem)] overflow-visible bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 flex flex-col transition-[width,transform] duration-200 ease-out left-0 lg:sticky lg:z-30 lg:shrink-0 lg:translate-x-0 ${
+        className={`fixed top-[var(--site-header-h,5.5rem)] z-50 h-[calc(100vh-var(--site-header-h,5.5rem))] overflow-visible bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 flex flex-col transition-[width,transform] duration-200 ease-out left-0 lg:sticky lg:top-[var(--site-header-h,5.5rem)] lg:z-30 lg:max-h-[calc(100vh-var(--site-header-h,5.5rem))] lg:shrink-0 lg:translate-x-0 ${
           sidebarOpen
             ? 'translate-x-0 w-[min(100vw-2.5rem,20rem)] lg:w-72'
             : '-translate-x-full w-[min(100vw-2.5rem,20rem)] lg:translate-x-0 lg:w-14'
@@ -332,7 +333,10 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-medium text-gray-700 dark:text-slate-300">{t('filters.size')}</span>
+                  <span className="font-medium text-gray-700 dark:text-slate-300 inline-flex items-center gap-1">
+                    <ALargeSmall className="w-3 h-3 shrink-0" aria-hidden />
+                    {t('filters.size')}
+                  </span>
                   <span className="font-mono text-gray-600 dark:text-slate-400 tabular-nums">{fontSize}px</span>
                 </div>
                 <input
@@ -365,7 +369,7 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
               <div className="space-y-2 pt-1">
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-medium text-gray-700 dark:text-slate-300 inline-flex items-center gap-1">
-                    <Bold className="w-3 h-3" />
+                    <Gauge className="w-3 h-3 shrink-0" aria-hidden />
                     {t('filters.boldness')}
                   </span>
                   <span className="font-mono text-gray-600 dark:text-slate-400 tabular-nums">{fontWeight}</span>
@@ -433,12 +437,13 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
                 className="w-full flex items-center justify-between gap-2 text-left group"
               >
                 <h3
-                  className={`text-xs font-semibold uppercase tracking-wider group-hover:text-gray-700 dark:group-hover:text-slate-300 ${
+                  className={`text-xs font-semibold uppercase tracking-wider inline-flex items-center gap-1.5 group-hover:text-gray-700 dark:group-hover:text-slate-300 ${
                     isSpecialMode
                       ? 'text-amber-700 dark:text-amber-400'
                       : 'text-gray-500 dark:text-slate-400'
                   }`}
                 >
+                  <LayoutGrid className="w-3.5 h-3.5 shrink-0" aria-hidden />
                   {isSpecialMode ? t('filters.custom') : t('filters.presets')}
                 </h3>
                 <ChevronDown
@@ -583,7 +588,7 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
 
       {/* Main column: toolbar + catalog */}
       <div className="flex-1 min-w-0 flex flex-col">
-        <div className="sticky top-16 z-30 bg-gray-50/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800">
+        <div className="sticky top-[var(--site-header-h,5.5rem)] z-30 bg-gray-50/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800">
           <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <div className="flex items-center gap-2 w-full sm:w-auto min-w-0">
               <HoverTip
@@ -732,7 +737,7 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
           </div>
         </div>
 
-        <div className="w-full min-w-0">{children}</div>
+        <div className="w-full min-w-0 pt-1">{children}</div>
       </div>
     </div>
   );

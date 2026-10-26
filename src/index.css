@@ -15,6 +15,7 @@
     --font-app: "Monlam TB Slim", "Noto Sans Tibetan", ui-sans-serif, system-ui, sans-serif;
     --tibetan-line-height: 1.85;
     --app-line-height: 1.5;
+    --site-header-h: 5.5rem;
   }
 
   html[data-locale="bo"] {
@@ -88,6 +89,12 @@
   font-variant-ligatures: contextual common-ligatures;
   line-height: var(--tibetan-line-height);
   word-break: break-all;
+}
+
+/* Dense UI (header, buttons): avoid clipping stacks with a tighter line-height */
+.tibetan-text-ui {
+  line-height: 1.45;
+  word-break: normal;
 }
 
 /* Catalog preview: per-typeface families (override app UI font on the same node). */

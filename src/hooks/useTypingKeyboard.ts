@@ -35,7 +35,7 @@ export interface UseTypingKeyboardResult {
 
 /** Shared CMS keyboard + OS layout state (synced via localStorage with Typing Practice). */
 export function useTypingKeyboard(): UseTypingKeyboardResult {
-  const { locale, t } = useI18n();
+  const { t } = useI18n();
   const [availableKeyboards, setAvailableKeyboards] = React.useState<KeyboardAsset[]>([]);
   const [selectedKeyboardId, setSelectedKeyboardId] = React.useState('');
   const [osLayout, setOsLayout] = React.useState<KeyboardOsLayout>(() => {
@@ -50,10 +50,7 @@ export function useTypingKeyboard(): UseTypingKeyboardResult {
 
   const practiceKeyboard =
     availableKeyboards.find((k) => k.id === selectedKeyboardId) || availableKeyboards[0] || null;
-  const keyboardTitle =
-    locale === 'bo' && practiceKeyboard?.tibetanName
-      ? practiceKeyboard.tibetanName
-      : practiceKeyboard?.name || t('typing.fallbackKeyboard');
+  const keyboardTitle = practiceKeyboard?.name || t('typing.fallbackKeyboard');
   const keyboardLayout = resolveKeyboardLayout(practiceKeyboard, osLayout);
 
   React.useEffect(() => {

@@ -68,7 +68,6 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
           </div>
           <div>
             <h2 className="text-lg font-bold text-gray-900 dark:text-slate-100 tibetan-text">{t('compare.title')}</h2>
-            <p className="text-xs text-gray-500 dark:text-slate-400 tibetan-text">{t('compare.subtitle')}</p>
           </div>
         </div>
 
@@ -277,10 +276,10 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                     <div className="p-3 bg-gray-50/80 dark:bg-slate-800/50 border-t border-gray-100 dark:border-slate-800 flex items-center justify-end text-xs text-gray-500 dark:text-slate-400">
                       <button
                         onClick={() => downloadSingleFont(font)}
-                        className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+                        className="flex items-center gap-1 py-0.5 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium whitespace-nowrap"
                       >
-                        <Download className="w-3 h-3" />
-                        <span>{t('compare.downloadTtf')}</span>
+                        <Download className="w-3 h-3 shrink-0" />
+                        <span className="tibetan-text-ui">{t('compare.downloadTtf')}</span>
                       </button>
                     </div>
                   </div>

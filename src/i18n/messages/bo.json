@@ -32,8 +32,8 @@
   },
   "theme": {
     "label": "རྒྱབ་ལྗོངས།",
-    "toLight": "ཉི་མའི་བཀོད་པར་བརྗེ་བ།",
-    "toDark": "མུན་པའི་བཀོད་པར་བརྗེ་བ།"
+    "toLight": "འཆར་ངོས་ནག་པོར་བརྗེ།",
+    "toDark": "འཆར་ངོས་དཀར་པོར་བརྗེ།"
   },
   "cart": {
     "label": "བསྡུ་ཉར།",
@@ -153,7 +153,7 @@
     "removeFromCompare": "བསྡུར་བ། སུབ་པ།",
     "selected": "བི་མ་མི་",
     "select": "སྣོན་པ།",
-    "downloadTtf": ".ttf བི་གར།",
+    "downloadTtf": ".ttf ཕབ་ལེན།",
     "vs": "དང་",
     "metricValueContrastHigh": "སྦོམ་པོ།",
     "metricValueContrastMedium": "འབྲིང་།",

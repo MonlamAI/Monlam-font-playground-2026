@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useI18n } from '../i18n/I18nProvider';
+import { formatLocaleNumber } from '../utils/localeNumber';
 
 export interface InstallStep {
   /** Step badge (1, 2, 3) or custom node (e.g. platform icon) */
@@ -16,7 +17,7 @@ interface InstallStepsCarouselProps {
 }
 
 export const InstallStepsCarousel: React.FC<InstallStepsCarouselProps> = ({ steps, resetKey }) => {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [index, setIndex] = React.useState(0);
   const count = steps.length;
 
@@ -92,7 +93,10 @@ export const InstallStepsCarousel: React.FC<InstallStepsCarouselProps> = ({ step
                 type="button"
                 role="tab"
                 aria-selected={i === index}
-                aria-label={t('common.stepOf', { current: i + 1, total: count })}
+                aria-label={t('common.stepOf', {
+                  current: formatLocaleNumber(i + 1, locale),
+                  total: formatLocaleNumber(count, locale)
+                })}
                 onClick={() => setIndex(i)}
                 className={`h-2 rounded-full transition-all ${
                   i === index ? 'w-6 bg-blue-600' : 'w-2 bg-gray-300 dark:bg-slate-600 hover:bg-gray-400 dark:hover:bg-slate-500'
@@ -101,7 +105,10 @@ export const InstallStepsCarousel: React.FC<InstallStepsCarouselProps> = ({ step
             ))}
           </div>
           <span className="text-xs font-medium text-gray-500 dark:text-slate-400 tabular-nums">
-            {t('common.stepOf', { current: index + 1, total: count })}
+            {t('common.stepOf', {
+              current: formatLocaleNumber(index + 1, locale),
+              total: formatLocaleNumber(count, locale)
+            })}
           </span>
         </div>
       )}

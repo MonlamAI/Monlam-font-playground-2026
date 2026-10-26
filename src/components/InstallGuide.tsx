@@ -20,11 +20,8 @@ import {
 import { InstallStep, InstallStepsCarousel } from './InstallStepsCarousel';
 import { useI18n } from '../i18n/I18nProvider';
 import { fontCardTitlePair } from '../utils/fontDisplay';
+import { formatLocaleNumber } from '../utils/localeNumber';
 import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
-
-const stepBadge = (n: number) => (
-  <div className="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center text-sm">{n}</div>
-);
 
 interface InstallGuideProps {
   allFonts: FontItem[];
@@ -35,6 +32,12 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
   const { labelForCategory } = useScriptStylesContext();
   const [activeOs, setActiveOs] = React.useState<'windows' | 'mac'>('windows');
   const [assetListOpen, setAssetListOpen] = React.useState(false);
+
+  const stepBadge = (n: number) => (
+    <div className="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center text-sm tabular-nums">
+      {formatLocaleNumber(n, locale)}
+    </div>
+  );
 
   const macDownload = OFFICIAL_BODYIG_DOWNLOADS.find((d) => d.platform === 'mac')!;
   const winDownload = OFFICIAL_BODYIG_DOWNLOADS.find((d) => d.platform === 'windows')!;
@@ -91,7 +94,6 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
           />
           <h2 className="text-xl font-bold text-gray-900 dark:text-slate-100 tibetan-text">{t('install.pageTitle')}</h2>
         </div>
-        <p className="text-xs text-gray-500 dark:text-slate-400 max-w-3xl tibetan-text">{t('install.pageIntro')}</p>
       </div>
 
       {/* DOWNLOAD PACKAGES SECTION */}
@@ -199,10 +201,6 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
               </div>
             )}
           </div>
-
-          <div className="mt-6 pt-6 border-t border-gray-100 dark:border-slate-800 text-xs text-gray-500 dark:text-slate-400">
-            <span className="tibetan-text">{t('install.assetsFooter')}</span>
-          </div>
         </div>
       </div>
 
@@ -211,7 +209,6 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-gray-100 dark:border-slate-800">
           <div>
             <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 tibetan-text">{t('install.stepsTitle')}</h3>
-            <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5 tibetan-text">{t('install.stepsIntro')}</p>
           </div>
 
           {/* OS Switcher */}
@@ -264,13 +261,13 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
             </div>
           </div>
           <span className="text-xs font-semibold text-gray-500 dark:text-slate-400 bg-gray-100 dark:bg-slate-800 px-3 py-1 rounded-full self-start sm:self-center shrink-0">
-            {t('install.typefacesAvailable', { count: allFonts.length })}
+            {t('install.typefacesAvailable', { count: formatLocaleNumber(allFonts.length, locale) })}
           </span>
         </button>
 
         {assetListOpen && (
         <div className="divide-y divide-gray-100 dark:divide-slate-800 overflow-x-auto">
-          {allFonts.map((font) => {
+          {allFonts.map((font, index) => {
             const titles = fontCardTitlePair(font, locale);
             return (
             <div
@@ -278,8 +275,11 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
               className="p-4 sm:px-6 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition flex items-center justify-between gap-4"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 shrink-0 rounded-lg bg-gray-100 dark:bg-slate-800 flex items-center justify-center font-bold text-gray-700 dark:text-slate-300 text-lg tibetan-text">
-                  {font.sampleText.charAt(0)}
+                <div
+                  className="w-10 h-10 shrink-0 rounded-lg bg-gray-100 dark:bg-slate-800 flex items-center justify-center font-bold text-gray-700 dark:text-slate-300 text-base tabular-nums"
+                  aria-hidden
+                >
+                  {formatLocaleNumber(index + 1, locale)}
                 </div>
                 <div className="min-w-0">
                   <span

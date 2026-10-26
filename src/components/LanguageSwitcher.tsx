@@ -21,7 +21,9 @@ export const LanguageSwitcher: React.FC = () => {
       className="inline-flex items-center gap-2 rounded-lg px-1.5 py-1.5 text-sm font-medium text-gray-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 transition active:scale-[0.98]"
     >
       <Globe className="w-4 h-4 shrink-0" strokeWidth={1.75} />
-      <span className={locale === 'bo' ? 'tibetan-text' : ''}>{currentLabel}</span>
+      <span className={locale === 'bo' ? 'tibetan-text tibetan-text-ui whitespace-nowrap' : 'whitespace-nowrap'}>
+        {currentLabel}
+      </span>
     </button>
   );
 };

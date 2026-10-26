@@ -101,7 +101,6 @@ export const TypingPractice: React.FC = () => {
             </div>
             <div>
               <h2 className="text-xl font-bold text-gray-900 dark:text-slate-100 tibetan-text">{t('typing.title')}</h2>
-              <p className="text-xs text-gray-500 dark:text-slate-400 tibetan-text">{t('typing.subtitle')}</p>
             </div>
           </div>
         </div>
@@ -145,14 +144,7 @@ export const TypingPractice: React.FC = () => {
             </div>
           </div>
 
-          <div className="py-6">
-            <div className="text-xs font-medium text-gray-500 dark:text-slate-400 mb-2 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-              <span className="tibetan-text">{t('typing.targetLabel')}</span>
-              <span className="text-gray-400 dark:text-slate-500 font-mono text-[11px] break-all sm:break-normal sm:text-right">
-                {currentDrill.wylieGuide}
-              </span>
-            </div>
-
+          <div className="pt-4 pb-6">
             <div className="bg-gray-50 dark:bg-slate-800/50 p-6 rounded-xl border border-gray-200 dark:border-slate-700 select-none overflow-x-auto">
               <div className="tibetan-text font-app text-3xl sm:text-4xl text-gray-800 dark:text-slate-100 tracking-wide flex flex-wrap gap-1 items-center">
                 {currentDrill.targetText.split('').map((char, i) => {
@@ -200,25 +192,19 @@ export const TypingPractice: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-xs text-gray-500 dark:text-slate-400">
-              <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-1.5 min-w-0">
-                <span className="font-semibold text-gray-700 dark:text-slate-300 tibetan-text shrink-0">{t('typing.tipLabel')}</span>
-                <span className="tibetan-text">{drillText(currentDrill, 'hint', t)}</span>
+            {isFinished && (
+              <div className="flex flex-wrap items-center justify-end gap-2 text-xs text-gray-500 dark:text-slate-400">
+                <span className="text-emerald-600 font-bold flex items-center gap-1">
+                  <CheckCircle2 className="w-4 h-4" /> <span className="tibetan-text">{t('typing.completed')}</span>
+                </span>
+                <button
+                  onClick={handleNextDrill}
+                  className="px-3 py-1 bg-emerald-600 text-white rounded-md font-semibold hover:bg-emerald-700 transition tibetan-text"
+                >
+                  {t('typing.nextDrill')}
+                </button>
               </div>
-              {isFinished && (
-                <div className="flex flex-wrap items-center gap-2 shrink-0">
-                  <span className="text-emerald-600 font-bold flex items-center gap-1">
-                    <CheckCircle2 className="w-4 h-4" /> <span className="tibetan-text">{t('typing.completed')}</span>
-                  </span>
-                  <button
-                    onClick={handleNextDrill}
-                    className="px-3 py-1 bg-emerald-600 text-white rounded-md font-semibold hover:bg-emerald-700 transition tibetan-text"
-                  >
-                    {t('typing.nextDrill')}
-                  </button>
-                </div>
-              )}
-            </div>
+            )}
           </div>
         </div>
 

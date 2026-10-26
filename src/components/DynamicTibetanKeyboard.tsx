@@ -8,6 +8,7 @@ import {
   type KeyboardOsLayout
 } from '../utils/keyboardLayout';
 import { useI18n } from '../i18n/I18nProvider';
+import { localeBilingualPair } from '../utils/fontDisplay';
 
 export interface DynamicTibetanKeyboardProps {
   keyboardTitle: string;
@@ -215,6 +216,9 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
         keyMapOutput(hintMapped, true, capsLock) === expectedChar);
 
   const spaceHinted = hintKey === ' ';
+  const keyboardTitles = practiceKeyboard
+    ? localeBilingualPair(practiceKeyboard.name, practiceKeyboard.tibetanName, locale)
+    : localeBilingualPair(keyboardTitle, undefined, locale);
   const letterRows = keyboardLayout.map((row) => row.filter((k) => k.key !== ' '));
   const numberRow = letterRows[0] ?? [];
   const qwertyRow = letterRows[1] ?? [];
@@ -246,10 +250,20 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
           <div className="flex items-center gap-2 min-w-0">
             <Keyboard className="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0" />
             <div className="min-w-0">
-              <h3 className="font-semibold text-sm text-sky-700 dark:text-sky-300 truncate">{keyboardTitle}</h3>
-              {practiceKeyboard?.tibetanName ? (
-                <p className="text-[11px] text-gray-500 dark:text-slate-400 tibetan-text truncate">
-                  {practiceKeyboard.tibetanName}
+              <h3
+                className={`font-semibold text-sm text-sky-700 dark:text-sky-300 truncate ${
+                  keyboardTitles.primaryIsTibetan ? 'tibetan-text' : ''
+                }`}
+              >
+                {keyboardTitles.primary}
+              </h3>
+              {keyboardTitles.secondary !== keyboardTitles.primary ? (
+                <p
+                  className={`text-[11px] text-gray-500 dark:text-slate-400 truncate ${
+                    !keyboardTitles.primaryIsTibetan ? 'tibetan-text' : ''
+                  }`}
+                >
+                  {keyboardTitles.secondary}
                 </p>
               ) : null}
             </div>

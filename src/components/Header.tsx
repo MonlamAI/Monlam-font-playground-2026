@@ -15,6 +15,7 @@ import { FontItem } from '../types/font';
 import { useTheme } from '../hooks/useTheme';
 import { FEATURE_TYPING_QUEST, FEATURE_TYPOGRAPHY_GUIDE } from '../config/features';
 import { useI18n } from '../i18n/I18nProvider';
+import { formatLocaleNumber } from '../utils/localeNumber';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
 export type AppTab = 'catalog' | 'compare' | 'typing' | 'quest' | 'guide' | 'install';
@@ -35,15 +36,37 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenFeedback
 }) => {
   const { isDark, toggleTheme } = useTheme();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const headerRef = React.useRef<HTMLElement>(null);
+
+  React.useLayoutEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+
+    const syncHeight = () => {
+      document.documentElement.style.setProperty('--site-header-h', `${el.offsetHeight}px`);
+    };
+
+    syncHeight();
+    const ro = new ResizeObserver(syncHeight);
+    ro.observe(el);
+    window.addEventListener('resize', syncHeight);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', syncHeight);
+    };
+  }, [activeTab]);
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 transition-colors">
+    <header
+      ref={headerRef}
+      className="sticky top-0 z-40 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 transition-colors"
+    >
       <div className="w-full px-3 sm:px-4 lg:px-5">
-        <div className="flex items-center gap-3 lg:gap-4 min-h-16 py-2">
-          {/* Logo / Brand — leftmost, never shrinks or truncates */}
+        <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 min-h-[4.25rem] py-2.5">
+          {/* Logo / Brand */}
           <div
-            className="flex items-center gap-2.5 shrink-0 cursor-pointer"
+            className="flex items-center gap-2 sm:gap-2.5 min-w-0 max-w-[58%] sm:max-w-[65%] md:max-w-[16rem] lg:max-w-[20rem] xl:max-w-none shrink-0 cursor-pointer"
             onClick={() => setActiveTab('catalog')}
             role="link"
             aria-label={t('global.home')}
@@ -55,10 +78,9 @@ export const Header: React.FC<HeaderProps> = ({
               width={36}
               height={36}
             />
-            <div className="leading-none min-w-0 max-w-[42vw] sm:max-w-[14rem] md:max-w-none">
+            <div className="min-w-0">
               <p
-                className="tibetan-text font-app font-semibold text-sm sm:text-base md:text-lg tracking-tight text-gray-900 dark:text-slate-100 truncate md:whitespace-nowrap"
-                style={{ lineHeight: 1.35, wordBreak: 'normal' }}
+                className="tibetan-text tibetan-text-ui font-app font-semibold text-sm sm:text-base lg:text-lg tracking-tight text-gray-900 dark:text-slate-100 whitespace-normal xl:whitespace-nowrap"
               >
                 {t('site.titleTibetan')}
               </p>
@@ -66,81 +88,81 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Navigation Tabs - Google Fonts style */}
-          <nav className="hidden md:flex flex-1 items-center justify-center flex-wrap gap-0.5 lg:gap-1 min-w-0">
+          <nav className="hidden md:flex flex-1 items-center justify-center flex-nowrap gap-0.5 lg:gap-1 min-w-0 overflow-x-auto scrollbar-none px-1">
             <button
               onClick={() => setActiveTab('catalog')}
-              className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+              className={`flex shrink-0 items-center gap-1.5 px-2 lg:px-2.5 xl:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                 activeTab === 'catalog'
                   ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 font-semibold'
                   : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
               }`}
             >
               <Type className="w-4 h-4" />
-              <span>{t('nav.typefaces')}</span>
+              <span className="tibetan-text-ui">{t('nav.typefaces')}</span>
             </button>
 
             <button
               onClick={() => setActiveTab('compare')}
-              className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+              className={`flex shrink-0 items-center gap-1.5 px-2 lg:px-2.5 xl:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                 activeTab === 'compare'
                   ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 font-semibold'
                   : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
               }`}
             >
               <GitCompare className="w-4 h-4" />
-              <span>{t('nav.compare')}</span>
+              <span className="tibetan-text-ui">{t('nav.compare')}</span>
             </button>
 
             <button
               onClick={() => setActiveTab('typing')}
-              className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+              className={`flex shrink-0 items-center gap-1.5 px-2 lg:px-2.5 xl:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                 activeTab === 'typing'
                   ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 font-semibold'
                   : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
               }`}
             >
               <Keyboard className="w-4 h-4" />
-              <span>{t('nav.typing')}</span>
+              <span className="tibetan-text-ui">{t('nav.typing')}</span>
             </button>
 
             {FEATURE_TYPING_QUEST ? (
               <button
                 onClick={() => setActiveTab('quest')}
-                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                className={`flex shrink-0 items-center gap-1.5 px-2 lg:px-2.5 xl:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                   activeTab === 'quest'
                     ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 font-semibold'
                     : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
                 }`}
               >
                 <Gamepad2 className="w-4 h-4" />
-                <span>{t('nav.quest')}</span>
+                <span className="tibetan-text-ui">{t('nav.quest')}</span>
               </button>
             ) : null}
 
             {FEATURE_TYPOGRAPHY_GUIDE ? (
               <button
                 onClick={() => setActiveTab('guide')}
-                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                className={`flex shrink-0 items-center gap-1.5 px-2 lg:px-2.5 xl:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                   activeTab === 'guide'
                     ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 font-semibold'
                     : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
                 }`}
               >
                 <BookOpen className="w-4 h-4" />
-                <span>{t('nav.guide')}</span>
+                <span className="tibetan-text-ui">{t('nav.guide')}</span>
               </button>
             ) : null}
 
             <button
               onClick={() => setActiveTab('install')}
-              className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+              className={`flex shrink-0 items-center gap-1.5 px-2 lg:px-2.5 xl:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                 activeTab === 'install'
                   ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 font-semibold'
                   : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
               }`}
             >
               <Download className="w-4 h-4" />
-              <span>{t('nav.install')}</span>
+              <span className="tibetan-text-ui">{t('nav.install')}</span>
             </button>
           </nav>
 
@@ -183,12 +205,12 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Selected Fonts Drawer Button */}
             <button
               onClick={() => setIsDrawerOpen(true)}
-              className="relative flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-medium shadow-sm transition active:scale-95"
+              className="relative flex shrink-0 items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-2 min-h-9 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-medium shadow-sm transition active:scale-95"
             >
-              <ShoppingBag className="w-4 h-4" />
-              <span className="hidden sm:inline tibetan-text">{t('cart.label')}</span>
-              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white text-blue-700 text-xs font-bold">
-                {selectedFonts.length}
+              <ShoppingBag className="w-4 h-4 shrink-0" />
+              <span className="hidden md:inline tibetan-text tibetan-text-ui whitespace-nowrap">{t('cart.label')}</span>
+              <span className="flex items-center justify-center min-w-5 h-5 px-0.5 rounded-full bg-white text-blue-700 text-xs font-bold tabular-nums">
+                {formatLocaleNumber(selectedFonts.length, locale)}
               </span>
             </button>
           </div>

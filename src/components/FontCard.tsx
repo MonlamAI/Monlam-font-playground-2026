@@ -125,20 +125,20 @@ export const FontCard: React.FC<FontCardProps> = ({
   };
 
   const footerIconBtn =
-    'inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md font-medium transition';
+    'inline-flex min-h-9 h-9 w-9 shrink-0 items-center justify-center rounded-md font-medium transition';
   const footerActionBtn =
-    'inline-flex h-8 shrink-0 items-center justify-center gap-1 rounded-md font-medium transition px-2 min-w-0';
+    'inline-flex min-h-9 shrink-0 items-center justify-center gap-1 rounded-md font-medium transition px-2.5 py-1.5 whitespace-nowrap';
 
   return (
     <div
-      className={`font-card group relative w-full min-w-0 bg-white dark:bg-slate-900 rounded-xl border transition-all duration-200 flex flex-col justify-between overflow-hidden ${
+      className={`font-card group relative w-full min-w-0 bg-white dark:bg-slate-900 rounded-xl border transition-all duration-200 flex flex-col justify-between ${
         isSelected
           ? 'border-blue-500 ring-2 ring-blue-500/20 shadow-md'
           : 'border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600 shadow-xs hover:shadow-md'
       }`}
     >
       {/* Top Header */}
-      <div className="p-4 sm:p-5 border-b border-gray-100 dark:border-slate-800 flex items-start justify-between gap-3 bg-gray-50/50 dark:bg-slate-900/50 min-h-[4.75rem]">
+      <div className="p-4 sm:p-5 border-b border-gray-100 dark:border-slate-800 flex items-start justify-between gap-3 bg-gray-50/50 dark:bg-slate-900/50 min-h-[4.75rem] rounded-t-xl overflow-hidden">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 min-w-0 flex-nowrap">
             <h3
@@ -213,7 +213,7 @@ export const FontCard: React.FC<FontCardProps> = ({
       </div>
 
       {/* Card Footer Toolbar */}
-      <div className="px-4 py-3 bg-gray-50/80 dark:bg-slate-800/50 border-t border-gray-100 dark:border-slate-800 flex flex-nowrap items-center justify-between gap-2 text-xs min-h-[3.25rem]">
+      <div className="px-4 py-3 bg-gray-50/80 dark:bg-slate-800/50 border-t border-gray-100 dark:border-slate-800 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 text-xs min-h-[3.5rem] rounded-b-xl overflow-hidden">
         <div className="flex flex-nowrap items-center gap-1.5 shrink min-w-0">
           <IconTipButton
             label={t('catalog.cardActionCompare')}
@@ -243,10 +243,10 @@ export const FontCard: React.FC<FontCardProps> = ({
           onClick={handleDownload}
           title={`${t('catalog.cardActionDownload')} ${font.filename} (${font.fileSize})`}
           aria-label={`${t('catalog.cardActionDownload')} ${font.filename}`}
-          className={`${footerActionBtn} w-[8rem] bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 hover:border-blue-300 dark:hover:border-blue-700`}
+          className={`${footerActionBtn} bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 hover:border-blue-300 dark:hover:border-blue-700`}
         >
           <Download className="w-3.5 h-3.5 shrink-0" />
-          <span className="truncate">{t('catalog.cardActionDownload')}</span>
+          <span className="tibetan-text-ui">{t('catalog.cardActionDownload')}</span>
           <span className="text-[10px] opacity-75 font-mono shrink-0">.ttf</span>
         </button>
       </div>
