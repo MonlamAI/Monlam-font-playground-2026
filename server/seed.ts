@@ -287,31 +287,19 @@ export function syncScriptStyles(db: Db) {
     INSERT INTO script_styles (id, name, tibetan_name, sort_order, created_at, updated_at)
     VALUES (@id, @name, @tibetan_name, @sort_order, @created_at, @updated_at)
   `);
-  const update = db.prepare(`
-    UPDATE script_styles SET
-      name = @name,
-      tibetan_name = @tibetan_name,
-      sort_order = @sort_order,
-      updated_at = @updated_at
-    WHERE id = @id
-  `);
 
   const tx = db.transaction(() => {
     for (const style of DEFAULT_SCRIPT_STYLES) {
       const existing = db.prepare('SELECT id FROM script_styles WHERE id = ?').get(style.id);
-      const row = {
+      if (existing) continue;
+      insert.run({
         id: style.id,
         name: style.name,
         tibetan_name: style.tibetanName,
         sort_order: style.sortOrder,
         created_at: now,
         updated_at: now
-      };
-      if (existing) {
-        update.run(row);
-      } else {
-        insert.run(row);
-      }
+      });
     }
 
     const orphanCategories = db

@@ -160,7 +160,7 @@ const en = {
     modeOverlay: 'Optical Overlay Diff',
     syncLabel: 'Synchronized test string (updates all columns live):',
     syncPlaceholder: 'Type Tibetan phrase or mantra to compare…',
-    size: 'Comparative size:',
+    size: 'Size:',
     lineHeight: 'Line height:',
     boldness: 'Boldness:',
     addFont: 'Add to compare:',

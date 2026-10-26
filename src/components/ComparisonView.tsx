@@ -101,24 +101,29 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
             </div>
           </div>
 
-          {/* Size & Line Height Controls */}
-          <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center pt-2 text-xs text-gray-600 dark:text-slate-400">
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <div className="flex items-center gap-2 min-w-[min(100%,12rem)]">
-                <span className="font-medium text-gray-700 dark:text-slate-300 shrink-0">{t('compare.size')}</span>
+          {/* Size, line height, boldness, add-font — one row (scrolls horizontally when narrow) */}
+          <div className="flex items-center gap-3 sm:gap-4 lg:gap-5 min-w-0 overflow-x-auto pb-0.5 pt-2 scrollbar-none flex-nowrap text-xs text-gray-600 dark:text-slate-400">
+              <div className="flex items-center gap-1.5 shrink-0">
+                <span className="font-medium text-gray-700 dark:text-slate-300 shrink-0 whitespace-nowrap tibetan-text-ui">
+                  {t('compare.size')}
+                </span>
                 <input
                   type="range"
                   min="20"
                   max="90"
                   value={fontSize}
                   onChange={(e) => setFontSize(Number(e.target.value))}
-                  className="flex-1 min-w-[5rem] max-w-28 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  className="w-[5.5rem] sm:w-24 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600 shrink-0"
                 />
-                <span className="font-mono font-bold text-gray-800 dark:text-slate-200 shrink-0">{fontSize}px</span>
+                <span className="font-mono font-bold text-gray-800 dark:text-slate-200 shrink-0 tabular-nums w-[2.75rem]">
+                  {fontSize}px
+                </span>
               </div>
 
-              <div className="flex items-center gap-2 min-w-[min(100%,12rem)]">
-                <span className="font-medium text-gray-700 dark:text-slate-300 shrink-0">{t('compare.lineHeight')}</span>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <span className="font-medium text-gray-700 dark:text-slate-300 shrink-0 whitespace-nowrap tibetan-text-ui">
+                  {t('compare.lineHeight')}
+                </span>
                 <input
                   type="range"
                   min="1.4"
@@ -126,13 +131,17 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   step="0.1"
                   value={lineHeight}
                   onChange={(e) => setLineHeight(Number(e.target.value))}
-                  className="flex-1 min-w-[5rem] max-w-28 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  className="w-[5.5rem] sm:w-24 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600 shrink-0"
                 />
-                <span className="font-mono font-bold text-gray-800 dark:text-slate-200 shrink-0">{lineHeight.toFixed(1)}x</span>
+                <span className="font-mono font-bold text-gray-800 dark:text-slate-200 shrink-0 tabular-nums w-[2.25rem]">
+                  {lineHeight.toFixed(1)}x
+                </span>
               </div>
 
-              <div className="flex items-center gap-2 min-w-[min(100%,12rem)]">
-                <span className="font-medium text-gray-700 dark:text-slate-300 shrink-0">{t('compare.boldness')}</span>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <span className="font-medium text-gray-700 dark:text-slate-300 shrink-0 whitespace-nowrap tibetan-text-ui">
+                  {t('compare.boldness')}
+                </span>
                 <input
                   type="range"
                   min="300"
@@ -140,16 +149,18 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   step="100"
                   value={fontWeight}
                   onChange={(e) => onFontWeightChange(Number(e.target.value))}
-                  className="flex-1 min-w-[5rem] max-w-28 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  className="w-[5.5rem] sm:w-24 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600 shrink-0"
                 />
-                <span className="font-mono font-bold text-gray-800 dark:text-slate-200 tabular-nums shrink-0">{fontWeight}</span>
+                <span className="font-mono font-bold text-gray-800 dark:text-slate-200 tabular-nums shrink-0 w-[2rem]">
+                  {fontWeight}
+                </span>
               </div>
-            </div>
 
-            {/* Add Font to Compare Dropdown */}
             {allFonts.length > 0 && (
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full lg:w-auto lg:ml-auto min-w-0">
-                <span className="text-gray-500 dark:text-slate-400 shrink-0">{t('compare.addFont')}</span>
+              <div className="flex items-center gap-2 shrink-0 ml-auto pl-1 sm:pl-3">
+                <span className="text-gray-500 dark:text-slate-400 shrink-0 whitespace-nowrap tibetan-text-ui">
+                  {t('compare.addFont')}
+                </span>
                 <select
                   onChange={(e) => {
                     const found = allFonts.find((f) => f.id === e.target.value);
@@ -158,7 +169,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   }}
                   defaultValue=""
                   disabled={!canAddMore}
-                  className="w-full sm:max-w-xs min-w-0 px-2.5 py-1.5 text-xs bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 rounded-lg font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-[min(14rem,42vw)] sm:w-52 max-w-xs min-w-[10rem] px-2.5 py-1.5 text-xs bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 rounded-lg font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
                 >
                   <option value="" disabled>
                     {t('compare.chooseTypeface', { count: allFonts.length })}

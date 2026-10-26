@@ -6,7 +6,7 @@ from pathlib import Path
 OUT = Path(__file__).resolve().parent.parent / "src/i18n/messages/bo.json"
 
 COMMON = {
-    "download": "ཕབ་ལེན",
+    "download": "ཕབ་ལེན།",
     "downloadTtf": ".ttf ཕབ་ལེན།",
     "comparing": "བསྡུར་བཞིན་པ།",
     "compare": "བསྡུར་བ།",
