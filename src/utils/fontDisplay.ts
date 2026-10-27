@@ -1,5 +1,18 @@
 import type { AppLocale } from '../i18n/localeStorage';
-import type { FontCategory } from '../types/font';
+import type { FontCategory, FontItem } from '../types/font';
+
+const LOOSE_LEADING_CATEGORY = /ume|umê|drutsa|tsugring|petsug/i;
+
+/** Catalog card previews: honor the slider but never crush cursive / tall metrics. */
+export function catalogPreviewLineHeight(font: FontItem, lineHeight: number): number {
+  const stroke = font.metrics?.strokeType;
+  const loose =
+    LOOSE_LEADING_CATEGORY.test(font.category) ||
+    stroke === 'Cursive Pen' ||
+    stroke === 'Calligraphic Reed Pen';
+  const floor = loose ? 2.15 : 1.85;
+  return Math.max(lineHeight, floor);
+}
 
 /** Single string for the active UI locale (English or Tibetan only). */
 export function localePick(english: string, tibetan: string | undefined, locale: AppLocale): string {

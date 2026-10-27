@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Github, Scale } from 'lucide-react';
 import { useI18n } from '../i18n/I18nProvider';
 import { uiTibetanClass } from '../utils/fontDisplay';
-import { localeNumeralsClass } from '../utils/localeNumber';
+import { formatLocaleNumber, localeNumeralsClass } from '../utils/localeNumber';
 
 export const AppFooter: React.FC = () => {
   const { t, locale } = useI18n();
@@ -55,9 +55,11 @@ export const AppFooter: React.FC = () => {
           </ul>
 
           <div className="flex items-center gap-2 text-gray-400 dark:text-slate-500 lg:justify-end shrink-0">
-            <img src="/logos/monlam-ai.svg" alt="" className="w-4 h-4 opacity-80" width={16} height={16} />
-            <span className={`${locale === 'bo' ? 'tibetan-text' : ''} ${localeNumeralsClass}`}>
-              {t('footer.copyright', { year })}
+            <img src="/logos/monlam.svg" alt="" className="w-5 h-5 shrink-0" width={20} height={20} />
+            <span className={`text-xs ${uiBo}`}>
+              ©{' '}
+              <span className={localeNumeralsClass}>{formatLocaleNumber(year, locale)}</span>{' '}
+              {t('footer.copyrightHolder')}
             </span>
           </div>
         </div>

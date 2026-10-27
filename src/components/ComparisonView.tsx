@@ -3,7 +3,7 @@ import { FontItem } from '../types/font';
 import { GitCompare, Plus, X, Download, Check } from 'lucide-react';
 import { PRESET_TEXTS } from '../data/fontsData';
 import { downloadSingleFont } from '../utils/fontDownloader';
-import { fontAssetLabel } from '../utils/fontDisplay';
+import { fontAssetLabel, uiTibetanClass } from '../utils/fontDisplay';
 import { useI18n } from '../i18n/I18nProvider';
 import {
   formatLocaleMultiplier,
@@ -23,6 +23,7 @@ interface ComparisonViewProps {
   onToggleSelect: (font: FontItem) => void;
   fontWeight: number;
   onFontWeightChange: (weight: number) => void;
+  compareBoldnessEnabled?: boolean;
 }
 
 export const ComparisonView: React.FC<ComparisonViewProps> = ({
@@ -34,7 +35,8 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
   selectedFonts,
   onToggleSelect,
   fontWeight,
-  onFontWeightChange
+  onFontWeightChange,
+  compareBoldnessEnabled = false
 }) => {
   const { t, locale } = useI18n();
   const { labelForCategory } = useScriptStylesContext();
@@ -46,6 +48,11 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
     [comparedFonts]
   );
   const canAddMore = comparedFonts.length < allFonts.length;
+  const selectUiClass = locale === 'bo' ? `${uiTibetanClass('bo', true)} text-sm` : 'text-xs';
+  const addTypefaceSelectWidth =
+    locale === 'bo'
+      ? 'w-[min(18rem,52vw)] sm:w-64 min-w-[15rem]'
+      : 'w-[min(14rem,42vw)] sm:w-52 min-w-[10rem]';
 
   const setGridFont = (slot: number, fontId: string) => {
     const font = allFonts.find((f) => f.id === fontId);
@@ -81,20 +88,18 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
         <div className="mt-5 pt-4 border-t border-gray-100 dark:border-slate-800 space-y-3">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <div className="flex-1">
-              <label className="block text-xs font-semibold text-gray-600 dark:text-slate-400 mb-1">
-                {t('compare.syncLabel')}
-              </label>
               <input
                 type="text"
                 value={syncText}
                 onChange={(e) => setSyncText(e.target.value)}
+                aria-label={t('compare.syncPlaceholder')}
                 className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-sm text-gray-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-blue-500 tibetan-text font-medium"
                 placeholder={t('compare.syncPlaceholder')}
               />
             </div>
 
             {/* Quick Sample Presets */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 -mx-1 px-1 max-w-full pt-4 sm:pt-0">
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 -mx-1 px-1 max-w-full">
               {PRESET_TEXTS.slice(0, 4).map((p) => (
                 <button
                   key={p.id}
@@ -144,29 +149,28 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                 </span>
               </div>
 
-              <div className="flex items-center gap-1.5 shrink-0">
-                <span className="font-medium text-gray-700 dark:text-slate-300 shrink-0 whitespace-nowrap tibetan-text-ui">
-                  {t('compare.boldness')}
-                </span>
-                <input
-                  type="range"
-                  min="300"
-                  max="900"
-                  step="100"
-                  value={fontWeight}
-                  onChange={(e) => onFontWeightChange(Number(e.target.value))}
-                  className="w-[5.5rem] sm:w-24 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600 shrink-0"
-                />
-                <span className={`w-[2rem] shrink-0 font-bold text-gray-900 dark:text-slate-100 ${localeNumeralsClass}`}>
-                  {formatLocaleNumber(fontWeight, locale)}
-                </span>
-              </div>
+              {compareBoldnessEnabled ? (
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <span className="font-medium text-gray-700 dark:text-slate-300 shrink-0 whitespace-nowrap tibetan-text-ui">
+                    {t('compare.boldness')}
+                  </span>
+                  <input
+                    type="range"
+                    min="300"
+                    max="900"
+                    step="100"
+                    value={fontWeight}
+                    onChange={(e) => onFontWeightChange(Number(e.target.value))}
+                    className="w-[5.5rem] sm:w-24 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600 shrink-0"
+                  />
+                  <span className={`w-[2rem] shrink-0 font-bold text-gray-900 dark:text-slate-100 ${localeNumeralsClass}`}>
+                    {formatLocaleNumber(fontWeight, locale)}
+                  </span>
+                </div>
+              ) : null}
 
             {allFonts.length > 0 && (
-              <div className="flex items-center gap-2 shrink-0 ml-auto pl-1 sm:pl-3">
-                <span className="text-gray-500 dark:text-slate-400 shrink-0 whitespace-nowrap tibetan-text-ui">
-                  {t('compare.addFont')}
-                </span>
+              <div className="flex items-center shrink-0 ml-auto pl-1 sm:pl-3">
                 <select
                   onChange={(e) => {
                     const found = allFonts.find((f) => f.id === e.target.value);
@@ -175,7 +179,8 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   }}
                   defaultValue=""
                   disabled={!canAddMore}
-                  className="w-[min(14rem,42vw)] sm:w-52 max-w-xs min-w-[10rem] px-2.5 py-1.5 text-xs bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 rounded-lg font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+                  aria-label={t('compare.addFont')}
+                  className={`ui-select ${addTypefaceSelectWidth} max-w-full pl-2.5 ${selectUiClass} bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 rounded-lg font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shrink-0`}
                 >
                   <option value="" disabled>
                     {t('compare.chooseTypeface', { count: allFonts.length })}
@@ -228,11 +233,11 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                     {/* Header */}
                     <div className="p-4 border-b border-gray-100 dark:border-slate-800 bg-gray-50/70 dark:bg-slate-800/50 flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2 min-w-0">
                           <select
                             value={font.id}
                             onChange={(e) => setGridFont(index, e.target.value)}
-                            className={`font-semibold text-gray-900 dark:text-slate-100 text-sm border border-gray-200 dark:border-slate-700 rounded-lg px-2 py-1 bg-white dark:bg-slate-800 dark:text-slate-100 max-w-full ${locale === 'bo' ? 'tibetan-text' : ''}`}
+                            className={`ui-select font-semibold text-gray-900 dark:text-slate-100 border border-gray-200 dark:border-slate-700 rounded-lg pl-2.5 bg-white dark:bg-slate-800 w-fit max-w-[min(100%,20rem)] min-w-0 ${selectUiClass}`}
                           >
                             {allFonts.map((f) => (
                               <option key={f.id} value={f.id}>

@@ -9,6 +9,7 @@ import type {
   ScriptStyleAssetInput
 } from '../types/cms';
 import type { FontPresetConfig } from '../types/font';
+import type { PublicSiteSettings } from '../types/siteSettings';
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
@@ -45,6 +46,12 @@ export const adminApi = {
       feedback: number;
       newFeedback: number;
     }>('/api/admin/stats'),
+  siteSettings: () => request<PublicSiteSettings>('/api/admin/site-settings'),
+  updateSiteSettings: (data: Partial<PublicSiteSettings>) =>
+    request<PublicSiteSettings>('/api/admin/site-settings', {
+      method: 'PATCH',
+      body: JSON.stringify(data)
+    }),
   listFonts: () => request<FontAsset[]>('/api/admin/fonts'),
   getFont: (id: string) => request<FontAsset>(`/api/admin/fonts/${id}`),
   createFont: (data: FontAssetInput) =>

@@ -14,6 +14,7 @@ import {
 import { requireAdmin, loginAdmin, logoutAdmin, meAdmin } from './auth';
 import { storeUpload, deleteStoredFile } from './storage';
 import { sendFeedbackEmail } from './email';
+import { readPublicSiteSettings, setCompareBoldnessEnabled } from './siteSettings';
 
 function fontWithConfigs(db: Db, row: Record<string, unknown>) {
   return rowToFont(row, loadFontPresetConfigs(db, row.id as string));
@@ -706,6 +707,19 @@ export function createAdminRouter(db: Db) {
     res.json({ ok: true });
   });
 
+  router.get('/site-settings', (_req, res) => {
+    res.json(readPublicSiteSettings(db));
+  });
+
+  router.patch('/site-settings', (req, res) => {
+    const enabled = req.body?.compareBoldnessEnabled;
+    if (typeof enabled !== 'boolean') {
+      res.status(400).json({ error: 'compareBoldnessEnabled must be a boolean.' });
+      return;
+    }
+    res.json(setCompareBoldnessEnabled(db, enabled));
+  });
+
   router.get('/stats', (_req, res) => {
     const fonts = db.prepare('SELECT COUNT(*) as c FROM fonts').get() as { c: number };
     const publishedFonts = db
@@ -1098,6 +1112,10 @@ export function createAdminRouter(db: Db) {
 
 export function createPublicRouter(db: Db) {
   const router = Router();
+
+  router.get('/site-settings', (_req, res) => {
+    res.json(readPublicSiteSettings(db));
+  });
 
   router.get('/presets', (req, res) => {
     const publishedOnly = req.query.published !== '0';

@@ -4,3 +4,5 @@ export const FEATURE_TYPOGRAPHY_GUIDE = false;
 
 /** Catalog filter sidebar: weight slider and presets (preview still uses default weight). */
 export const FEATURE_CATALOG_BOLDNESS = false;
+
+/** Compare boldness slider: controlled in Admin → Dashboard (site_settings). Default off. */

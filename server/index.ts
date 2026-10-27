@@ -13,12 +13,14 @@ import { openDatabase } from './db';
 import { seedIfEmpty } from './seed';
 import { createAdminRouter, createPublicRouter } from './routes';
 import { getLocalUploadDir } from './storage';
+import { ensureDefaultSiteSettings } from './siteSettings';
 
 const PORT = Number(process.env.PORT || 8787);
 const isProd = process.env.NODE_ENV === 'production';
 
 const db = openDatabase();
 seedIfEmpty(db);
+ensureDefaultSiteSettings(db);
 
 const app = express();
 app.set('trust proxy', 1);

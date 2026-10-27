@@ -236,3 +236,41 @@
 .font-card:hover {
   transform: translateY(-2px);
 }
+
+.font-card__preview .tibetan-text {
+  overflow: visible;
+  word-break: normal;
+  overflow-wrap: anywhere;
+  line-height: var(--font-card-preview-lh, var(--tibetan-line-height));
+}
+
+/* Compare / form selects: chevron inset from the edge (not stuck in the corner). */
+.ui-select {
+  appearance: none;
+  -webkit-appearance: none;
+  line-height: 1.5;
+  min-height: 2.25rem;
+  padding-top: 0.4375rem;
+  padding-bottom: 0.4375rem;
+  padding-right: 2.25rem;
+  background-repeat: no-repeat;
+  background-position: right 0.625rem center;
+  background-size: 1rem 1rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+html.dark .ui-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a3a3a3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* Tibetan UI in native <select>: extra vertical room (stacks / vowels clip at text-xs). */
+html[data-locale="bo"] .ui-select {
+  line-height: 1.65;
+  min-height: 2.75rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-family: var(--font-app);
+  font-feature-settings: normal;
+  font-variant-ligatures: normal;
+  word-break: normal;
+}

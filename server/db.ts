@@ -131,6 +131,12 @@ export function openDatabase(dbPath = process.env.DATABASE_PATH || defaultDbPath
       FOREIGN KEY (font_id) REFERENCES fonts(id) ON DELETE CASCADE,
       FOREIGN KEY (preset_id) REFERENCES presets(id) ON DELETE CASCADE
     );
+
+    CREATE TABLE IF NOT EXISTS site_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
   `);
 
   ensureColumn(db, 'fonts', 'font_kind', "TEXT NOT NULL DEFAULT 'normal'");

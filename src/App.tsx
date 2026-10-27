@@ -30,10 +30,12 @@ import {
 } from './utils/resolvePreviewText';
 import { FEATURE_TYPING_QUEST, FEATURE_TYPOGRAPHY_GUIDE } from './config/features';
 import { ScriptStylesProvider } from './contexts/ScriptStylesContext';
+import { useSiteSettings } from './hooks/useSiteSettings';
 
 export default function App() {
   const { fonts: allFonts } = usePublishedFonts();
   const { presets } = usePublishedPresets();
+  const siteSettings = useSiteSettings();
   const {
     open: updatesOpen,
     collapsed: updatesCollapsed,
@@ -288,6 +290,7 @@ export default function App() {
               onToggleSelect={handleToggleSelect}
               fontWeight={fontWeight}
               onFontWeightChange={setFontWeight}
+              compareBoldnessEnabled={siteSettings.compareBoldnessEnabled}
             />
           )}
 

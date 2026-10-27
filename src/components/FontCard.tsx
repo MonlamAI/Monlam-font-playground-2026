@@ -1,10 +1,10 @@
 import React from 'react';
-import { createPortal } from 'react-dom';
 import { Download, GitCompare, Eye, Check, Plus } from 'lucide-react';
+import { TooltipButton, TooltipIconButton } from './HoverTooltip';
 import { FontItem } from '../types/font';
 import { downloadSingleFont } from '../utils/fontDownloader';
 import { useI18n } from '../i18n/I18nProvider';
-import { fontCardTitlePair } from '../utils/fontDisplay';
+import { catalogPreviewLineHeight, fontCardTitlePair } from '../utils/fontDisplay';
 import { localizeDigitsInString } from '../utils/localeNumber';
 import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
 
@@ -23,65 +23,6 @@ interface FontCardProps {
   centerPreview?: boolean;
   /** List view: one-line preview (preset line breaks collapsed). */
   singleLinePreview?: boolean;
-}
-
-const iconTipBubble =
-  'pointer-events-none whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-[11px] font-medium text-white shadow-md dark:bg-slate-100 dark:text-slate-900';
-
-function IconTipButton({
-  label,
-  ariaLabel,
-  onClick,
-  className,
-  children
-}: {
-  label: string;
-  ariaLabel: string;
-  onClick: () => void;
-  className: string;
-  children: React.ReactNode;
-}) {
-  const anchorRef = React.useRef<HTMLButtonElement>(null);
-  const [visible, setVisible] = React.useState(false);
-  const [coords, setCoords] = React.useState({ x: 0, y: 0 });
-
-  const show = () => {
-    const el = anchorRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    setCoords({ x: rect.left + rect.width / 2, y: rect.top - 6 });
-    setVisible(true);
-  };
-
-  return (
-    <>
-      <button
-        ref={anchorRef}
-        type="button"
-        onClick={onClick}
-        aria-label={ariaLabel}
-        onMouseEnter={show}
-        onMouseLeave={() => setVisible(false)}
-        onFocus={show}
-        onBlur={() => setVisible(false)}
-        className={className}
-      >
-        {children}
-      </button>
-      {visible &&
-        typeof document !== 'undefined' &&
-        createPortal(
-          <div
-            role="tooltip"
-            className={`fixed z-[9999] ${iconTipBubble}`}
-            style={{ left: coords.x, top: coords.y, transform: 'translate(-50%, -100%)' }}
-          >
-            {label}
-          </div>,
-          document.body
-        )}
-    </>
-  );
 }
 
 export const FontCard: React.FC<FontCardProps> = ({
@@ -130,9 +71,15 @@ export const FontCard: React.FC<FontCardProps> = ({
   const footerActionBtn =
     'inline-flex min-h-9 shrink-0 items-center justify-center gap-1 rounded-md font-medium transition px-2.5 py-1.5 whitespace-nowrap';
 
+  const previewLineHeight = catalogPreviewLineHeight(font, lineHeight);
+  const descenderPad = Math.round(fontSize * 0.45);
+  const previewMinHeight = singleLinePreview
+    ? undefined
+    : Math.max(180, Math.round(fontSize * previewLineHeight * 2 + fontSize * 0.55));
+
   return (
     <div
-      className={`font-card group relative flex h-full min-w-0 w-full flex-col justify-between rounded-xl border bg-white transition-all duration-200 dark:bg-slate-900 ${
+      className={`font-card group relative flex h-full min-w-0 w-full flex-col justify-between overflow-hidden rounded-xl border bg-white transition-all duration-200 dark:bg-slate-900 ${
         isSelected
           ? 'border-blue-500 ring-2 ring-blue-500/20 shadow-md'
           : 'border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600 shadow-xs hover:shadow-md'
@@ -172,10 +119,10 @@ export const FontCard: React.FC<FontCardProps> = ({
           ) : null}
         </div>
 
-        {/* Selection Checkbox */}
-        <button
+        <TooltipIconButton
+          label={isSelected ? t('catalog.removeFromBag') : t('catalog.addToBag')}
+          ariaLabel={isSelected ? t('catalog.removeFromBag') : t('catalog.addToBag')}
           onClick={() => onToggleSelect(font)}
-          title={isSelected ? t('catalog.removeFromBag') : t('catalog.addToBag')}
           className={`flex items-center justify-center w-8 h-8 rounded-lg border transition ${
             isSelected
               ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
@@ -183,13 +130,18 @@ export const FontCard: React.FC<FontCardProps> = ({
           }`}
         >
           {isSelected ? <Check className="w-4 h-4 stroke-[3]" /> : <Plus className="w-4 h-4" />}
-        </button>
+        </TooltipIconButton>
       </div>
 
       {/* Font Sample Live Preview Area */}
       <div
-        className={`min-w-0 overflow-hidden flex flex-col justify-center ${
-          singleLinePreview ? 'min-h-0 py-3 sm:py-4 px-4 sm:px-6' : 'flex-1 min-h-[140px] p-4 sm:p-6'
+        style={
+          singleLinePreview
+            ? { paddingBottom: descenderPad }
+            : { minHeight: previewMinHeight, paddingBottom: descenderPad }
+        }
+        className={`font-card__preview min-w-0 flex flex-col justify-center overflow-x-hidden overflow-y-auto ${
+          singleLinePreview ? 'min-h-0 py-3 sm:py-4 px-4 sm:px-6' : 'flex-1 p-4 sm:p-6'
         }`}
       >
         <div
@@ -198,17 +150,16 @@ export const FontCard: React.FC<FontCardProps> = ({
           onBlur={(e) => setLocalText(e.currentTarget.textContent || '')}
           style={{
             fontSize: `${fontSize}px`,
-            lineHeight: singleLinePreview ? 1.35 : lineHeight,
+            lineHeight: previewLineHeight,
             fontWeight,
             overflowWrap: singleLinePreview ? 'anywhere' : undefined,
+            ['--font-card-preview-lh' as string]: String(previewLineHeight),
             ...(font.fileUrl
               ? { fontFamily: `'${font.name}', 'Noto Serif Tibetan', 'Jomolhari', serif` }
               : {})
           }}
-          className={`${font.cssClass} tibetan-text text-gray-900 dark:text-slate-100 focus:outline-hidden focus:bg-blue-50/20 dark:focus:bg-blue-950/30 p-2 rounded-lg transition-colors min-w-0 w-full max-w-full ${
-            singleLinePreview
-              ? 'whitespace-normal break-words overflow-hidden'
-              : 'break-words whitespace-pre-line'
+          className={`${font.cssClass} tibetan-text text-gray-900 dark:text-slate-100 focus:outline-hidden focus:bg-blue-50/20 dark:focus:bg-blue-950/30 p-2 rounded-lg transition-colors min-w-0 w-full max-w-full overflow-visible ${
+            singleLinePreview ? 'whitespace-normal break-words' : 'break-words whitespace-pre-line'
           } ${centerPreview ? 'text-center' : 'text-left'}`}
         >
           {displayText}
@@ -218,7 +169,7 @@ export const FontCard: React.FC<FontCardProps> = ({
       {/* Card Footer Toolbar */}
       <div className="px-4 py-3 bg-gray-50/80 dark:bg-slate-800/50 border-t border-gray-100 dark:border-slate-800 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 text-xs min-h-[3.5rem] rounded-b-xl overflow-hidden">
         <div className="flex flex-nowrap items-center gap-1.5 shrink min-w-0">
-          <IconTipButton
+          <TooltipIconButton
             label={t('catalog.cardActionCompare')}
             ariaLabel={isCompared ? t('catalog.removeCompare') : t('catalog.addCompare')}
             onClick={() => onToggleCompare(font)}
@@ -229,29 +180,30 @@ export const FontCard: React.FC<FontCardProps> = ({
             }`}
           >
             <GitCompare className="w-4 h-4 shrink-0" />
-          </IconTipButton>
+          </TooltipIconButton>
 
-          <IconTipButton
+          <TooltipIconButton
             label={t('catalog.cardActionGlyphs')}
             ariaLabel={t('catalog.openGlyphs')}
             onClick={() => onOpenGlyphs(font)}
             className={`${footerIconBtn} bg-white dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700`}
           >
             <Eye className="w-4 h-4 shrink-0" />
-          </IconTipButton>
+          </TooltipIconButton>
         </div>
 
-        <button
-          type="button"
+        <TooltipButton
+          label={`${t('catalog.cardActionDownload')} ${localizeDigitsInString(font.filename, locale)} (${localizeDigitsInString(font.fileSize, locale)})`}
+          ariaLabel={`${t('catalog.cardActionDownload')} ${font.filename}`}
           onClick={handleDownload}
-          title={`${t('catalog.cardActionDownload')} ${localizeDigitsInString(font.filename, locale)} (${localizeDigitsInString(font.fileSize, locale)})`}
-          aria-label={`${t('catalog.cardActionDownload')} ${font.filename}`}
           className={`${footerActionBtn} bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 hover:border-blue-300 dark:hover:border-blue-700`}
         >
           <Download className="w-3.5 h-3.5 shrink-0" />
           <span className={locale === 'bo' ? 'tibetan-text-ui tibetan-text' : ''}>{t('catalog.cardActionDownload')}</span>
-          <span className="text-[10px] opacity-75 font-mono shrink-0">.ttf</span>
-        </button>
+          {locale !== 'bo' ? (
+            <span className="text-[10px] opacity-75 font-mono shrink-0">.ttf</span>
+          ) : null}
+        </TooltipButton>
       </div>
     </div>
   );

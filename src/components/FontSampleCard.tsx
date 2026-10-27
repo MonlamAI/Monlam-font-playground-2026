@@ -2,9 +2,10 @@ import React from 'react';
 import { Check, Plus, Download, GitCompare } from 'lucide-react';
 import { FontItem } from '../types/font';
 import { useI18n } from '../i18n/I18nProvider';
-import { fontCardTitlePair } from '../utils/fontDisplay';
+import { catalogPreviewLineHeight, fontCardTitlePair } from '../utils/fontDisplay';
 import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
 import { downloadSingleFont } from '../utils/fontDownloader';
+import { TooltipIconButton } from './HoverTooltip';
 
 interface FontSampleCardProps {
   font: FontItem;
@@ -84,6 +85,7 @@ export const FontSampleCard: React.FC<FontSampleCardProps> = ({
   const titles = fontCardTitlePair(font, locale);
   const theme = React.useMemo(() => posterThemeForIndex(posterIndex), [posterIndex]);
   const sampleSize = Math.max(fontSize, 48);
+  const previewLineHeight = catalogPreviewLineHeight(font, lineHeight);
 
   const ghostBtnStyle: React.CSSProperties = {
     borderColor: theme.border,
@@ -130,10 +132,10 @@ export const FontSampleCard: React.FC<FontSampleCardProps> = ({
         </div>
 
         <div className="flex shrink-0 items-center gap-1">
-          <button
-            type="button"
+          <TooltipIconButton
+            label={isCompared ? t('catalog.removeCompare') : t('catalog.addCompare')}
+            ariaLabel={isCompared ? t('catalog.removeCompare') : t('catalog.addCompare')}
             onClick={() => onToggleCompare(font)}
-            title={isCompared ? t('catalog.removeCompare') : t('catalog.addCompare')}
             className={
               isCompared
                 ? `${ghostBtnClass} border-indigo-600 bg-indigo-600 text-white`
@@ -142,33 +144,33 @@ export const FontSampleCard: React.FC<FontSampleCardProps> = ({
             style={isCompared ? undefined : ghostBtnStyle}
           >
             <GitCompare className="h-3.5 w-3.5" />
-          </button>
-          <button
-            type="button"
+          </TooltipIconButton>
+          <TooltipIconButton
+            label={`${t('catalog.cardActionDownload')} ${font.filename}`}
+            ariaLabel={`${t('catalog.cardActionDownload')} ${font.filename}`}
             onClick={() => downloadSingleFont(font)}
-            title={`${t('catalog.cardActionDownload')} ${font.filename}`}
             className={ghostBtnClass}
             style={ghostBtnStyle}
           >
             <Download className="h-3.5 w-3.5" />
-          </button>
-          <button
-            type="button"
+          </TooltipIconButton>
+          <TooltipIconButton
+            label={isSelected ? t('catalog.removeFromBag') : t('catalog.addToBag')}
+            ariaLabel={isSelected ? t('catalog.removeFromBag') : t('catalog.addToBag')}
             onClick={() => onToggleSelect(font)}
-            title={isSelected ? t('catalog.removeFromBag') : t('catalog.addToBag')}
             className={`flex h-8 w-8 items-center justify-center rounded-lg border transition ${
               isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'opacity-70 group-hover:opacity-100'
             }`}
             style={isSelected ? undefined : ghostBtnStyle}
           >
             {isSelected ? <Check className="h-4 w-4 stroke-[3]" /> : <Plus className="h-4 w-4" />}
-          </button>
+          </TooltipIconButton>
         </div>
       </header>
 
       <div
         style={{ color: theme.meta }}
-        className="relative flex min-h-[200px] flex-1 items-center justify-center px-5 pb-6 sm:min-h-[240px]"
+        className="relative flex min-h-[200px] flex-1 items-center justify-center overflow-x-hidden overflow-y-auto px-5 pb-8 sm:min-h-[240px] sm:pb-10"
       >
         <div
           aria-hidden
@@ -180,14 +182,16 @@ export const FontSampleCard: React.FC<FontSampleCardProps> = ({
         <p
           style={{
             fontSize: `${sampleSize}px`,
-            lineHeight,
+            lineHeight: previewLineHeight,
             fontWeight,
             color: theme.text,
+            paddingBottom: Math.round(sampleSize * 0.45),
+            ['--font-card-preview-lh' as string]: String(previewLineHeight),
             ...(font.fileUrl
               ? { fontFamily: `'${font.name}', 'Noto Serif Tibetan', 'Jomolhari', serif` }
               : {})
           }}
-          className={`${font.cssClass} tibetan-text w-full select-text break-words whitespace-pre-line text-center`}
+          className={`${font.cssClass} tibetan-text w-full select-text overflow-visible break-words whitespace-pre-line text-center`}
         >
           {previewText}
         </p>
