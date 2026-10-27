@@ -6,3 +6,6 @@ export const FEATURE_TYPOGRAPHY_GUIDE = false;
 export const FEATURE_CATALOG_BOLDNESS = false;
 
 /** Compare boldness slider: controlled in Admin → Dashboard (site_settings). Default off. */
+
+/** Typing Practice header: live WPM readout. */
+export const FEATURE_TYPING_WPM = false;

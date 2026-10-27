@@ -12,6 +12,7 @@ import {
   localeNumeralsClass
 } from '../utils/localeNumber';
 import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
+import { TooltipIconButton } from './HoverTooltip';
 
 interface ComparisonViewProps {
   allFonts: FontItem[];
@@ -252,9 +253,10 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                       </div>
 
                       <div className="flex items-center gap-1">
-                        <button
+                        <TooltipIconButton
+                          label={isSelected ? t('compare.selected') : t('compare.select')}
+                          ariaLabel={isSelected ? t('compare.selected') : t('compare.select')}
                           onClick={() => onToggleSelect(font)}
-                          title={isSelected ? t('compare.selected') : t('compare.select')}
                           className={`p-1.5 rounded-md border text-xs transition ${
                             isSelected
                               ? 'bg-blue-600 text-white border-blue-600'
@@ -262,14 +264,15 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                           }`}
                         >
                           {isSelected ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
-                        </button>
-                        <button
+                        </TooltipIconButton>
+                        <TooltipIconButton
+                          label={t('compare.removeFromCompare')}
+                          ariaLabel={t('compare.removeFromCompare')}
                           onClick={() => onRemoveFont(font.id)}
-                          title={t('compare.removeFromCompare')}
                           className="p-1.5 rounded-md text-gray-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition"
                         >
                           <X className="w-4 h-4" />
-                        </button>
+                        </TooltipIconButton>
                       </div>
                     </div>
 

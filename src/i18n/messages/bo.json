@@ -21,7 +21,7 @@
     "quest": "འབྲི་རྩེད་མོ།",
     "guide": "ཡིག་གཟུགས་ལམ་སྟོན།",
     "install": "ཕབ་ལེན་དང་སྒྲིག་འཇུག",
-    "feedback": "བསམ་འཆར་"
+    "feedback": "བསམ་ཚུལ།"
   },
   "lang": {
     "label": "སྐད་ཡིག",
@@ -32,8 +32,8 @@
   },
   "theme": {
     "label": "རྒྱབ་ལྗོངས།",
-    "toLight": "འཆར་ངོས་ནག་པོར་བརྗེ།",
-    "toDark": "འཆར་ངོས་དཀར་པོར་བརྗེ།"
+    "toLight": "འཆར་ངོས་ནག་པོ།",
+    "toDark": "འཆར་ངོས་དཀར་པོ།"
   },
   "cart": {
     "label": "བསྡུ་ཉར།",
@@ -147,10 +147,10 @@
     "metricAscender": "དག་མ་མི་",
     "metricDescender": "མ་ག་ མི་ མ་ག་",
     "metricSpacing": "ཤིང་གྲངས",
-    "emptyTitle": "བདམས་པ་མེད་པ།",
-    "compareFirstTwo": "ཡིག་གཟུགས གཉིས བསྡུར་བ (སྣོན་པ)",
-    "removeFromCompare": "བསྡུར་བ། སུབ་པ།",
-    "selected": "བི་མ་མི་",
+    "emptyTitle": "བསྡུར་བྱའི་ཡིག་གཟུགས་བདམས་མེད།",
+    "compareFirstTwo": "ཡིག་གཟུགས་གཉིས་གཤིབ་བསྡུར་བྱོས།",
+    "removeFromCompare": "གསུབ་པ།",
+    "selected": "བདམས་པ།",
     "select": "སྣོན་པ།",
     "downloadTtf": "ཕབ་ལེན།",
     "vs": "དང་",
@@ -231,8 +231,8 @@
     "layoutLabel": "སྒྲིག་བཀོད།",
     "layoutWindows": "Windows སྒྲིག་བཀོད།",
     "layoutMac": "Mac སྒྲིག་བཀོད།",
-    "shiftOn": "Shift: ཡོད",
-    "shiftOff": "Shift: མེད",
+    "shiftOn": "Shift: སྤྱོད།",
+    "shiftOff": "Shift: མི་སྤྱོད།",
     "shiftNeeded": "Shift: dgos",
     "keysFollowOs": "མཐེབ་གནོན་རྣམས་ཁྱེད་ཀྱིས་བདམས་པའི་མ་ལག་གི་སྒྲིག་བཀོད་དང་མཐུན།",
     "fallbackKeyboard": "Monlam Bodyig 2025",
@@ -301,9 +301,9 @@
     "osMac": "macOS",
     "osLinux": "Linux",
     "osMobile": "iOS & Android",
-    "directDownloads": "ཡིག་གཟུགས ཕབ་ལེན།",
+    "directDownloads": "ཡིག་གཟུགས་ཕབ་ལེན།",
     "directIntro": "ཡིག་གཟུགས་རྐྱང་པ་རྣམས་ Mac དང་ Windows གཉིས་ཀར་བཀོལ་སྤྱོད་བྱེད་ཐུབ།",
-    "typefacesAvailable": "ཡིག་གཟུགས {{count}} ཡོད།",
+    "typefacesAvailable": "ཡིག་གཟུགས་ {{count}} ཡོད།",
     "macWindows": "Mac & Windows",
     "downloadMac": "Mac མ་ལག་ཏུ་ཕབ་ལེན།",
     "downloadWin": "Windows མ་ལག་ཏུ་ཕབ་ལེན།",
@@ -363,11 +363,11 @@
     "title": "བསམ་ཚུལ།",
     "subtitle": "བསམ་འཆར་དང་། དཀའ་ངལ། འཆར་སྣང་ཅི་ཞིག་བྱུང་ཚེ། འཆར་ངོས་པར་རིས་སམ་བརྙན་ཐུང་དང་སྦྲགས་ཏེ་སྐུར་རོགས།",
     "messageLabel": "ཁྱེད་ཀྱི་བསམ་ཚུལ།",
-    "messagePlaceholder": "ཁྱེད་ཀྱི་བསམ་འཆར་དང་། དཀའ་ངལ། ཡང་ན་ཉམས་མྱོང་སྐོར་བཅས་འདིར་འགྲེལ་བརྗོད་གནང་རོགས།",
+    "messagePlaceholder": "ཁྱེད་ཀྱི་བསམ་འཆར་དང་། དཀའ་ངལ། ཡང་ན་ཉམས་མྱོང་བཅས་འདིར་འགྲེལ་བརྗོད་གནང་རོགས།",
     "emailLabel": "གློག་འཕྲིན་ཁ་བྱང་།",
     "emailOptional": "（གདམ་ང་།）",
     "attachments": "ཟུར་སྦྱར་ཡིག་ཆ།",
-    "attachmentsHint": "འདིར་ཡིག་ཆ་ལྔ་ལས་མང་བ་འཇུག་མི་ཐུབ། ཡིག་ཆ་རེའི་ཚད་གཞི་ {{maxMb}} MB ལས་བརྒལ་མི་ཆོག",
+    "attachmentsHint": "འདིར་ཡིག་ཆ་ལྔ་ལས་མང་བ་འཇུག་མི་ཐུབ། ཡིག་ཆ་རེའི་ཚད་གཞི་ {{maxMb}} ལས་བརྒལ་མི་ཆོག",
     "chooseFiles": "པར་རིས་དང་བརྙན་ཐུང་འདེམས་སྤྱོད།",
     "submit": "བསམ་ཚུལ་ཡར་སྤྲོད།",
     "submitting": "ཡར་སྤྲོད་བཞིན་པ…"

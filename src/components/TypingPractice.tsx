@@ -10,6 +10,7 @@ import {
   layoutKeyFromCode,
   mappedCharFromKeyboardEvent
 } from '../utils/keyboardLayout';
+import { FEATURE_TYPING_WPM } from '../config/features';
 
 function drillText(d: TypingDrill, field: 'title' | 'hint', t: (key: string) => string): string {
   const key = `typing.drills.${d.id}.${field}`;
@@ -116,10 +117,12 @@ export const TypingPractice: React.FC = () => {
                 {t('typing.drillsLabel')}
               </span>
               <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-semibold">
-                <div className="flex items-center gap-1.5 text-blue-600">
-                  <span className="tibetan-text">{t('typing.speed')}</span>
-                  <span className={`text-sm font-bold ${fmt.numeralsClass}`}>{t('typing.wpm', { count: wpm })}</span>
-                </div>
+                {FEATURE_TYPING_WPM ? (
+                  <div className="flex items-center gap-1.5 text-blue-600">
+                    <span className="tibetan-text">{t('typing.speed')}</span>
+                    <span className={`text-sm font-bold ${fmt.numeralsClass}`}>{t('typing.wpm', { count: wpm })}</span>
+                  </div>
+                ) : null}
                 <div className="flex items-center gap-1.5 text-emerald-600">
                   <span className="tibetan-text">{t('typing.accuracy')}</span>
                   <span className={`text-sm font-bold ${fmt.numeralsClass}`}>{fmt.pct(accuracy)}</span>

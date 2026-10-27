@@ -97,14 +97,14 @@
   word-break: normal;
 }
 
-/* UI counters / sliders: Tibetan digits (U+0F20–0F29) in a clear face — not Monlam titling OT rules */
+/* UI counters / sliders: Tibetan digits (U+0F20–0F29) — Monlam UI face, plain OT (no titling rules) */
 .locale-numerals {
-  font-family: "Noto Sans Tibetan", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-app);
   font-feature-settings: normal;
   font-variant-ligatures: none;
-  line-height: 1.2;
+  line-height: inherit;
   word-break: normal;
-  letter-spacing: 0.02em;
+  letter-spacing: normal;
   -webkit-font-smoothing: antialiased;
 }
 
