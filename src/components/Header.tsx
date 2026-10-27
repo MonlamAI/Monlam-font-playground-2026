@@ -15,7 +15,8 @@ import { FontItem } from '../types/font';
 import { useTheme } from '../hooks/useTheme';
 import { FEATURE_TYPING_QUEST, FEATURE_TYPOGRAPHY_GUIDE } from '../config/features';
 import { useI18n } from '../i18n/I18nProvider';
-import { formatLocaleNumber } from '../utils/localeNumber';
+import { uiTibetanClass } from '../utils/fontDisplay';
+import { formatLocaleNumber, localeNumeralsClass } from '../utils/localeNumber';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
 export type AppTab = 'catalog' | 'compare' | 'typing' | 'quest' | 'guide' | 'install';
@@ -38,6 +39,8 @@ export const Header: React.FC<HeaderProps> = ({
   const { isDark, toggleTheme } = useTheme();
   const { t, locale } = useI18n();
   const headerRef = React.useRef<HTMLElement>(null);
+  const siteTitle = locale === 'bo' ? t('site.titleTibetan') : t('site.titleEnglish');
+  const uiBo = uiTibetanClass(locale, true);
 
   React.useLayoutEffect(() => {
     const el = headerRef.current;
@@ -80,9 +83,9 @@ export const Header: React.FC<HeaderProps> = ({
             />
             <div className="min-w-0">
               <p
-                className="tibetan-text tibetan-text-ui font-app font-semibold text-sm sm:text-base lg:text-lg tracking-tight text-gray-900 dark:text-slate-100 whitespace-normal xl:whitespace-nowrap"
+                className={`font-app font-semibold text-sm sm:text-base lg:text-lg tracking-tight text-gray-900 dark:text-slate-100 whitespace-normal xl:whitespace-nowrap ${uiBo}`}
               >
-                {t('site.titleTibetan')}
+                {siteTitle}
               </p>
             </div>
           </div>
@@ -98,7 +101,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <Type className="w-4 h-4" />
-              <span className="tibetan-text-ui">{t('nav.typefaces')}</span>
+              <span className={uiBo}>{t('nav.typefaces')}</span>
             </button>
 
             <button
@@ -110,7 +113,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <GitCompare className="w-4 h-4" />
-              <span className="tibetan-text-ui">{t('nav.compare')}</span>
+              <span className={uiBo}>{t('nav.compare')}</span>
             </button>
 
             <button
@@ -122,7 +125,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <Keyboard className="w-4 h-4" />
-              <span className="tibetan-text-ui">{t('nav.typing')}</span>
+              <span className={uiBo}>{t('nav.typing')}</span>
             </button>
 
             {FEATURE_TYPING_QUEST ? (
@@ -135,7 +138,7 @@ export const Header: React.FC<HeaderProps> = ({
                 }`}
               >
                 <Gamepad2 className="w-4 h-4" />
-                <span className="tibetan-text-ui">{t('nav.quest')}</span>
+                <span className={uiBo}>{t('nav.quest')}</span>
               </button>
             ) : null}
 
@@ -149,7 +152,7 @@ export const Header: React.FC<HeaderProps> = ({
                 }`}
               >
                 <BookOpen className="w-4 h-4" />
-                <span className="tibetan-text-ui">{t('nav.guide')}</span>
+                <span className={uiBo}>{t('nav.guide')}</span>
               </button>
             ) : null}
 
@@ -162,7 +165,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <Download className="w-4 h-4" />
-              <span className="tibetan-text-ui">{t('nav.install')}</span>
+              <span className={uiBo}>{t('nav.install')}</span>
             </button>
           </nav>
 
@@ -188,7 +191,9 @@ export const Header: React.FC<HeaderProps> = ({
                 type="button"
                 onClick={onOpenFeedback}
                 aria-label={t('nav.feedback')}
-                className="group relative inline-flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-600 dark:text-slate-300 shadow-sm transition active:scale-95"
+                className={`group relative inline-flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-600 dark:text-slate-300 shadow-sm transition active:scale-95 ${
+                  activeTab === 'catalog' ? 'lg:hidden' : ''
+                }`}
               >
                 <MessageSquarePlus className="w-4 h-4" />
                 <span
@@ -208,8 +213,10 @@ export const Header: React.FC<HeaderProps> = ({
               className="relative flex shrink-0 items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-2 min-h-9 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-medium shadow-sm transition active:scale-95"
             >
               <ShoppingBag className="w-4 h-4 shrink-0" />
-              <span className="hidden md:inline tibetan-text tibetan-text-ui whitespace-nowrap">{t('cart.label')}</span>
-              <span className="flex items-center justify-center min-w-5 h-5 px-0.5 rounded-full bg-white text-blue-700 text-xs font-bold tabular-nums">
+              <span className={`hidden md:inline whitespace-nowrap ${uiBo}`}>{t('cart.label')}</span>
+              <span
+                className={`flex h-5 min-w-5 items-center justify-center rounded-full bg-white px-0.5 text-xs font-bold text-blue-800 ${localeNumeralsClass}`}
+              >
                 {formatLocaleNumber(selectedFonts.length, locale)}
               </span>
             </button>

@@ -27,12 +27,7 @@ export function ScriptStylesProvider({ children }: { children: React.ReactNode }
     (categoryId: string) => {
       const style = styles.find((s) => s.id === categoryId);
       if (style) {
-        const primary = locale === 'bo' ? style.tibetanName || style.name : style.name;
-        const secondary = locale === 'bo' ? style.name : style.tibetanName;
-        if (secondary?.trim() && secondary.trim() !== primary.trim()) {
-          return `${primary} · ${secondary.trim()}`;
-        }
-        return primary;
+        return locale === 'bo' ? style.tibetanName || style.name : style.name;
       }
       return fontCategoryLabel(categoryId, t);
     },

@@ -19,73 +19,53 @@ interface FontSampleCardProps {
   onToggleCompare: (font: FontItem) => void;
 }
 
-/** Quiet poster palettes — cycle per card for easy visual comparison */
-const POSTER_THEMES = [
-  {
-    surface: 'bg-[#1a2332]',
-    text: 'text-[#f2ebe3]',
-    meta: 'text-[#a8b4c4]',
-    name: 'text-[#f7f3ee]',
-    border: 'border-[#2a3545]',
-    accent: 'bg-[#c4a574]/20 text-[#e8d5b5] border-[#c4a574]/30'
-  },
-  {
-    surface: 'bg-[#243028]',
-    text: 'text-[#eef5ef]',
-    meta: 'text-[#9db5a6]',
-    name: 'text-[#f4faf5]',
-    border: 'border-[#334238]',
-    accent: 'bg-[#7d9b82]/25 text-[#c5d9c8] border-[#7d9b82]/35'
-  },
-  {
-    surface: 'bg-[#2c2420]',
-    text: 'text-[#f5ebe3]',
-    meta: 'text-[#c4a99a]',
-    name: 'text-[#faf4ef]',
-    border: 'border-[#3d322c]',
-    accent: 'bg-[#d4a07a]/20 text-[#f0d0b8] border-[#d4a07a]/30'
-  },
-  {
-    surface: 'bg-[#1e2a32]',
-    text: 'text-[#e8f1f5]',
-    meta: 'text-[#8fb0c0]',
-    name: 'text-[#f2f8fb]',
-    border: 'border-[#2d3d48]',
-    accent: 'bg-[#6a9bb0]/25 text-[#b8d4e0] border-[#6a9bb0]/35'
-  },
-  {
-    surface: 'bg-[#2a2430]',
-    text: 'text-[#f3eef5]',
-    meta: 'text-[#b5a8c4]',
-    name: 'text-[#faf7fc]',
-    border: 'border-[#3a3342]',
-    accent: 'bg-[#9b87b0]/25 text-[#d4c8e4] border-[#9b87b0]/35'
-  },
-  {
-    surface: 'bg-[#f4f0e8]',
-    text: 'text-[#2a241c]',
-    meta: 'text-[#6b6258]',
-    name: 'text-[#1c1814]',
-    border: 'border-[#ddd5c8]',
-    accent: 'bg-[#8b6914]/15 text-[#5c4810] border-[#8b6914]/25'
-  },
-  {
-    surface: 'bg-[#e8eef2]',
-    text: 'text-[#1a2830]',
-    meta: 'text-[#5a6e7a]',
-    name: 'text-[#122028]',
-    border: 'border-[#c8d4dc]',
-    accent: 'bg-[#3d6a80]/15 text-[#2a4a5c] border-[#3d6a80]/25'
-  },
-  {
-    surface: 'bg-[#ece8e0]',
-    text: 'text-[#2c2218]',
-    meta: 'text-[#6e5e4e]',
-    name: 'text-[#1a140e]',
-    border: 'border-[#d4cbc0]',
-    accent: 'bg-[#a06040]/15 text-[#6a3a28] border-[#a06040]/25'
+type PosterThemeColors = {
+  surface: string;
+  text: string;
+  meta: string;
+  name: string;
+  border: string;
+  accentBackground: string;
+  accentText: string;
+  accentBorder: string;
+  ghostButtonBg: string;
+};
+
+/** Golden-angle hues so each card gets a distinct color (no short repeat cycle). */
+function posterThemeForIndex(index: number): PosterThemeColors {
+  const hue = (index * 137.508) % 360;
+  const accentHue = (hue + 47) % 360;
+  const lightBand = index % 7 === 6;
+
+  if (lightBand) {
+    return {
+      surface: `hsl(${hue} 44% 91%)`,
+      text: `hsl(${hue} 50% 13%)`,
+      meta: `hsl(${hue} 28% 38%)`,
+      name: `hsl(${hue} 55% 9%)`,
+      border: `hsl(${hue} 32% 76%)`,
+      accentBackground: `hsla(${accentHue}, 65%, 40%, 0.18)`,
+      accentText: `hsl(${accentHue} 60% 24%)`,
+      accentBorder: `hsla(${accentHue}, 65%, 40%, 0.34)`,
+      ghostButtonBg: `hsla(${hue}, 35%, 86%, 0.9)`
+    };
   }
-] as const;
+
+  return {
+    surface: `hsl(${hue} 40% 11%)`,
+    text: `hsl(${hue} 34% 93%)`,
+    meta: `hsl(${hue} 22% 66%)`,
+    name: `hsl(${hue} 32% 97%)`,
+    border: `hsl(${hue} 30% 21%)`,
+    accentBackground: `hsla(${accentHue}, 58%, 55%, 0.26)`,
+    accentText: `hsl(${accentHue} 48% 84%)`,
+    accentBorder: `hsla(${accentHue}, 58%, 55%, 0.4)`,
+    ghostButtonBg: `hsla(${hue}, 28%, 16%, 0.75)`
+  };
+}
+
+const ghostBtnClass =
+  'rounded-lg border p-1.5 transition opacity-70 group-hover:opacity-100 hover:opacity-100';
 
 export const FontSampleCard: React.FC<FontSampleCardProps> = ({
   font,
@@ -102,75 +82,94 @@ export const FontSampleCard: React.FC<FontSampleCardProps> = ({
   const { t, locale } = useI18n();
   const { labelForCategory } = useScriptStylesContext();
   const titles = fontCardTitlePair(font, locale);
-  const theme = POSTER_THEMES[posterIndex % POSTER_THEMES.length];
+  const theme = React.useMemo(() => posterThemeForIndex(posterIndex), [posterIndex]);
   const sampleSize = Math.max(fontSize, 48);
+
+  const ghostBtnStyle: React.CSSProperties = {
+    borderColor: theme.border,
+    color: theme.meta,
+    backgroundColor: theme.ghostButtonBg
+  };
 
   return (
     <article
-      className={`group relative flex flex-col overflow-hidden rounded-2xl border transition-all duration-200 ${theme.surface} ${theme.border} ${
+      style={{ backgroundColor: theme.surface, borderColor: theme.border }}
+      className={`group relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border transition-all duration-200 ${
         isSelected ? 'ring-2 ring-blue-500/50 shadow-lg' : 'shadow-xs hover:shadow-md'
       }`}
     >
-      {/* Poster header — Google Fonts–style name strip */}
-      <header className="flex items-start justify-between gap-3 px-5 pt-5 pb-3">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
+      <header className="flex min-h-[4.75rem] shrink-0 items-start justify-between gap-3 px-5 pt-5 pb-3">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
             <h3
-              className={`text-base font-semibold tracking-tight truncate ${theme.name} ${
+              style={{ color: theme.name }}
+              className={`truncate text-base font-semibold tracking-tight ${
                 titles.primaryIsTibetan ? 'tibetan-text' : ''
               }`}
             >
               {titles.primary}
             </h3>
             <span
-              className={`text-[10px] px-1.5 py-0.5 rounded-md font-medium border shrink-0 ${theme.accent}`}
+              style={{
+                backgroundColor: theme.accentBackground,
+                color: theme.accentText,
+                borderColor: theme.accentBorder
+              }}
+              className="shrink-0 rounded-md border px-1.5 py-0.5 text-[10px] font-medium"
             >
               {labelForCategory(font.category)}
             </span>
           </div>
-          <div className={`mt-1 text-xs ${theme.meta}`}>
-            <span className={!titles.primaryIsTibetan ? 'tibetan-text' : ''}>{titles.secondary}</span>
-          </div>
+          {titles.secondary ? (
+            <div style={{ color: theme.meta }} className="mt-1 min-h-[1.25rem] text-xs">
+              <span className={`block truncate ${!titles.primaryIsTibetan ? 'tibetan-text' : ''}`}>
+                {titles.secondary}
+              </span>
+            </div>
+          ) : null}
         </div>
 
-        <div className="flex items-center gap-1 shrink-0">
+        <div className="flex shrink-0 items-center gap-1">
           <button
             type="button"
             onClick={() => onToggleCompare(font)}
-            title={isCompared ? 'Remove from compare' : 'Add to compare'}
-            className={`p-1.5 rounded-lg border transition opacity-70 group-hover:opacity-100 ${
+            title={isCompared ? t('catalog.removeCompare') : t('catalog.addCompare')}
+            className={
               isCompared
-                ? 'bg-indigo-600 text-white border-indigo-600'
-                : `${theme.border} ${theme.meta} hover:opacity-100`
-            }`}
+                ? `${ghostBtnClass} border-indigo-600 bg-indigo-600 text-white`
+                : ghostBtnClass
+            }
+            style={isCompared ? undefined : ghostBtnStyle}
           >
-            <GitCompare className="w-3.5 h-3.5" />
+            <GitCompare className="h-3.5 w-3.5" />
           </button>
           <button
             type="button"
             onClick={() => downloadSingleFont(font)}
-            title={`Download ${font.filename}`}
-            className={`p-1.5 rounded-lg border transition opacity-70 group-hover:opacity-100 ${theme.border} ${theme.meta}`}
+            title={`${t('catalog.cardActionDownload')} ${font.filename}`}
+            className={ghostBtnClass}
+            style={ghostBtnStyle}
           >
-            <Download className="w-3.5 h-3.5" />
+            <Download className="h-3.5 w-3.5" />
           </button>
           <button
             type="button"
             onClick={() => onToggleSelect(font)}
-            title={isSelected ? 'Remove from cart' : 'Add to cart'}
-            className={`flex items-center justify-center w-8 h-8 rounded-lg border transition ${
-              isSelected
-                ? 'bg-blue-600 text-white border-blue-600'
-                : `${theme.border} ${theme.meta} opacity-70 group-hover:opacity-100`
+            title={isSelected ? t('catalog.removeFromBag') : t('catalog.addToBag')}
+            className={`flex h-8 w-8 items-center justify-center rounded-lg border transition ${
+              isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'opacity-70 group-hover:opacity-100'
             }`}
+            style={isSelected ? undefined : ghostBtnStyle}
           >
-            {isSelected ? <Check className="w-4 h-4 stroke-[3]" /> : <Plus className="w-4 h-4" />}
+            {isSelected ? <Check className="h-4 w-4 stroke-[3]" /> : <Plus className="h-4 w-4" />}
           </button>
         </div>
       </header>
 
-      {/* Large sample poster plane */}
-      <div className="relative flex-1 min-h-[200px] sm:min-h-[240px] px-5 pb-6 flex items-center justify-center">
+      <div
+        style={{ color: theme.meta }}
+        className="relative flex min-h-[200px] flex-1 items-center justify-center px-5 pb-6 sm:min-h-[240px]"
+      >
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-5 top-0 h-px opacity-30"
@@ -183,11 +182,12 @@ export const FontSampleCard: React.FC<FontSampleCardProps> = ({
             fontSize: `${sampleSize}px`,
             lineHeight,
             fontWeight,
+            color: theme.text,
             ...(font.fileUrl
               ? { fontFamily: `'${font.name}', 'Noto Serif Tibetan', 'Jomolhari', serif` }
               : {})
           }}
-          className={`${font.cssClass} tibetan-text ${theme.text} break-words whitespace-pre-line w-full select-text text-center`}
+          className={`${font.cssClass} tibetan-text w-full select-text break-words whitespace-pre-line text-center`}
         >
           {previewText}
         </p>

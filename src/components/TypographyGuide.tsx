@@ -9,8 +9,10 @@ import {
 } from '../data/tibetanData';
 import { MONLAM_FONTS } from '../data/fontsData';
 import { fontAssetLabel } from '../utils/fontDisplay';
+import { useI18n } from '../i18n/I18nProvider';
 
 export const TypographyGuide: React.FC = () => {
+  const { locale } = useI18n();
   const [activeComponentId, setActiveComponentId] = React.useState<string>('ming-zhi');
   const [selectedSubjoinGroup, setSelectedSubjoinGroup] = React.useState(0);
   const [previewFont, setPreviewFont] = React.useState(MONLAM_FONTS[0].id);
@@ -63,7 +65,7 @@ export const TypographyGuide: React.FC = () => {
             >
               {MONLAM_FONTS.map((f) => (
                 <option key={f.id} value={f.id}>
-                  {fontAssetLabel(f)}
+                  {fontAssetLabel(f, locale)}
                 </option>
               ))}
             </select>

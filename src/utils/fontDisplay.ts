@@ -1,9 +1,17 @@
 import type { AppLocale } from '../i18n/localeStorage';
 import type { FontCategory } from '../types/font';
 
-/** User-facing label: Tibetan primary, English in parentheses */
-export function fontAssetLabel(font: { name: string; tibetanName: string }): string {
-  return `${font.tibetanName} (${font.name})`;
+/** Single string for the active UI locale (English or Tibetan only). */
+export function localePick(english: string, tibetan: string | undefined, locale: AppLocale): string {
+  const en = english.trim();
+  const tb = (tibetan?.trim() || en).trim();
+  return locale === 'bo' ? tb : en;
+}
+
+/** CSS classes for UI chrome that shows Tibetan script. */
+export function uiTibetanClass(locale: AppLocale, dense = false): string {
+  if (locale !== 'bo') return '';
+  return dense ? 'tibetan-text tibetan-text-ui' : 'tibetan-text';
 }
 
 export type LocaleTitlePair = {
@@ -12,26 +20,34 @@ export type LocaleTitlePair = {
   primaryIsTibetan: boolean;
 };
 
-/** English + Tibetan lines; order follows UI locale. */
+/** Card / list titles: one line per locale (`secondary` is empty). */
 export function localeBilingualPair(
   english: string,
   tibetan: string | undefined,
   locale: AppLocale
 ): LocaleTitlePair {
-  const tb = (tibetan?.trim() || english).trim();
-  const en = english.trim();
   if (locale === 'bo') {
-    return { primary: tb, secondary: en, primaryIsTibetan: true };
+    const primary = (tibetan?.trim() || english).trim();
+    return { primary, secondary: '', primaryIsTibetan: true };
   }
-  return { primary: en, secondary: tb, primaryIsTibetan: false };
+  const primary = english.trim();
+  return { primary, secondary: '', primaryIsTibetan: false };
 }
 
-/** Card heading + subheading order follows UI locale. */
+/** Card heading order follows UI locale (single line). */
 export function fontCardTitlePair(
   font: { name: string; tibetanName: string },
   locale: AppLocale
 ): LocaleTitlePair {
   return localeBilingualPair(font.name, font.tibetanName, locale);
+}
+
+/** Select options, cart rows, compare pickers — locale-only label. */
+export function fontAssetLabel(
+  font: { name: string; tibetanName: string },
+  locale: AppLocale
+): string {
+  return localePick(font.name, font.tibetanName, locale);
 }
 
 const CATEGORY_I18N: Record<FontCategory, string> = {

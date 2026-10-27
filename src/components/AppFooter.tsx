@@ -2,10 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Github, Scale } from 'lucide-react';
 import { useI18n } from '../i18n/I18nProvider';
+import { uiTibetanClass } from '../utils/fontDisplay';
+import { localeNumeralsClass } from '../utils/localeNumber';
 
 export const AppFooter: React.FC = () => {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const year = new Date().getFullYear();
+  const siteTitle = locale === 'bo' ? t('site.titleTibetan') : t('site.titleEnglish');
+  const uiBo = uiTibetanClass(locale, true);
 
   return (
     <footer className="border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-4 sm:py-5">
@@ -20,10 +24,10 @@ export const AppFooter: React.FC = () => {
               height={36}
             />
             <p
-              className="tibetan-text font-app font-semibold text-sm sm:text-base tracking-tight text-gray-900 dark:text-slate-100 whitespace-nowrap"
+              className={`font-app font-semibold text-sm sm:text-base tracking-tight text-gray-900 dark:text-slate-100 whitespace-nowrap ${uiBo}`}
               style={{ lineHeight: 1.35, wordBreak: 'normal' }}
             >
-              {t('site.titleTibetan')}
+              {siteTitle}
             </p>
           </div>
 
@@ -52,7 +56,9 @@ export const AppFooter: React.FC = () => {
 
           <div className="flex items-center gap-2 text-gray-400 dark:text-slate-500 lg:justify-end shrink-0">
             <img src="/logos/monlam-ai.svg" alt="" className="w-4 h-4 opacity-80" width={16} height={16} />
-            <span className="tibetan-text">{t('footer.copyright', { year })}</span>
+            <span className={`${locale === 'bo' ? 'tibetan-text' : ''} ${localeNumeralsClass}`}>
+              {t('footer.copyright', { year })}
+            </span>
           </div>
         </div>
       </div>

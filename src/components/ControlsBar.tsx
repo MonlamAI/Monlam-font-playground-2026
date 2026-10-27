@@ -8,13 +8,12 @@ import {
   X,
   Type,
   Filter,
+  MessageSquarePlus,
   SlidersHorizontal,
   PanelLeftClose,
   PanelLeft,
   ChevronDown,
-  Tags,
-  ALargeSmall,
-  Gauge
+  ALargeSmall
 } from 'lucide-react';
 import { FontCategory, PresetText, FontKind, FontItem } from '../types/font';
 import {
@@ -25,6 +24,12 @@ import {
 import { useI18n } from '../i18n/I18nProvider';
 import { translate } from '../i18n/translate';
 import { localeBilingualPair, type LocaleTitlePair } from '../utils/fontDisplay';
+import {
+  formatLocaleMultiplier,
+  formatLocaleNumber,
+  formatLocalePx,
+  localeNumeralsClass
+} from '../utils/localeNumber';
 import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
 
 export type FontKindFilter = FontKind | 'all';
@@ -54,6 +59,7 @@ interface ControlsBarProps {
   onReset: () => void;
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
+  onOpenFeedback: () => void;
   children: React.ReactNode;
 }
 
@@ -159,8 +165,6 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
   setFontSize,
   lineHeight,
   setLineHeight,
-  fontWeight,
-  setFontWeight,
   viewMode,
   setViewMode,
   activePresetId,
@@ -170,6 +174,7 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
   onReset,
   sidebarOpen,
   setSidebarOpen,
+  onOpenFeedback,
   children
 }) => {
   const { t, locale } = useI18n();
@@ -215,25 +220,6 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
   const collapseSidebar = () => setSidebarOpen(false);
   const expandSidebar = () => setSidebarOpen(true);
 
-  const collapsedRailSections: {
-    icon: React.ReactNode;
-    label: string;
-    onClick?: () => void;
-  }[] = [
-    { icon: <Type className="w-4 h-4" />, label: t('filters.sampleText') },
-    { icon: <SlidersHorizontal className="w-4 h-4" />, label: t('filters.railTypography') },
-    {
-      icon: <LayoutGrid className="w-4 h-4" />,
-      label: isSpecialMode ? t('filters.railPresetsCustom') : t('filters.railPresets'),
-      onClick: () => setPresetsOpen(true)
-    },
-    {
-      icon: <Tags className="w-4 h-4" />,
-      label: t('filters.scriptStyle'),
-      onClick: () => setScriptStyleOpen(true)
-    }
-  ];
-
   return (
     <div className="flex items-start w-full min-w-0 relative overflow-x-clip">
       {/* Mobile overlay — full drawer only on small screens */}
@@ -264,27 +250,22 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
             <button
               type="button"
               onClick={expandSidebar}
-              className="p-2.5 rounded-lg text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400 mb-2"
+              className="p-2.5 rounded-lg text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400"
               aria-label={t('filters.expandPanel')}
             >
               <Filter className="w-4 h-4" />
             </button>
           </HoverTip>
-          {collapsedRailSections.map((item) => (
-            <HoverTip key={item.label} label={item.label} placement="right">
-              <button
-                type="button"
-                onClick={() => {
-                  item.onClick?.();
-                  expandSidebar();
-                }}
-                className="p-2.5 rounded-lg text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400"
-                aria-label={item.label}
-              >
-                {item.icon}
-              </button>
-            </HoverTip>
-          ))}
+          <HoverTip label={t('nav.feedback')} placement="right">
+            <button
+              type="button"
+              onClick={onOpenFeedback}
+              className="p-2.5 rounded-lg text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400"
+              aria-label={t('nav.feedback')}
+            >
+              <MessageSquarePlus className="w-4 h-4" />
+            </button>
+          </HoverTip>
         </div>
 
         {/* Expanded panel (mobile drawer + desktop full width) */}
@@ -337,7 +318,9 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
                     <ALargeSmall className="w-3 h-3 shrink-0" aria-hidden />
                     {t('filters.size')}
                   </span>
-                  <span className="font-mono text-gray-600 dark:text-slate-400 tabular-nums">{fontSize}px</span>
+                  <span className={`text-gray-700 dark:text-slate-200 font-semibold ${localeNumeralsClass}`}>
+                    {formatLocalePx(fontSize, locale)}
+                  </span>
                 </div>
                 <input
                   type="range"
@@ -354,53 +337,13 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
                       key={sz}
                       type="button"
                       onClick={() => setFontSize(sz)}
-                      className={`px-2 py-0.5 rounded-md text-[11px] border transition ${
+                      className={`min-w-[2.35rem] rounded-md border px-2.5 py-1 text-center text-xs transition ${localeNumeralsClass} ${
                         fontSize === sz
-                          ? 'bg-blue-600 text-white border-blue-600 font-semibold'
-                          : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-400 border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700'
+                          ? 'border-blue-700 bg-blue-600 font-bold text-white shadow-sm ring-2 ring-blue-400/40 dark:ring-blue-300/30'
+                          : 'border-gray-200 bg-white font-medium text-gray-800 hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700'
                       }`}
                     >
-                      {sz}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-2 pt-1">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-medium text-gray-700 dark:text-slate-300 inline-flex items-center gap-1">
-                    <Gauge className="w-3 h-3 shrink-0" aria-hidden />
-                    {t('filters.boldness')}
-                  </span>
-                  <span className="font-mono text-gray-600 dark:text-slate-400 tabular-nums">{fontWeight}</span>
-                </div>
-                <input
-                  type="range"
-                  min="300"
-                  max="900"
-                  step="100"
-                  value={fontWeight}
-                  onChange={(e) => setFontWeight(Number(e.target.value))}
-                  className="w-full h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
-                />
-                <div className="flex flex-wrap gap-1.5">
-                  {[
-                    { w: 400, label: t('common.regular') },
-                    { w: 500, label: t('common.medium') },
-                    { w: 600, label: t('common.semibold') },
-                    { w: 700, label: t('common.bold') }
-                  ].map(({ w, label }) => (
-                    <button
-                      key={w}
-                      type="button"
-                      onClick={() => setFontWeight(w)}
-                      className={`px-2 py-0.5 rounded-md text-[11px] border transition ${
-                        fontWeight === w
-                          ? 'bg-blue-600 text-white border-blue-600 font-semibold'
-                          : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-400 border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700'
-                      }`}
-                    >
-                      {label}
+                      {formatLocaleNumber(sz, locale)}
                     </button>
                   ))}
                 </div>
@@ -412,7 +355,9 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
                     <SlidersHorizontal className="w-3 h-3" />
                     {t('filters.lineHeight')}
                   </span>
-                  <span className="font-mono text-gray-600 dark:text-slate-400 tabular-nums">{lineHeight.toFixed(1)}x</span>
+                  <span className={`font-semibold text-gray-700 dark:text-slate-200 ${localeNumeralsClass}`}>
+                    {formatLocaleMultiplier(lineHeight, locale)}
+                  </span>
                 </div>
                 <input
                   type="range"
@@ -535,7 +480,7 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
               )}
             </section>
 
-            <section className="space-y-2.5 pb-4">
+            <section className="space-y-2.5">
               <button
                 type="button"
                 onClick={() => setScriptStyleOpen((open) => !open)}
@@ -582,6 +527,18 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
                 </div>
               )}
             </section>
+
+            <div className="pt-4 mt-2 border-t border-gray-100 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={onOpenFeedback}
+                className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400 transition"
+                aria-label={t('nav.feedback')}
+              >
+                <MessageSquarePlus className="w-4 h-4 shrink-0" />
+                <span>{t('nav.feedback')}</span>
+              </button>
+            </div>
           </div>
         </div>
       </aside>

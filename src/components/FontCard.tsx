@@ -5,6 +5,7 @@ import { FontItem } from '../types/font';
 import { downloadSingleFont } from '../utils/fontDownloader';
 import { useI18n } from '../i18n/I18nProvider';
 import { fontCardTitlePair } from '../utils/fontDisplay';
+import { localizeDigitsInString } from '../utils/localeNumber';
 import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
 
 interface FontCardProps {
@@ -131,7 +132,7 @@ export const FontCard: React.FC<FontCardProps> = ({
 
   return (
     <div
-      className={`font-card group relative w-full min-w-0 bg-white dark:bg-slate-900 rounded-xl border transition-all duration-200 flex flex-col justify-between ${
+      className={`font-card group relative flex h-full min-w-0 w-full flex-col justify-between rounded-xl border bg-white transition-all duration-200 dark:bg-slate-900 ${
         isSelected
           ? 'border-blue-500 ring-2 ring-blue-500/20 shadow-md'
           : 'border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600 shadow-xs hover:shadow-md'
@@ -158,15 +159,17 @@ export const FontCard: React.FC<FontCardProps> = ({
             )}
           </div>
 
-          <div className="mt-1 min-w-0 overflow-hidden">
-            <span
-              className={`text-sm text-gray-600 dark:text-slate-400 truncate block ${
-                !titles.primaryIsTibetan ? 'tibetan-text' : ''
-              }`}
-            >
-              {titles.secondary}
-            </span>
-          </div>
+          {titles.secondary ? (
+            <div className="mt-1 min-w-0 overflow-hidden">
+              <span
+                className={`block truncate text-sm text-gray-600 dark:text-slate-400 ${
+                  !titles.primaryIsTibetan ? 'tibetan-text' : ''
+                }`}
+              >
+                {titles.secondary}
+              </span>
+            </div>
+          ) : null}
         </div>
 
         {/* Selection Checkbox */}
@@ -241,12 +244,12 @@ export const FontCard: React.FC<FontCardProps> = ({
         <button
           type="button"
           onClick={handleDownload}
-          title={`${t('catalog.cardActionDownload')} ${font.filename} (${font.fileSize})`}
+          title={`${t('catalog.cardActionDownload')} ${localizeDigitsInString(font.filename, locale)} (${localizeDigitsInString(font.fileSize, locale)})`}
           aria-label={`${t('catalog.cardActionDownload')} ${font.filename}`}
           className={`${footerActionBtn} bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 hover:border-blue-300 dark:hover:border-blue-700`}
         >
           <Download className="w-3.5 h-3.5 shrink-0" />
-          <span className="tibetan-text-ui">{t('catalog.cardActionDownload')}</span>
+          <span className={locale === 'bo' ? 'tibetan-text-ui tibetan-text' : ''}>{t('catalog.cardActionDownload')}</span>
           <span className="text-[10px] opacity-75 font-mono shrink-0">.ttf</span>
         </button>
       </div>

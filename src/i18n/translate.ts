@@ -1,4 +1,5 @@
 import type { AppLocale } from './localeStorage';
+import { formatTranslationParam } from '../utils/localeNumber';
 import en from './messages/en';
 import boOverrides from './messages/bo.json';
 import { deepMerge } from './deepMerge';
@@ -33,7 +34,8 @@ export function translate(
   let resolved = text;
   if (params) {
     for (const [k, v] of Object.entries(params)) {
-      resolved = (resolved as string).replace(new RegExp(`\\{\\{${k}\\}\\}`, 'g'), String(v));
+      const rendered = formatTranslationParam(v, locale);
+      resolved = (resolved as string).replace(new RegExp(`\\{\\{${k}\\}\\}`, 'g'), rendered);
     }
   }
   return resolved as string;

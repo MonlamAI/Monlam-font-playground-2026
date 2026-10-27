@@ -2,6 +2,10 @@ import React from 'react';
 import { X, Copy, Check, Download, Info, Sparkles } from 'lucide-react';
 import { FontItem } from '../types/font';
 import { downloadSingleFont } from '../utils/fontDownloader';
+import { useI18n } from '../i18n/I18nProvider';
+import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
+import { fontAssetLabel, uiTibetanClass } from '../utils/fontDisplay';
+import { localizeDigitsInString } from '../utils/localeNumber';
 
 interface GlyphModalProps {
   font: FontItem | null;
@@ -45,6 +49,8 @@ const GLYPH_CATEGORIES = [
 ];
 
 export const GlyphModal: React.FC<GlyphModalProps> = ({ font, onClose }) => {
+  const { t, locale } = useI18n();
+  const { labelForCategory } = useScriptStylesContext();
   const [copiedChar, setCopiedChar] = React.useState<string | null>(null);
   const [activeCategory, setActiveCategory] = React.useState(0);
 
@@ -63,17 +69,17 @@ export const GlyphModal: React.FC<GlyphModalProps> = ({ font, onClose }) => {
         <div className="p-6 border-b border-gray-100 dark:border-slate-800 flex items-start justify-between bg-gray-50/80 dark:bg-slate-900/80">
           <div>
             <div className="flex items-center gap-2">
-              <p className="font-bold text-gray-900 dark:text-slate-100 text-lg tibetan-text">{font.tibetanName}</p>
-              <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300">
-                {font.category}
+              <p className={`font-bold text-gray-900 dark:text-slate-100 text-lg ${locale === 'bo' ? 'tibetan-text' : ''}`}>
+                {fontAssetLabel(font, locale)}
+              </p>
+              <span className={`px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300 ${uiTibetanClass(locale, true)}`}>
+                {labelForCategory(font.category)}
               </span>
             </div>
             <div className="text-xs text-gray-500 dark:text-slate-400 mt-1 flex items-center gap-2 flex-wrap">
-              <span>({font.name})</span>
+              <span>{font.designer}</span>
               <span>•</span>
-              <span>By {font.designer}</span>
-              <span>•</span>
-              <span>{font.releaseYear}</span>
+              <span>{localizeDigitsInString(String(font.releaseYear), locale)}</span>
             </div>
           </div>
 
@@ -117,7 +123,7 @@ export const GlyphModal: React.FC<GlyphModalProps> = ({ font, onClose }) => {
                 </span>
               ))}
               <span className="px-2.5 py-1 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 rounded-md text-xs font-medium">
-                Size: {font.fileSize}
+                {t('glyph.size')}: {localizeDigitsInString(font.fileSize, locale)}
               </span>
             </div>
           </div>

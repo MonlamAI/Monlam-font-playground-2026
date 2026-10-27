@@ -11,16 +11,21 @@ import {
 } from 'lucide-react';
 import type { FeedbackSubmitResponse } from '../types/feedback';
 import { useI18n } from '../i18n/I18nProvider';
+import { useLocaleFormatters } from '../hooks/useLocaleFormatters';
+import { localizeDigitsInString } from '../utils/localeNumber';
+import type { AppLocale } from '../i18n/localeStorage';
 
 const MAX_FILES = 5;
 const MAX_BYTES = 50 * 1024 * 1024;
 const ACCEPT =
   'image/jpeg,image/png,image/gif,image/webp,video/mp4,video/webm,video/quicktime,.jpg,.jpeg,.png,.gif,.webp,.mp4,.webm,.mov';
 
-function formatBytes(n: number) {
-  if (n < 1024) return `${n} B`;
-  if (n < 1024 * 1024) return `${(n / 1024).toFixed(0)} KB`;
-  return `${(n / (1024 * 1024)).toFixed(1)} MB`;
+function formatBytes(n: number, locale: AppLocale) {
+  let s: string;
+  if (n < 1024) s = `${n} B`;
+  else if (n < 1024 * 1024) s = `${(n / 1024).toFixed(0)} KB`;
+  else s = `${(n / (1024 * 1024)).toFixed(1)} MB`;
+  return localizeDigitsInString(s, locale);
 }
 
 function isAllowedFile(file: File) {
@@ -48,7 +53,8 @@ interface FeedbackModalProps {
 }
 
 export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const fmt = useLocaleFormatters();
   const [message, setMessage] = React.useState('');
   const [contactEmail, setContactEmail] = React.useState('');
   const [files, setFiles] = React.useState<File[]>([]);
@@ -284,7 +290,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                   autoFocus
                 />
                 <div className="mt-1 text-[11px] text-gray-400 dark:text-slate-500 text-right">
-                  {message.length} / 8000
+                  {fmt.n(message.length)} / {fmt.n(8000)}
                 </div>
               </div>
 
@@ -315,7 +321,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                 <p className="text-xs text-gray-500 dark:text-slate-400 mb-2">
                   {t('feedbackModal.attachmentsHint', {
                     max: MAX_FILES,
-                    maxMb: formatBytes(MAX_BYTES)
+                    maxMb: formatBytes(MAX_BYTES, locale)
                   })}
                 </p>
 
@@ -373,7 +379,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                             {file.name}
                           </div>
                           <div className="text-[11px] text-gray-500 dark:text-slate-400">
-                            {formatBytes(file.size)}
+                            {formatBytes(file.size, locale)}
                           </div>
                         </div>
                         <button

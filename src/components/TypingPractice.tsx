@@ -3,6 +3,7 @@ import { Keyboard, CheckCircle2, RotateCcw } from 'lucide-react';
 import { TYPING_DRILLS } from '../data/tibetanData';
 import { DynamicTibetanKeyboard } from './DynamicTibetanKeyboard';
 import { useI18n } from '../i18n/I18nProvider';
+import { useLocaleFormatters } from '../hooks/useLocaleFormatters';
 import type { TypingDrill } from '../types/font';
 import { useTypingKeyboard } from '../hooks/useTypingKeyboard';
 import {
@@ -18,6 +19,7 @@ function drillText(d: TypingDrill, field: 'title' | 'hint', t: (key: string) => 
 
 export const TypingPractice: React.FC = () => {
   const { t } = useI18n();
+  const fmt = useLocaleFormatters();
   const [currentDrillIndex, setCurrentDrillIndex] = React.useState(0);
   const [userInput, setUserInput] = React.useState('');
   const [startTime, setStartTime] = React.useState<number | null>(null);
@@ -116,11 +118,11 @@ export const TypingPractice: React.FC = () => {
               <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-semibold">
                 <div className="flex items-center gap-1.5 text-blue-600">
                   <span className="tibetan-text">{t('typing.speed')}</span>
-                  <span className="text-sm font-mono font-bold">{t('typing.wpm', { count: wpm })}</span>
+                  <span className={`text-sm font-bold ${fmt.numeralsClass}`}>{t('typing.wpm', { count: wpm })}</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-emerald-600">
                   <span className="tibetan-text">{t('typing.accuracy')}</span>
-                  <span className="text-sm font-mono font-bold">{accuracy}%</span>
+                  <span className={`text-sm font-bold ${fmt.numeralsClass}`}>{fmt.pct(accuracy)}</span>
                 </div>
               </div>
             </div>
@@ -132,13 +134,14 @@ export const TypingPractice: React.FC = () => {
                     setCurrentDrillIndex(idx);
                     handleResetDrill();
                   }}
-                  className={`px-2.5 py-1 text-xs rounded-md transition font-medium tibetan-text shrink-0 whitespace-nowrap ${
+                  className={`shrink-0 whitespace-nowrap rounded-md px-2.5 py-1 text-xs transition ${
                     currentDrillIndex === idx
-                      ? 'bg-blue-600 text-white shadow-xs'
-                      : 'bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700'
+                      ? 'bg-blue-600 font-bold text-white shadow-sm ring-2 ring-blue-400/40'
+                      : 'border border-gray-200 bg-gray-50 font-medium text-gray-800 hover:bg-gray-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700'
                   }`}
                 >
-                  {idx + 1}. {drillText(d, 'title', t)}
+                  <span className={fmt.numeralsClass}>{fmt.n(idx + 1)}.</span>{' '}
+                  <span className="tibetan-text">{drillText(d, 'title', t)}</span>
                 </button>
               ))}
             </div>

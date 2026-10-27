@@ -5,6 +5,12 @@ import { PRESET_TEXTS } from '../data/fontsData';
 import { downloadSingleFont } from '../utils/fontDownloader';
 import { fontAssetLabel } from '../utils/fontDisplay';
 import { useI18n } from '../i18n/I18nProvider';
+import {
+  formatLocaleMultiplier,
+  formatLocaleNumber,
+  formatLocalePx,
+  localeNumeralsClass
+} from '../utils/localeNumber';
 import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
 
 interface ComparisonViewProps {
@@ -115,8 +121,8 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   onChange={(e) => setFontSize(Number(e.target.value))}
                   className="w-[5.5rem] sm:w-24 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600 shrink-0"
                 />
-                <span className="font-mono font-bold text-gray-800 dark:text-slate-200 shrink-0 tabular-nums w-[2.75rem]">
-                  {fontSize}px
+                <span className={`shrink-0 w-[2.75rem] font-bold text-gray-900 dark:text-slate-100 ${localeNumeralsClass}`}>
+                  {formatLocalePx(fontSize, locale)}
                 </span>
               </div>
 
@@ -133,8 +139,8 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   onChange={(e) => setLineHeight(Number(e.target.value))}
                   className="w-[5.5rem] sm:w-24 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600 shrink-0"
                 />
-                <span className="font-mono font-bold text-gray-800 dark:text-slate-200 shrink-0 tabular-nums w-[2.25rem]">
-                  {lineHeight.toFixed(1)}x
+                <span className={`w-[2.25rem] shrink-0 font-bold text-gray-900 dark:text-slate-100 ${localeNumeralsClass}`}>
+                  {formatLocaleMultiplier(lineHeight, locale)}
                 </span>
               </div>
 
@@ -151,8 +157,8 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   onChange={(e) => onFontWeightChange(Number(e.target.value))}
                   className="w-[5.5rem] sm:w-24 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600 shrink-0"
                 />
-                <span className="font-mono font-bold text-gray-800 dark:text-slate-200 tabular-nums shrink-0 w-[2rem]">
-                  {fontWeight}
+                <span className={`w-[2rem] shrink-0 font-bold text-gray-900 dark:text-slate-100 ${localeNumeralsClass}`}>
+                  {formatLocaleNumber(fontWeight, locale)}
                 </span>
               </div>
 
@@ -176,7 +182,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   </option>
                   {allFonts.map((f) => (
                     <option key={f.id} value={f.id} disabled={comparedIds.has(f.id)}>
-                      {fontAssetLabel(f)}
+                      {fontAssetLabel(f, locale)}
                       {comparedIds.has(f.id) ? ` — ${t('compare.alreadyInCompare')}` : ''}
                     </option>
                   ))}
@@ -226,11 +232,11 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                           <select
                             value={font.id}
                             onChange={(e) => setGridFont(index, e.target.value)}
-                            className="font-semibold text-gray-900 dark:text-slate-100 text-sm border border-gray-200 dark:border-slate-700 rounded-lg px-2 py-1 bg-white dark:bg-slate-800 dark:text-slate-100 max-w-full tibetan-text"
+                            className={`font-semibold text-gray-900 dark:text-slate-100 text-sm border border-gray-200 dark:border-slate-700 rounded-lg px-2 py-1 bg-white dark:bg-slate-800 dark:text-slate-100 max-w-full ${locale === 'bo' ? 'tibetan-text' : ''}`}
                           >
                             {allFonts.map((f) => (
                               <option key={f.id} value={f.id}>
-                                {fontAssetLabel(f)}
+                                {fontAssetLabel(f, locale)}
                               </option>
                             ))}
                           </select>
@@ -238,9 +244,6 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                             {labelForCategory(font.category)}
                           </span>
                         </div>
-                        <span className="text-xs text-gray-500 dark:text-slate-400">
-                          ({font.name})
-                        </span>
                       </div>
 
                       <div className="flex items-center gap-1">

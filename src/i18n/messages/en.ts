@@ -45,7 +45,7 @@ const en = {
     suiteDesc: '{{name}} {{version}} — official Mac & Windows packages from Monlam IT',
     emptyTitle: 'Your selection is empty',
     emptyBody:
-      'Click the + button on any typeface card in the catalog to add it here for batch download or web embed code.',
+      'Click the + button on any typeface card in the catalog to add it here for batch ZIP download.',
     readyPackage: 'Ready to package {{count}} fonts',
     bundleDesc:
       'Your bundle will include all selected .ttf files, an auto-generated monlam-fonts.css stylesheet with @font-face rules, and an HTML preview page.',
@@ -209,7 +209,7 @@ const en = {
     assetsFooter:
       'Custom ZIP packages (selected fonts only) are available from the header Cart or Font & Keyboard Suite menu after you choose typefaces.',
     keyboardExtras: 'Additional keyboard downloads',
-    stepsTitle: 'How to Install on Your Computer & Phone',
+    stepsTitle: 'How to Install on Your Computer',
     stepsIntro: 'Select your operating system for verified step-by-step instructions.',
     osWindows: 'Windows',
     osMac: 'macOS',
@@ -343,6 +343,7 @@ const en = {
     }
   },
   glyph: {
+    size: 'Size',
     downloadTtf: 'Download .ttf',
     byDesigner: 'By {{designer}}',
     copyGlyph: 'Copy character',
@@ -415,7 +416,7 @@ const en = {
     googleFonts: 'Google Fonts Tibetan',
     licence: 'Licence policies',
     unicodeBlock: 'Unicode Tibetan block: U+0F00 – U+0FFF',
-    copyright: '© {{year}} Monlam Font Playground.',
+    copyright: '© {{year}} Monlam Tibetan IT Research Center',
     admin: 'Admin',
     madeWith: 'Made with',
     forCommunity: 'for the Himalayan Tibetan community worldwide.'

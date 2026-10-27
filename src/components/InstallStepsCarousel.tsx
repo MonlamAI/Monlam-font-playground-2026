@@ -1,7 +1,7 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useI18n } from '../i18n/I18nProvider';
-import { formatLocaleNumber } from '../utils/localeNumber';
+import { formatLocaleNumber, localeNumeralsClass } from '../utils/localeNumber';
 
 export interface InstallStep {
   /** Step badge (1, 2, 3) or custom node (e.g. platform icon) */
@@ -47,14 +47,14 @@ export const InstallStepsCarousel: React.FC<InstallStepsCarouselProps> = ({ step
             {steps.map((s, i) => (
               <article
                 key={i}
-                className="min-w-full shrink-0 p-5 sm:p-6 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800/50 space-y-3"
+                className="min-w-full shrink-0 space-y-3 rounded-xl border border-blue-100/80 bg-white/90 p-5 shadow-sm backdrop-blur-sm dark:border-slate-600 dark:bg-slate-800/90 sm:p-6"
                 aria-hidden={i !== index}
               >
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-4">
                   <div className="shrink-0">{s.badge}</div>
-                  <div className="min-w-0 space-y-2 flex-1">
-                    <h4 className="font-bold text-gray-900 dark:text-slate-100 text-sm sm:text-base">{s.title}</h4>
-                    <div className="text-xs sm:text-sm text-gray-600 dark:text-slate-400 leading-relaxed">{s.body}</div>
+                  <div className="min-w-0 flex-1 space-y-2">
+                    <h4 className="text-sm font-bold text-gray-900 dark:text-slate-100 sm:text-base">{s.title}</h4>
+                    <div className="text-xs leading-relaxed text-gray-600 dark:text-slate-400 sm:text-sm">{s.body}</div>
                   </div>
                 </div>
               </article>
@@ -99,12 +99,14 @@ export const InstallStepsCarousel: React.FC<InstallStepsCarouselProps> = ({ step
                 })}
                 onClick={() => setIndex(i)}
                 className={`h-2 rounded-full transition-all ${
-                  i === index ? 'w-6 bg-blue-600' : 'w-2 bg-gray-300 dark:bg-slate-600 hover:bg-gray-400 dark:hover:bg-slate-500'
+                  i === index
+                    ? 'w-7 bg-gradient-to-r from-blue-500 to-indigo-600 shadow-sm shadow-blue-500/30'
+                    : 'w-2 bg-blue-200/80 dark:bg-slate-600 hover:bg-blue-300 dark:hover:bg-slate-500'
                 }`}
               />
             ))}
           </div>
-          <span className="text-xs font-medium text-gray-500 dark:text-slate-400 tabular-nums">
+          <span className={`text-xs font-semibold text-gray-700 dark:text-slate-200 ${localeNumeralsClass}`}>
             {t('common.stepOf', {
               current: formatLocaleNumber(index + 1, locale),
               total: formatLocaleNumber(count, locale)

@@ -3,24 +3,22 @@ import {
   Download,
   Laptop,
   Apple,
-  Smartphone,
-  Sparkles,
   ExternalLink,
-  FileArchive,
-  ChevronDown
+  ChevronDown,
+  ListOrdered,
+  FolderDown
 } from 'lucide-react';
 import { FontItem } from '../types/font';
 import { downloadSingleFont } from '../utils/fontDownloader';
 import {
   BODYIG_SUITE,
   OFFICIAL_BODYIG_DOWNLOADS,
-  OFFICIAL_KEYBOARD_DOWNLOADS,
   openOfficialDownload
 } from '../data/officialDownloads';
 import { InstallStep, InstallStepsCarousel } from './InstallStepsCarousel';
 import { useI18n } from '../i18n/I18nProvider';
-import { fontCardTitlePair } from '../utils/fontDisplay';
-import { formatLocaleNumber } from '../utils/localeNumber';
+import { fontCardTitlePair, localePick, uiTibetanClass } from '../utils/fontDisplay';
+import { formatLocaleNumber, localizeDigitsInString, localeNumeralsClass } from '../utils/localeNumber';
 import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
 
 interface InstallGuideProps {
@@ -34,15 +32,17 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
   const [assetListOpen, setAssetListOpen] = React.useState(false);
 
   const stepBadge = (n: number) => (
-    <div className="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center text-sm tabular-nums">
+    <div
+      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-sm font-bold text-white shadow-md shadow-blue-500/30 ring-2 ring-white dark:ring-slate-800 ${localeNumeralsClass}`}
+    >
       {formatLocaleNumber(n, locale)}
     </div>
   );
 
   const macDownload = OFFICIAL_BODYIG_DOWNLOADS.find((d) => d.platform === 'mac')!;
   const winDownload = OFFICIAL_BODYIG_DOWNLOADS.find((d) => d.platform === 'windows')!;
-  const winKeyboard = OFFICIAL_KEYBOARD_DOWNLOADS.find((d) => d.id === 'bodyig-keyboard-win-2025');
-  const iosKeyboard = OFFICIAL_KEYBOARD_DOWNLOADS.find((d) => d.platform === 'ios');
+  const suiteTitle = `${localePick(BODYIG_SUITE.name, BODYIG_SUITE.tibetanName, locale)} ${BODYIG_SUITE.version}`;
+  const uiBo = uiTibetanClass(locale);
 
   const windowsSteps: InstallStep[] = [
     {
@@ -81,61 +81,75 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-8 sm:space-y-10 min-w-0 w-full">
-      {/* Hero Header */}
-      <div>
-        <div className="flex items-center gap-2 mb-1">
-          <img
-            src="/logos/bodyig.svg"
-            alt="Monlam Bodyig"
-            className="w-9 h-9 shrink-0"
-            width={36}
-            height={36}
-          />
-          <h2 className="text-xl font-bold text-gray-900 dark:text-slate-100 tibetan-text">{t('install.pageTitle')}</h2>
-        </div>
-      </div>
+    <div className="relative mx-auto w-full min-w-0 max-w-5xl space-y-6 px-4 py-5 sm:space-y-8 sm:px-6 sm:py-8 lg:px-8">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 bg-gradient-to-b from-blue-100/80 via-transparent to-transparent dark:from-blue-950/40"
+      />
 
       {/* DOWNLOAD PACKAGES SECTION */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Card 1: Official Font & Keyboard Suite (Mac / Windows) */}
-        <div className="bg-gradient-to-br from-blue-900 via-indigo-950 to-slate-900 rounded-2xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg border border-blue-800/50 flex flex-col justify-between">
-          <div className="relative z-10">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-400 text-slate-950 mb-3 shadow-xs">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>{t('install.suiteBadge')}</span>
+      <div className="relative overflow-hidden rounded-2xl border border-blue-700/40 bg-gradient-to-br from-blue-900 via-indigo-950 to-slate-950 p-5 text-white shadow-xl shadow-blue-950/25 sm:p-7 lg:p-8">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-sky-400/25 blur-3xl"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-28 -left-16 h-56 w-56 rounded-full bg-violet-500/20 blur-3xl"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.08),transparent_55%)]"
+        />
+
+        <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-stretch lg:gap-8">
+          <div className="min-w-0 flex-1">
+            <div className="mb-3 flex items-center gap-3">
+              <img
+                src="/logos/bodyig.svg"
+                alt=""
+                className="h-11 w-11 shrink-0 rounded-xl bg-white/10 p-1.5 ring-1 ring-white/20 backdrop-blur-sm"
+                width={44}
+                height={44}
+              />
+              <div className="min-w-0">
+                <h3 className={`text-xl font-bold tracking-tight text-white sm:text-2xl ${locale === 'bo' ? 'tibetan-text' : ''}`}>
+                  {suiteTitle}
+                </h3>
+              </div>
             </div>
+            <p className={`text-sm leading-relaxed text-blue-100/85 ${uiBo}`}>{t('install.suiteDescription')}</p>
 
-            <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-              {BODYIG_SUITE.name} {BODYIG_SUITE.version}
-            </h3>
-            <p className="text-sm tibetan-text text-blue-200/90 mt-1">{BODYIG_SUITE.tibetanName}</p>
-            <p className="text-sm text-blue-200/90 mt-2 leading-relaxed tibetan-text">{t('install.suiteDescription')}</p>
-
-            <div className="mt-4 flex flex-wrap gap-2 text-xs text-blue-200">
-              <span className="bg-white/10 px-2.5 py-1 rounded-md">✓ {t('install.fullTypefaceSet')}</span>
-              <span className="bg-white/10 px-2.5 py-1 rounded-md">✓ {t('install.keyboardInstallers')}</span>
-              <span className="bg-white/10 px-2.5 py-1 rounded-md">✓ {t('install.macAndWindows')}</span>
+            <div className="mt-5 flex flex-wrap gap-2 text-xs font-medium text-blue-50">
+              <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1.5 backdrop-blur-sm">
+                ✓ {t('install.fullTypefaceSet')}
+              </span>
+              <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1.5 backdrop-blur-sm">
+                ✓ {t('install.keyboardInstallers')}
+              </span>
+              <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1.5 backdrop-blur-sm">
+                ✓ {t('install.macAndWindows')}
+              </span>
             </div>
           </div>
 
-          <div className="mt-6 pt-6 border-t border-white/10 space-y-3">
-            <p className="text-xs text-blue-200/80 font-medium">{t('install.selectOs')}</p>
-            <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex w-full shrink-0 flex-col justify-end space-y-3 rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm lg:w-72 xl:w-80">
+            <p className="text-xs font-medium text-blue-200/80">{t('install.selectOs')}</p>
+            <div className="flex flex-col gap-2 sm:flex-row lg:flex-col">
               <button
                 type="button"
                 onClick={() => openOfficialDownload(macDownload.url)}
-                className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white text-slate-900 hover:bg-blue-50 font-semibold text-sm transition active:scale-95 shadow-md"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-md transition hover:bg-blue-50 active:scale-95"
               >
-                <Apple className="w-4 h-4" />
+                <Apple className="h-4 w-4" />
                 <span className="tibetan-text">{t('install.downloadMac')}</span>
               </button>
               <button
                 type="button"
                 onClick={() => openOfficialDownload(winDownload.url)}
-                className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-500 hover:bg-blue-400 text-white font-semibold text-sm transition active:scale-95 shadow-md"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-500 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-400 active:scale-95"
               >
-                <Laptop className="w-4 h-4" />
+                <Laptop className="h-4 w-4" />
                 <span className="tibetan-text">{t('install.downloadWin')}</span>
               </button>
             </div>
@@ -143,76 +157,35 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
               href={BODYIG_SUITE.sourcePage}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs text-blue-200 hover:text-white transition"
+              className="inline-flex items-center gap-1.5 text-xs text-blue-200 transition hover:text-white"
             >
-              <ExternalLink className="w-3.5 h-3.5" />
+              <ExternalLink className="h-3.5 w-3.5" />
               <span>{t('install.sourceLink')}</span>
             </a>
-          </div>
-        </div>
-
-        {/* Card 2: Individual / selected assets guidance */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 border border-gray-200 dark:border-slate-700 shadow-xs flex flex-col justify-between">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 mb-3 border border-blue-200 dark:border-blue-800">
-              <FileArchive className="w-3.5 h-3.5" />
-              <span>{t('install.assetsBadge')}</span>
-            </div>
-
-            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-slate-100 tracking-tight">
-              {t('install.assetsTitle')}
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-slate-400 mt-2 leading-relaxed tibetan-text">{t('install.assetsIntro')}</p>
-
-            <div className="mt-4 flex flex-wrap gap-2 text-xs text-gray-500 dark:text-slate-400 tibetan-text">
-              <span className="bg-gray-100 dark:bg-slate-800 px-2.5 py-1 rounded-md">
-                {t('install.typefacesListed', { count: allFonts.length })}
-              </span>
-              <span className="bg-gray-100 dark:bg-slate-800 px-2.5 py-1 rounded-md">{t('install.selectedOnlyZip')}</span>
-              <span className="bg-gray-100 dark:bg-slate-800 px-2.5 py-1 rounded-md">{t('install.crossPlatformTtf')}</span>
-            </div>
-
-            {(winKeyboard || iosKeyboard) && (
-              <div className="mt-5 space-y-2">
-                <p className="text-xs font-semibold text-gray-700 dark:text-slate-300 tibetan-text">{t('install.keyboardExtras')}</p>
-                <div className="flex flex-wrap gap-2">
-                  {winKeyboard && (
-                    <button
-                      type="button"
-                      onClick={() => openOfficialDownload(winKeyboard.url)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 text-xs font-semibold text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition"
-                    >
-                      <Laptop className="w-3.5 h-3.5" />
-                      <span className="tibetan-text">{t('install.downloadKeyboardWin')}</span>
-                    </button>
-                  )}
-                  {iosKeyboard && (
-                    <a
-                      href={iosKeyboard.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 text-xs font-semibold text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition"
-                    >
-                      <Smartphone className="w-3.5 h-3.5" />
-                      <span className="tibetan-text">{t('install.downloadIosStore')}</span>
-                    </a>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
 
       {/* OS STEP-BY-STEP INSTALLATION GUIDES */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-700 p-6 sm:p-8 shadow-xs space-y-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-gray-100 dark:border-slate-800">
-          <div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 tibetan-text">{t('install.stepsTitle')}</h3>
+      <section className="relative overflow-hidden rounded-2xl border border-blue-200/70 bg-gradient-to-br from-white via-blue-50/50 to-indigo-50/40 p-5 shadow-md shadow-blue-900/5 dark:border-blue-900/50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950/30 sm:p-7 lg:p-8">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-24 top-0 h-40 w-40 rounded-full bg-blue-300/20 blur-3xl dark:bg-blue-600/10"
+        />
+        <div className="relative space-y-6">
+        <div className="flex flex-col items-start justify-between gap-4 border-b border-blue-100/80 pb-5 dark:border-slate-700/80 sm:flex-row sm:items-center">
+          <div className="flex min-w-0 items-start gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25">
+              <ListOrdered className="h-5 w-5" aria-hidden />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 tibetan-text">{t('install.stepsTitle')}</h3>
+              <p className="mt-0.5 text-xs text-gray-500 dark:text-slate-400">{t('install.osWindows')} / {t('install.osMac')}</p>
+            </div>
           </div>
 
           {/* OS Switcher */}
-          <div className="flex items-center gap-1.5 bg-gray-100 dark:bg-slate-800 p-1 rounded-xl">
+          <div className="flex items-center gap-1 rounded-xl border border-blue-100 bg-white/80 p-1 shadow-sm backdrop-blur-sm dark:border-slate-700 dark:bg-slate-800/80">
             <button
               onClick={() => setActiveOs('windows')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
@@ -236,47 +209,55 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
 
         {activeOs === 'windows' && <InstallStepsCarousel steps={windowsSteps} resetKey="windows" />}
         {activeOs === 'mac' && <InstallStepsCarousel steps={macSteps} resetKey="mac" />}
-      </div>
+        </div>
+      </section>
 
       {/* INDIVIDUAL FONT ASSET DIRECT DOWNLOAD TABLE */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-xs overflow-hidden">
+      <section className="overflow-hidden rounded-2xl border border-emerald-200/70 bg-gradient-to-br from-white via-emerald-50/40 to-teal-50/30 shadow-md shadow-emerald-900/5 dark:border-emerald-900/40 dark:from-slate-900 dark:via-slate-900 dark:to-emerald-950/25">
         <button
           type="button"
           onClick={() => setAssetListOpen((open) => !open)}
           aria-expanded={assetListOpen}
-          className={`w-full p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left transition hover:bg-gray-50/80 dark:hover:bg-slate-800/40 ${
-            assetListOpen ? 'border-b border-gray-100 dark:border-slate-800' : ''
+          className={`flex w-full flex-col justify-between gap-3 p-5 text-left transition sm:flex-row sm:items-center sm:p-6 ${
+            assetListOpen
+              ? 'border-b border-emerald-100/80 bg-emerald-50/30 dark:border-emerald-900/30 dark:bg-emerald-950/20'
+              : 'hover:bg-emerald-50/40 dark:hover:bg-emerald-950/15'
           }`}
         >
-          <div className="flex items-start gap-3 min-w-0 flex-1">
-            <ChevronDown
-              className={`w-5 h-5 shrink-0 text-gray-400 dark:text-slate-500 transition-transform mt-0.5 ${
-                assetListOpen ? 'rotate-0' : '-rotate-90'
-              }`}
-              aria-hidden
-            />
-            <div className="min-w-0">
-              <h3 className="font-bold text-gray-900 dark:text-slate-100 text-base tibetan-text">{t('install.directDownloads')}</h3>
-              <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5 tibetan-text">{t('install.directIntro')}</p>
+          <div className="flex min-w-0 flex-1 items-start gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25">
+              <FolderDown className="h-5 w-5" aria-hidden />
+            </div>
+            <div className="min-w-0 pt-0.5">
+              <div className="flex items-center gap-2">
+                <ChevronDown
+                  className={`h-4 w-4 shrink-0 text-emerald-600 transition-transform dark:text-emerald-400 ${
+                    assetListOpen ? 'rotate-0' : '-rotate-90'
+                  }`}
+                  aria-hidden
+                />
+                <h3 className="text-base font-bold text-gray-900 dark:text-slate-100 tibetan-text">{t('install.directDownloads')}</h3>
+              </div>
+              <p className="mt-1 text-xs text-gray-600 dark:text-slate-400 tibetan-text">{t('install.directIntro')}</p>
             </div>
           </div>
-          <span className="text-xs font-semibold text-gray-500 dark:text-slate-400 bg-gray-100 dark:bg-slate-800 px-3 py-1 rounded-full self-start sm:self-center shrink-0">
-            {t('install.typefacesAvailable', { count: formatLocaleNumber(allFonts.length, locale) })}
+          <span className="shrink-0 self-start rounded-full border border-emerald-200/80 bg-white/90 px-3 py-1.5 text-xs font-semibold text-emerald-800 shadow-sm dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-200 sm:self-center">
+            {t('install.typefacesAvailable', { count: allFonts.length })}
           </span>
         </button>
 
         {assetListOpen && (
-        <div className="divide-y divide-gray-100 dark:divide-slate-800 overflow-x-auto">
+        <div className="divide-y divide-emerald-100/80 overflow-x-auto dark:divide-slate-800">
           {allFonts.map((font, index) => {
             const titles = fontCardTitlePair(font, locale);
             return (
             <div
               key={font.id}
-              className="p-4 sm:px-6 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition flex items-center justify-between gap-4"
+              className="flex items-center justify-between gap-4 p-4 transition hover:bg-white/70 dark:hover:bg-slate-800/50 sm:px-6 even:bg-white/50 dark:even:bg-slate-900/30"
             >
-              <div className="flex items-center gap-3 min-w-0">
+              <div className="flex min-w-0 items-center gap-3">
                 <div
-                  className="w-10 h-10 shrink-0 rounded-lg bg-gray-100 dark:bg-slate-800 flex items-center justify-center font-bold text-gray-700 dark:text-slate-300 text-base tabular-nums"
+                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-100 to-teal-100 text-base font-bold text-emerald-900 dark:from-emerald-950 dark:to-teal-950 dark:text-emerald-100 ${localeNumeralsClass}`}
                   aria-hidden
                 >
                   {formatLocaleNumber(index + 1, locale)}
@@ -289,19 +270,21 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
                   >
                     {titles.primary}
                   </span>
-                  <span
-                    className={`text-sm text-gray-600 dark:text-slate-400 block truncate mt-0.5 ${
-                      !titles.primaryIsTibetan ? 'tibetan-text' : ''
-                    }`}
-                  >
-                    {titles.secondary}
-                  </span>
+                  {titles.secondary ? (
+                    <span
+                      className={`mt-0.5 block truncate text-sm text-gray-600 dark:text-slate-400 ${
+                        !titles.primaryIsTibetan ? 'tibetan-text' : ''
+                      }`}
+                    >
+                      {titles.secondary}
+                    </span>
+                  ) : null}
                   <div className="text-xs text-gray-400 dark:text-slate-500 mt-0.5 flex flex-wrap items-center gap-2">
                     <span>{labelForCategory(font.category)}</span>
                     <span>•</span>
-                    <span>{font.fileSize}</span>
+                    <span>{localizeDigitsInString(font.fileSize, locale)}</span>
                     <span>•</span>
-                    <span className="font-mono text-[11px]">{font.filename}</span>
+                    <span className="font-mono text-[11px]">{localizeDigitsInString(font.filename, locale)}</span>
                     <span>•</span>
                     <span className="text-emerald-600 dark:text-emerald-400">{t('install.macWindows')}</span>
                   </div>
@@ -311,7 +294,7 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
               <button
                 type="button"
                 onClick={() => downloadSingleFont(font)}
-                className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-950/70 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold transition"
+                className="flex shrink-0 items-center gap-1.5 rounded-lg border border-emerald-200/80 bg-white px-3 py-1.5 text-xs font-semibold text-emerald-800 shadow-sm transition hover:border-emerald-300 hover:bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-200 dark:hover:bg-emerald-950/60"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>{t('common.downloadTtf')}</span>
@@ -321,7 +304,7 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
           })}
         </div>
         )}
-      </div>
+      </section>
     </div>
   );
 };

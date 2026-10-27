@@ -60,7 +60,7 @@ export const FontCatalog: React.FC<FontCatalogProps> = ({
           </button>
         </div>
       ) : viewMode === 'sample' ? (
-        <div className="w-full min-w-0 grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="w-full min-w-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 auto-rows-fr">
           {fonts.map((font, index) => (
             <FontSampleCard
               key={font.id}
@@ -81,7 +81,7 @@ export const FontCatalog: React.FC<FontCatalogProps> = ({
         <div
           className={
             viewMode === 'grid'
-              ? 'w-full min-w-0 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6'
+              ? 'w-full min-w-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 auto-rows-fr'
               : 'w-full min-w-0 space-y-3'
           }
         >

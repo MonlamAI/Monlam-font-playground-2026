@@ -256,6 +256,7 @@ export default function App() {
               onReset={handleResetFilters}
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
+              onOpenFeedback={() => setIsFeedbackOpen(true)}
             >
               <FontCatalog
                 fonts={filteredFonts}
@@ -311,10 +312,6 @@ export default function App() {
         selectedFonts={selectedFonts}
         onRemoveFont={(id) => setSelectedFonts((prev) => prev.filter((f) => f.id !== id))}
         onClearAll={() => setSelectedFonts([])}
-        onOpenInstall={() => {
-          setIsDrawerOpen(false);
-          setActiveTab('install');
-        }}
       />
 
       {/* Glyph & Character Map Modal */}

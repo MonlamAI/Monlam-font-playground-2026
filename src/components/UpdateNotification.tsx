@@ -3,6 +3,8 @@ import { Bell, Keyboard, Type, X } from 'lucide-react';
 import type { CatalogUpdateDiff } from '../utils/catalogUpdates';
 import { formatUpdateHeadline, formatUpdateSummary } from '../utils/catalogUpdates';
 import { useI18n } from '../i18n/I18nProvider';
+import { localizeDigitsInString } from '../utils/localeNumber';
+import type { AppLocale } from '../i18n/localeStorage';
 
 const AUTO_COLLAPSE_MS = 5000;
 
@@ -21,12 +23,14 @@ function ItemList({
   label,
   icon,
   items,
-  t
+  t,
+  locale
 }: {
   label: string;
   icon: React.ReactNode;
   items: { id: string; name: string; version: string; kind: 'new' | 'updated' }[];
   t: (key: string, params?: Record<string, string | number>) => string;
+  locale: AppLocale;
 }) {
   if (items.length === 0) return null;
   const shown = items.slice(0, 4);
@@ -37,7 +41,7 @@ function ItemList({
       <div className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-gray-500 dark:text-slate-400 mb-1">
         {icon}
         <span>
-          {label} ({items.length})
+          {label} ({localizeDigitsInString(String(items.length), locale)})
         </span>
       </div>
       <ul className="space-y-0.5">
@@ -50,7 +54,7 @@ function ItemList({
             <span className="shrink-0 text-[9px] text-gray-400 dark:text-slate-500 font-mono">
               {item.kind === 'new'
                 ? t('updates.badgeNew')
-                : `${t('global.version')} ${item.version}`}
+                : `${t('global.version')} ${localizeDigitsInString(item.version, locale)}`}
             </span>
           </li>
         ))}
@@ -74,7 +78,7 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({
   onViewFonts,
   onViewKeyboards
 }) => {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   React.useEffect(() => {
     if (!open) return;
@@ -149,12 +153,14 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({
               icon={<Type className="w-2.5 h-2.5" />}
               items={diff.fonts}
               t={t}
+              locale={locale}
             />
             <ItemList
               label={t('updates.keyboardsLabel')}
               icon={<Keyboard className="w-2.5 h-2.5" />}
               items={diff.keyboards}
               t={t}
+              locale={locale}
             />
           </div>
         </div>

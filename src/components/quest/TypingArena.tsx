@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { QuestLevel, TypingResult, Achievement, RankInfo } from '../../types/typing';
 import { MONLAM_FONTS } from '../../data/fontsData';
 import { fontAssetLabel } from '../../utils/fontDisplay';
+import { useI18n } from '../../i18n/I18nProvider';
 import { normalizeTibetan, calculateTypingMetrics, TSEK } from '../../utils/tibetanEngine';
 import { playKeyClick, playChime, playErrorSound, playVictorySound } from '../../utils/audioSynth';
 import { recordLevelResult } from '../../utils/questStorage';
@@ -39,6 +40,7 @@ export const TypingArena: React.FC<TypingArenaProps> = ({
   activeFontId,
   onStatsUpdated
 }) => {
+  const { locale } = useI18n();
   const normalizedTarget = normalizeTibetan(level.content);
   const targetChars = Array.from(normalizedTarget);
 
@@ -272,7 +274,7 @@ export const TypingArena: React.FC<TypingArenaProps> = ({
         >
           {MONLAM_FONTS.map((f) => (
             <option key={f.id} value={f.id}>
-              {fontAssetLabel(f)}
+              {fontAssetLabel(f, locale)}
             </option>
           ))}
         </select>

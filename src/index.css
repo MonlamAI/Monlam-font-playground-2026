@@ -97,6 +97,17 @@
   word-break: normal;
 }
 
+/* UI counters / sliders: Tibetan digits (U+0F20–0F29) in a clear face — not Monlam titling OT rules */
+.locale-numerals {
+  font-family: "Noto Sans Tibetan", ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: normal;
+  font-variant-ligatures: none;
+  line-height: 1.2;
+  word-break: normal;
+  letter-spacing: 0.02em;
+  -webkit-font-smoothing: antialiased;
+}
+
 /* Catalog preview: per-typeface families (override app UI font on the same node). */
 .font-monlam-ouchan-1,
 .font-monlam-ouchan-2,
