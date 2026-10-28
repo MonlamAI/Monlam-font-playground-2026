@@ -151,7 +151,7 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
       </div>
 
       {/* OS STEP-BY-STEP INSTALLATION GUIDES */}
-      <section className="relative overflow-hidden rounded-2xl border border-blue-200/70 bg-gradient-to-br from-white via-blue-50/50 to-indigo-50/40 p-5 shadow-md shadow-blue-900/5 dark:border-blue-900/50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950/30 sm:p-7 lg:p-8">
+      <section className="relative overflow-x-hidden overflow-y-visible rounded-2xl border border-blue-200/70 bg-gradient-to-br from-white via-blue-50/50 to-indigo-50/40 p-5 shadow-md shadow-blue-900/5 dark:border-blue-900/50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950/30 sm:p-7 lg:p-8">
         <div
           aria-hidden
           className="pointer-events-none absolute -right-24 top-0 h-40 w-40 rounded-full bg-blue-300/20 blur-3xl dark:bg-blue-600/10"

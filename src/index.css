@@ -201,6 +201,22 @@
   font-size: 0.95em;
 }
 
+/* Install guide carousel — fit full slide art on any viewport width */
+.install-guide-slide-frame {
+  min-height: min(40dvh, 280px);
+  max-height: min(72dvh, 920px);
+}
+
+.install-guide-slide-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  max-height: min(68dvh, 880px);
+  object-fit: contain;
+  object-position: center;
+}
+
 /* Typefaces catalog — sole vertical scroll region (wheel / trackpad) */
 .catalog-scroll {
   overflow-y: auto;

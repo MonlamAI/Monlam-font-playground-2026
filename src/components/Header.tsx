@@ -191,9 +191,7 @@ export const Header: React.FC<HeaderProps> = ({
                 type="button"
                 onClick={onOpenFeedback}
                 aria-label={t('nav.feedback')}
-                className={`group relative inline-flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-600 dark:text-slate-300 shadow-sm transition active:scale-95 ${
-                  activeTab === 'catalog' ? 'lg:hidden' : ''
-                }`}
+                className="group relative inline-flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-600 dark:text-slate-300 shadow-sm transition active:scale-95"
               >
                 <MessageSquarePlus className="w-4 h-4" />
                 <span
@@ -253,7 +251,7 @@ export const Header: React.FC<HeaderProps> = ({
                 : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
             }`}
           >
-            {t('nav.typingMobile')}
+            {t('nav.typing')}
           </button>
           {FEATURE_TYPING_QUEST ? (
             <button
@@ -288,13 +286,6 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             {t('nav.install')}
-          </button>
-          <button
-            onClick={onOpenFeedback}
-            className="px-3 py-1.5 whitespace-nowrap rounded-md bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300 inline-flex items-center gap-1"
-          >
-            <MessageSquarePlus className="w-3.5 h-3.5" />
-            {t('nav.feedback')}
           </button>
         </div>
       </div>

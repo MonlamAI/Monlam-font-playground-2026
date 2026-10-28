@@ -30,29 +30,26 @@ export const InstallStepsCarousel: React.FC<InstallStepsCarouselProps> = ({ slid
 
   if (count === 0) return null;
 
+  const current = slides[index]!;
+
   return (
     <div className="space-y-4">
-      <div className="group relative">
-        <div className="overflow-hidden rounded-xl" aria-live="polite" aria-atomic="true">
-          <div
-            className="flex transition-transform duration-300 ease-out"
-            style={{ transform: `translateX(-${index * 100}%)` }}
-          >
-            {slides.map((slide, i) => (
-              <article
-                key={slide.imageSrc}
-                className="min-w-full shrink-0 rounded-xl border border-blue-100/80 bg-white/90 p-3 shadow-sm backdrop-blur-sm dark:border-slate-600 dark:bg-slate-800/90 sm:p-4"
-                aria-hidden={i !== index}
-              >
-                <img
-                  src={slide.imageSrc}
-                  alt={slide.alt}
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                  className="mx-auto w-full max-h-[min(70vh,640px)] rounded-lg object-contain object-top"
-                />
-              </article>
-            ))}
-          </div>
+      <div className="group relative w-full min-w-0">
+        <div
+          className="w-full min-w-0 overflow-hidden rounded-xl border border-blue-100/80 bg-white/90 shadow-sm backdrop-blur-sm dark:border-slate-600 dark:bg-slate-800/90"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <figure className="install-guide-slide-frame m-0 flex w-full min-w-0 items-center justify-center p-2 sm:p-4">
+            <img
+              key={current.imageSrc}
+              src={current.imageSrc}
+              alt={current.alt}
+              loading="eager"
+              decoding="async"
+              className="install-guide-slide-img"
+            />
+          </figure>
         </div>
 
         {count > 1 && (
@@ -60,7 +57,7 @@ export const InstallStepsCarousel: React.FC<InstallStepsCarouselProps> = ({ slid
             <button
               type="button"
               onClick={(e) => go(-1, e.currentTarget)}
-              className="absolute left-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-700 opacity-0 shadow-md pointer-events-none transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 hover:bg-white focus:outline-none dark:border-slate-600 dark:bg-slate-900/95 dark:text-slate-200 dark:hover:bg-slate-800"
+              className="absolute left-1 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-700 shadow-md transition hover:bg-white focus:outline-none sm:left-2 sm:opacity-0 sm:pointer-events-none sm:group-hover:pointer-events-auto sm:group-hover:opacity-100 dark:border-slate-600 dark:bg-slate-900/95 dark:text-slate-200 dark:hover:bg-slate-800"
               aria-label={t('common.previous')}
             >
               <ChevronLeft className="h-5 w-5" />
@@ -68,7 +65,7 @@ export const InstallStepsCarousel: React.FC<InstallStepsCarouselProps> = ({ slid
             <button
               type="button"
               onClick={(e) => go(1, e.currentTarget)}
-              className="absolute right-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-700 opacity-0 shadow-md pointer-events-none transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 hover:bg-white focus:outline-none dark:border-slate-600 dark:bg-slate-900/95 dark:text-slate-200 dark:hover:bg-slate-800"
+              className="absolute right-1 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white/95 text-gray-700 shadow-md transition hover:bg-white focus:outline-none sm:right-2 sm:opacity-0 sm:pointer-events-none sm:group-hover:pointer-events-auto sm:group-hover:opacity-100 dark:border-slate-600 dark:bg-slate-900/95 dark:text-slate-200 dark:hover:bg-slate-800"
               aria-label={t('common.next')}
             >
               <ChevronRight className="h-5 w-5" />
