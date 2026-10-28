@@ -158,7 +158,7 @@ export function KeyboardEditorPage() {
     setError('');
     setMessage('');
     setUploadFileSize(file.size);
-    setUploadProgress({ phase: 'uploading', loaded: 0, total: file.size, percent: 0 });
+    setUploadProgress({ phase: 'local', loaded: 0, total: file.size, percent: 0 });
     try {
       const data = await adminApi.importKeyboardBundle(file, setUploadProgress);
       applyImportResult(data);
@@ -281,8 +281,9 @@ export function KeyboardEditorPage() {
         <p className="text-xs text-gray-600 dark:text-slate-400 leading-relaxed">
           Upload the Mac or full Bodyig <strong>.zip</strong> (for example{' '}
           <code className="font-mono text-[11px]">Monlam.Bodyig.5.0.0.Mac</code>). We read the keyboard layout,
-          version, and font list from the bundle — no manual JSON needed. Large files show upload progress below;
-          only layout metadata is parsed (font files in the zip are not re-uploaded to the server during import).
+          version, and font list from the bundle — no manual JSON needed. The zip is read in your browser (works
+          behind Cloudflare); the full file is uploaded only when you Save. Packages over ~100 MB may fail on Save
+          unless nginx and Cloudflare allow large admin uploads — use a Mac-only zip if needed.
         </p>
         <label
           className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-white text-sm font-medium ${
@@ -305,13 +306,15 @@ export function KeyboardEditorPage() {
           <div className="w-full max-w-lg space-y-1.5" aria-live="polite">
             <div className="flex flex-wrap justify-between gap-2 text-xs text-gray-600 dark:text-slate-400">
               <span>
-                {uploadProgress.phase === 'uploading'
-                  ? `Uploading… ${formatUploadBytes(uploadProgress.loaded)} of ${formatUploadBytes(
-                      uploadProgress.total || uploadFileSize
-                    )} (${uploadProgress.percent}%)`
-                  : saving
-                    ? 'Storing package on server…'
-                    : 'Reading keyboard layout on server…'}
+                {uploadProgress.phase === 'local'
+                  ? `Reading package in browser… ${formatUploadBytes(uploadFileSize)}`
+                  : uploadProgress.phase === 'uploading'
+                    ? `Uploading… ${formatUploadBytes(uploadProgress.loaded)} of ${formatUploadBytes(
+                        uploadProgress.total || uploadFileSize
+                      )} (${uploadProgress.percent}%)`
+                    : saving
+                      ? 'Storing package on server…'
+                      : 'Matching fonts on server…'}
               </span>
               {uploadProgress.phase === 'processing' && (
                 <span className="text-blue-600 dark:text-blue-400">Please wait</span>
@@ -320,7 +323,9 @@ export function KeyboardEditorPage() {
             <div className="h-2.5 rounded-full bg-gray-200 dark:bg-slate-700 overflow-hidden">
               <div
                 className={`h-full bg-blue-600 transition-[width] duration-150 ease-out ${
-                  uploadProgress.phase === 'processing' ? 'w-full animate-pulse' : ''
+                  uploadProgress.phase === 'local' || uploadProgress.phase === 'processing'
+                    ? 'w-full animate-pulse'
+                    : ''
                 }`}
                 style={
                   uploadProgress.phase === 'uploading'

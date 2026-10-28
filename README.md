@@ -90,6 +90,8 @@ NODE_ENV=production npm start   # or: sudo systemctl restart monlam  /  pm2 rest
 
 Express serves the Vite `dist/` build, `/api`, and `/uploads` on `PORT` (default 8787). Put nginx in front for TLS if needed. Hard-refresh the browser (or clear cache) after deploy if the UI still looks old.
 
+**Large Bodyig `.zip` uploads (admin):** Import reads the zip in the browser and only sends layout JSON to the API. **Save** uploads the full download package — allow up to **300 MB** on nginx (`client_max_body_size 300m;` in the `location` that proxies `/api`). If the site uses **Cloudflare** (orange cloud), proxied uploads are capped at about **100 MB** unless you use Enterprise or DNS-only (grey cloud) for the origin / a dedicated upload host. See `deploy/nginx.example.conf`.
+
 Env vars: see `.env.example` (`ADMIN_EMAIL`, `ADMIN_PASSWORD`, `SESSION_SECRET`, `DATABASE_PATH`, `UPLOADS_DIR`).
 
 ## Scripts

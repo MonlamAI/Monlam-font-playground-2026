@@ -1,10 +1,28 @@
 export type FormUploadProgress = {
-  phase: 'uploading' | 'processing';
+  phase: 'local' | 'uploading' | 'processing';
   loaded: number;
   total: number;
   /** 0–100; upload caps at 99 until the server responds */
   percent: number;
 };
+
+/** Shown when CDN/origin rejects a large keyboard .zip (e.g. Cloudflare ~100 MB). */
+export const LARGE_PACKAGE_UPLOAD_HINT =
+  'Cloudflare (orange-cloud proxy) allows about 100 MB per upload. For Save, use a Mac-only zip under 100 MB, or raise limits on nginx (client_max_body_size 300m) and bypass Cloudflare for admin/API traffic.';
+
+export function httpUploadErrorMessage(status: number, responseText: string): string {
+  const tooLarge =
+    status === 413 ||
+    /413/i.test(responseText) ||
+    /Payload Too Large|Content Too Large/i.test(responseText);
+  if (tooLarge) {
+    return `Upload rejected — file too large for the CDN or web server. ${LARGE_PACKAGE_UPLOAD_HINT}`;
+  }
+  if (responseText.includes('<html') || responseText.includes('<!DOCTYPE')) {
+    return `Request failed (${status}). ${tooLarge ? LARGE_PACKAGE_UPLOAD_HINT : 'Try again or check server logs.'}`;
+  }
+  return responseText.slice(0, 240) || `Request failed (${status})`;
+}
 
 export function formatUploadBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -41,12 +59,18 @@ export function requestFormDataWithProgress<T>(
       try {
         body = JSON.parse(xhr.responseText) as { error?: string } | T;
       } catch {
-        reject(new Error(xhr.responseText?.slice(0, 200) || xhr.statusText || 'Request failed'));
+        reject(
+          new Error(httpUploadErrorMessage(xhr.status, xhr.responseText || xhr.statusText))
+        );
         return;
       }
       if (xhr.status < 200 || xhr.status >= 300) {
         const err = body as { error?: string };
-        reject(new Error(err.error || `Request failed (${xhr.status})`));
+        reject(
+          new Error(
+            err.error || httpUploadErrorMessage(xhr.status, xhr.responseText || xhr.statusText)
+          )
+        );
         return;
       }
       resolve(body as T);

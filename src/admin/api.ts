@@ -12,8 +12,13 @@ import type { FontPresetConfig } from '../types/font';
 import type { PublicSiteSettings } from '../types/siteSettings';
 import {
   requestFormDataWithProgress,
+  httpUploadErrorMessage,
   type FormUploadProgress
 } from './uploadProgress';
+import {
+  parseKeyboardBundleBytes,
+  type KeyboardBundleImportResult as ParsedBundle
+} from '../lib/keyboardBundleParse';
 
 export type { FormUploadProgress };
 
@@ -45,10 +50,12 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
     const contentType = res.headers.get('content-type') || '';
     if (contentType.includes('application/json')) {
       const err = await res.json().catch(() => ({ error: res.statusText }));
-      throw new Error(err.error || `Request failed (${res.status})`);
+      throw new Error(
+        err.error || httpUploadErrorMessage(res.status, res.statusText)
+      );
     }
     const text = (await res.text()).replace(/\s+/g, ' ').trim();
-    throw new Error(text.slice(0, 240) || res.statusText || `Request failed (${res.status})`);
+    throw new Error(httpUploadErrorMessage(res.status, text || res.statusText));
   }
   return res.json() as Promise<T>;
 }
@@ -137,13 +144,16 @@ export const adminApi = {
     file: File,
     onProgress?: (progress: FormUploadProgress) => void
   ) => {
-    const form = new FormData();
-    form.append('file', file);
-    return requestFormDataWithProgress<KeyboardBundleImportResult>(
-      '/api/admin/keyboards/import-bundle',
-      form,
-      onProgress
+    onProgress?.({ phase: 'local', loaded: 0, total: file.size, percent: 0 });
+    const parsed: ParsedBundle = await parseKeyboardBundleBytes(
+      await file.arrayBuffer(),
+      file.name
     );
+    onProgress?.({ phase: 'processing', loaded: file.size, total: file.size, percent: 100 });
+    return request<KeyboardBundleImportResult>('/api/admin/keyboards/import-parsed', {
+      method: 'POST',
+      body: JSON.stringify(parsed)
+    });
   },
   listFeedback: (status?: string) =>
     request<import('../types/feedback').FeedbackItem[]>(

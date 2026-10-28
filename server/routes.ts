@@ -15,10 +15,12 @@ import { requireAdmin, loginAdmin, logoutAdmin, meAdmin } from './auth';
 import { storeUpload, deleteStoredFile } from './storage';
 import { sendFeedbackEmail } from './email';
 import { readPublicSiteSettings, setCompareBoldnessEnabled } from './siteSettings';
+import type { KeyboardBundleImportResult } from './keyboardBundleImport';
 import {
   matchFontIds,
   parseKeyboardBundleBuffer
 } from './keyboardBundleImport';
+import { isKeyMapLayout } from '../src/utils/keyboardLayout';
 
 function fontWithConfigs(db: Db, row: Record<string, unknown>) {
   return rowToFont(row, loadFontPresetConfigs(db, row.id as string));
@@ -691,6 +693,37 @@ export function createAdminRouter(db: Db) {
     res.json(rowToKeyboard(row, links.map((l) => l.font_id)));
   });
 
+  function keyboardImportResponse(parsed: KeyboardBundleImportResult) {
+    const fontRows = db.prepare('SELECT id, name, filename FROM fonts').all() as {
+      id: string;
+      name: string;
+      filename: string;
+    }[];
+    const suggestedFontIds = matchFontIds(parsed.fontFilenames, fontRows);
+    return { ...parsed, suggestedFontIds };
+  }
+
+  router.post('/keyboards/import-parsed', (req, res) => {
+    try {
+      const body = req.body as KeyboardBundleImportResult | undefined;
+      if (
+        !body?.name ||
+        !body.version ||
+        !isKeyMapLayout(body.layoutJsonMac) ||
+        !isKeyMapLayout(body.layoutJsonWindows)
+      ) {
+        res.status(400).json({ error: 'Invalid import payload' });
+        return;
+      }
+      res.json(keyboardImportResponse(body));
+    } catch (err) {
+      console.error(err);
+      res.status(400).json({
+        error: err instanceof Error ? err.message : 'Could not import keyboard metadata'
+      });
+    }
+  });
+
   router.post('/keyboards/import-bundle', uploadSingle('file'), async (req, res) => {
     try {
       if (!req.file) {
@@ -698,13 +731,7 @@ export function createAdminRouter(db: Db) {
         return;
       }
       const parsed = await parseKeyboardBundleBuffer(req.file.buffer, req.file.originalname);
-      const fontRows = db.prepare('SELECT id, name, filename FROM fonts').all() as {
-        id: string;
-        name: string;
-        filename: string;
-      }[];
-      const suggestedFontIds = matchFontIds(parsed.fontFilenames, fontRows);
-      res.json({ ...parsed, suggestedFontIds });
+      res.json(keyboardImportResponse(parsed));
     } catch (err) {
       console.error(err);
       res.status(400).json({
