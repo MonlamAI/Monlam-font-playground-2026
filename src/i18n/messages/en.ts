@@ -292,6 +292,8 @@ const en = {
     shiftOn: 'SHIFT: ON',
     shiftOff: 'SHIFT: OFF',
     shiftNeeded: 'SHIFT: NEEDED',
+    capsOn: 'CAPS: ON',
+    capsOff: 'CAPS: OFF',
     keysFollowOs: 'Keys follow the selected OS layout',
     fallbackKeyboard: 'Monlam Bodyig 2025 Keyboard',
     keyBackspace: 'Backspace',

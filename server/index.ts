@@ -9,7 +9,7 @@ dotenv.config({ path: path.join(__dirname, '..', '.env') });
 import express from 'express';
 import cors from 'cors';
 import cookieSession from 'cookie-session';
-import { openDatabase } from './db';
+import { openDatabase, resolveDatabasePath } from './db';
 import { seedIfEmpty } from './seed';
 import { createAdminRouter, createPublicRouter } from './routes';
 import { getLocalUploadDir } from './storage';
@@ -66,4 +66,5 @@ if (isProd) {
 
 app.listen(PORT, () => {
   console.log(`Monlam CMS API listening on http://localhost:${PORT}`);
+  console.log(`CMS database: ${resolveDatabasePath()}`);
 });

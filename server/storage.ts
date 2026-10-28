@@ -4,11 +4,17 @@ import { fileURLToPath } from 'url';
 import { randomUUID } from 'crypto';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.join(__dirname, '..');
+
+function resolveUploadsDir(): string {
+  const configured = process.env.UPLOADS_DIR?.trim();
+  if (!configured) return path.join(__dirname, 'uploads');
+  if (path.isAbsolute(configured)) return configured;
+  return path.normalize(path.join(repoRoot, configured));
+}
 
 /** Project-local upload root (overridable via UPLOADS_DIR). */
-const localUploadDir = path.resolve(
-  process.env.UPLOADS_DIR || path.join(__dirname, 'uploads')
-);
+const localUploadDir = resolveUploadsDir();
 
 export type StoredFile = {
   /** Relative storage key under the uploads root, e.g. fonts/uuid-name.ttf */

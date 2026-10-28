@@ -5,6 +5,15 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const defaultDbPath = path.join(__dirname, 'data', 'cms.sqlite');
+const repoRoot = path.join(__dirname, '..');
+
+/** Relative DATABASE_PATH is anchored to the repo root, not process.cwd() (systemd-safe). */
+export function resolveDatabasePath(configured?: string): string {
+  const value = (configured ?? process.env.DATABASE_PATH ?? '').trim();
+  if (!value) return defaultDbPath;
+  if (path.isAbsolute(value)) return value;
+  return path.normalize(path.join(repoRoot, value));
+}
 
 function ensureColumn(
   db: InstanceType<typeof Database>,
@@ -18,9 +27,10 @@ function ensureColumn(
   }
 }
 
-export function openDatabase(dbPath = process.env.DATABASE_PATH || defaultDbPath) {
-  fs.mkdirSync(path.dirname(dbPath), { recursive: true });
-  const db = new Database(dbPath);
+export function openDatabase(dbPath?: string) {
+  const resolvedPath = dbPath ? path.normalize(dbPath) : resolveDatabasePath();
+  fs.mkdirSync(path.dirname(resolvedPath), { recursive: true });
+  const db = new Database(resolvedPath);
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
 

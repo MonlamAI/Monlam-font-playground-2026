@@ -76,7 +76,7 @@ Env vars: see `.env.example` (`ADMIN_EMAIL`, `SMTP_*`, `FEEDBACK_FROM_EMAIL`).
 
 ## Production (EC2)
 
-Font files stay on the EC2 disk with the app (no S3 required). Keep `server/uploads/` and the SQLite DB on persistent EBS storage and back them up.
+Font files stay on the EC2 disk with the app (no S3 required). **CMS data lives in SQLite** (`DATABASE_PATH`) and **`UPLOADS_DIR`** — both are gitignored. Point them at **absolute paths outside the deploy directory** (for example `/var/lib/monlam/cms.sqlite` and `/var/lib/monlam/uploads`) so `git pull`, `npm install`, and `npm run build` never create a fresh empty database. Back up those paths on EBS.
 
 **After every `git pull`, you must reinstall (if deps changed), rebuild the SPA, and restart the Node process.** `git pull` alone does not update what users see—the site is served from the built `dist/` folder.
 

@@ -234,6 +234,8 @@
     "shiftOn": "Shift: སྤྱོད།",
     "shiftOff": "Shift: མི་སྤྱོད།",
     "shiftNeeded": "Shift: dgos",
+    "capsOn": "Caps: སྤྱོད།",
+    "capsOff": "Caps: མི་སྤྱོད།",
     "keysFollowOs": "མཐེབ་གནོན་རྣམས་ཁྱེད་ཀྱིས་བདམས་པའི་མ་ལག་གི་སྒྲིག་བཀོད་དང་མཐུན།",
     "fallbackKeyboard": "Monlam Bodyig 2025",
     "keyBackspace": "སུབ་པ།",

@@ -281,6 +281,7 @@ export function reseedBodyigAssets(db: Db) {
   );
 }
 
+/** Seed default script styles once; never re-add deleted defaults on restart. */
 export function syncScriptStyles(db: Db) {
   const now = new Date().toISOString();
   const insert = db.prepare(`
@@ -289,17 +290,20 @@ export function syncScriptStyles(db: Db) {
   `);
 
   const tx = db.transaction(() => {
-    for (const style of DEFAULT_SCRIPT_STYLES) {
-      const existing = db.prepare('SELECT id FROM script_styles WHERE id = ?').get(style.id);
-      if (existing) continue;
-      insert.run({
-        id: style.id,
-        name: style.name,
-        tibetan_name: style.tibetanName,
-        sort_order: style.sortOrder,
-        created_at: now,
-        updated_at: now
-      });
+    const { c: styleCount } = db.prepare('SELECT COUNT(*) as c FROM script_styles').get() as {
+      c: number;
+    };
+    if (styleCount === 0) {
+      for (const style of DEFAULT_SCRIPT_STYLES) {
+        insert.run({
+          id: style.id,
+          name: style.name,
+          tibetan_name: style.tibetanName,
+          sort_order: style.sortOrder,
+          created_at: now,
+          updated_at: now
+        });
+      }
     }
 
     const orphanCategories = db

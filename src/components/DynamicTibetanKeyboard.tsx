@@ -114,6 +114,19 @@ export const DynamicTibetanKeyboard: React.FC<DynamicTibetanKeyboardProps> = ({
                   ? t('typing.shiftNeeded')
                   : t('typing.shiftOff')}
             </button>
+            {onToggleCaps ? (
+              <button
+                type="button"
+                onClick={onToggleCaps}
+                className={`px-3 py-1 rounded-md text-xs font-semibold transition border ${
+                  capsLock
+                    ? 'bg-amber-400 border-amber-500 text-slate-950 font-bold'
+                    : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700'
+                }`}
+              >
+                {capsLock ? t('typing.capsOn') : t('typing.capsOff')}
+              </button>
+            ) : null}
             <span className="text-xs text-gray-500 dark:text-slate-400 hidden sm:inline tibetan-text">
               {t('typing.keysFollowOs')}
             </span>
