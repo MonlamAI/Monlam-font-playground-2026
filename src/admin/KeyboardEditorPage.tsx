@@ -98,27 +98,50 @@ export function KeyboardEditorPage() {
       if (isNew) {
         const created = await adminApi.createKeyboard(data);
         if (pendingPackageFile) {
-          setUploadFileSize(pendingPackageFile.size);
-          setUploadProgress({ phase: 'uploading', loaded: 0, total: pendingPackageFile.size, percent: 0 });
-          await adminApi.uploadKeyboardFile(created.id, pendingPackageFile, setUploadProgress);
+          const { asset: _kb, slimmed } = await adminApi.uploadKeyboardFile(
+            created.id,
+            pendingPackageFile,
+            (p) => {
+              setUploadProgress(p);
+              if (p.phase === 'uploading') setUploadFileSize(p.total || pendingPackageFile.size);
+            }
+          );
           setPendingPackageFile(null);
           setUploadProgress(null);
+          if (slimmed) {
+            setMessage(
+              'Keyboard created. Stored a keyboard-layout zip without font files (CDN size limit); fonts remain in the catalog.'
+            );
+          } else {
+            setMessage('Keyboard created');
+          }
+        } else {
+          setMessage('Keyboard created');
         }
-        setMessage('Keyboard created');
         navigate(`/admin/keyboards/${created.id}`, { replace: true });
       } else if (id) {
         const updated = await adminApi.updateKeyboard(id, data);
         if (pendingPackageFile) {
-          setUploadFileSize(pendingPackageFile.size);
-          setUploadProgress({ phase: 'uploading', loaded: 0, total: pendingPackageFile.size, percent: 0 });
-          const withPackage = await adminApi.uploadKeyboardFile(id, pendingPackageFile, setUploadProgress);
+          const { asset: withPackage, slimmed } = await adminApi.uploadKeyboardFile(
+            id,
+            pendingPackageFile,
+            (p) => {
+              setUploadProgress(p);
+              if (p.phase === 'uploading') setUploadFileSize(p.total || pendingPackageFile.size);
+            }
+          );
           setKb(withPackage);
           setPendingPackageFile(null);
           setUploadProgress(null);
+          setMessage(
+            slimmed
+              ? 'Saved. Stored a keyboard-layout zip without font files (CDN size limit).'
+              : 'Saved'
+          );
         } else {
           setKb(updated);
+          setMessage('Saved');
         }
-        setMessage('Saved');
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Save failed');
@@ -184,7 +207,7 @@ export function KeyboardEditorPage() {
     setUploadFileSize(file.size);
     setUploadProgress({ phase: 'uploading', loaded: 0, total: file.size, percent: 0 });
     try {
-      const updated = await adminApi.uploadKeyboardFile(id, file, setUploadProgress);
+      const { asset: updated, slimmed } = await adminApi.uploadKeyboardFile(id, file, setUploadProgress);
       setKb(updated);
       if (updated.layoutJsonMac) {
         setForm((prev) => ({
@@ -197,7 +220,11 @@ export function KeyboardEditorPage() {
           description: updated.description
         }));
       }
-      setMessage('Keyboard package uploaded');
+      setMessage(
+        slimmed
+          ? 'Stored a keyboard-layout zip without font files (CDN size limit).'
+          : 'Keyboard package uploaded'
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed');
     } finally {
@@ -339,7 +366,14 @@ export function KeyboardEditorPage() {
         {pendingPackageFile && (
           <p className="text-xs text-gray-500 dark:text-slate-400">
             Download package ({formatUploadBytes(pendingPackageFile.size)}) will be stored when you click Save —{' '}
-            {pendingPackageFile.name}
+            {pendingPackageFile.name}.
+            {pendingPackageFile.size > 95 * 1024 * 1024 ? (
+              <>
+                {' '}
+                Over 95 MB: Save will upload a <strong>keyboard-layout-only</strong> zip (no .ttf fonts) so Cloudflare
+                accepts it; fonts stay linked from the catalog.
+              </>
+            ) : null}
           </p>
         )}
       </div>

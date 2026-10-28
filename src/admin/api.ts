@@ -13,12 +13,22 @@ import type { PublicSiteSettings } from '../types/siteSettings';
 import {
   requestFormDataWithProgress,
   httpUploadErrorMessage,
+  CLOUDFLARE_SAFE_UPLOAD_BYTES,
+  formatUploadBytes,
+  LARGE_PACKAGE_UPLOAD_HINT,
   type FormUploadProgress
 } from './uploadProgress';
 import {
+  buildBodyigStorageZip,
   parseKeyboardBundleBytes,
   type KeyboardBundleImportResult as ParsedBundle
 } from '../lib/keyboardBundleParse';
+
+export type PreparedKeyboardPackage = {
+  file: File;
+  /** True when font binaries were stripped for CDN upload limits */
+  slimmed: boolean;
+};
 
 export type { FormUploadProgress };
 
@@ -127,18 +137,47 @@ export const adminApi = {
     }),
   deleteKeyboard: (id: string) =>
     request<{ ok: boolean }>(`/api/admin/keyboards/${id}`, { method: 'DELETE' }),
+  prepareKeyboardPackageUpload: async (
+    file: File,
+    onProgress?: (progress: FormUploadProgress) => void
+  ): Promise<PreparedKeyboardPackage> => {
+    const lower = file.name.toLowerCase();
+    if (file.size <= CLOUDFLARE_SAFE_UPLOAD_BYTES || !lower.endsWith('.zip')) {
+      return { file, slimmed: false };
+    }
+    onProgress?.({ phase: 'local', loaded: 0, total: file.size, percent: 0 });
+    const blob = await buildBodyigStorageZip(await file.arrayBuffer());
+    if (blob.size > CLOUDFLARE_SAFE_UPLOAD_BYTES) {
+      throw new Error(
+        `Keyboard package is still ${formatUploadBytes(blob.size)} without fonts. ${LARGE_PACKAGE_UPLOAD_HINT}`
+      );
+    }
+    const base = file.name.replace(/\.zip$/i, '') || 'bodyig';
+    const slimFile = new File([blob], `${base}-keyboard-layout.zip`, {
+      type: 'application/zip'
+    });
+    return { file: slimFile, slimmed: true };
+  },
   uploadKeyboardFile: async (
     id: string,
     file: File,
     onProgress?: (progress: FormUploadProgress) => void
   ) => {
+    const prepared = await adminApi.prepareKeyboardPackageUpload(file, onProgress);
+    onProgress?.({
+      phase: 'uploading',
+      loaded: 0,
+      total: prepared.file.size,
+      percent: 0
+    });
     const form = new FormData();
-    form.append('file', file);
-    return requestFormDataWithProgress<KeyboardAsset>(
+    form.append('file', prepared.file);
+    const asset = await requestFormDataWithProgress<KeyboardAsset>(
       `/api/admin/keyboards/${id}/upload`,
       form,
       onProgress
     );
+    return { asset, slimmed: prepared.slimmed };
   },
   importKeyboardBundle: async (
     file: File,

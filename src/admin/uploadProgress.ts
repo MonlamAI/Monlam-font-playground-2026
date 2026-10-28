@@ -6,6 +6,9 @@ export type FormUploadProgress = {
   percent: number;
 };
 
+/** Stay under Cloudflare orange-cloud upload limit (~100 MB). */
+export const CLOUDFLARE_SAFE_UPLOAD_BYTES = 95 * 1024 * 1024;
+
 /** Shown when CDN/origin rejects a large keyboard .zip (e.g. Cloudflare ~100 MB). */
 export const LARGE_PACKAGE_UPLOAD_HINT =
   'Cloudflare (orange-cloud proxy) allows about 100 MB per upload. For Save, use a Mac-only zip under 100 MB, or raise limits on nginx (client_max_body_size 300m) and bypass Cloudflare for admin/API traffic.';

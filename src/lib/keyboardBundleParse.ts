@@ -233,6 +233,34 @@ function zipEntryPaths(zip: JSZip): string[] {
   });
 }
 
+function isFontBinaryZipPath(path: string): boolean {
+  return /\/Fonts\//i.test(path) && /\.(ttf|otf|ttc)$/i.test(path);
+}
+
+/**
+ * Zip without font binaries — small enough for Cloudflare when saving keyboard downloads.
+ * Keeps keylayout, bundle plists, installers, and other non-font assets.
+ */
+export async function buildBodyigStorageZip(data: ArrayBuffer | Uint8Array): Promise<Blob> {
+  const bytes = data instanceof Uint8Array ? data : new Uint8Array(data);
+  const src = await JSZip.loadAsync(bytes, { checkCRC32: false });
+  const out = new JSZip();
+  const paths = zipEntryPaths(src).filter((p) => !isFontBinaryZipPath(p));
+
+  for (const path of paths) {
+    const entry = src.file(path);
+    if (!entry) continue;
+    const content = await entry.async('uint8array');
+    out.file(path, content);
+  }
+
+  return out.generateAsync({
+    type: 'blob',
+    compression: 'DEFLATE',
+    compressionOptions: { level: 6 }
+  });
+}
+
 /** Read only keylayout + plists from zip (skip decompressing font binaries). */
 async function loadZipBundleParts(zip: JSZip): Promise<{
   keylayoutPath: string;
