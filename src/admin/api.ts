@@ -21,8 +21,13 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
     }
   });
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ error: res.statusText }));
-    throw new Error(err.error || `Request failed (${res.status})`);
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      const err = await res.json().catch(() => ({ error: res.statusText }));
+      throw new Error(err.error || `Request failed (${res.status})`);
+    }
+    const text = (await res.text()).replace(/\s+/g, ' ').trim();
+    throw new Error(text.slice(0, 240) || res.statusText || `Request failed (${res.status})`);
   }
   return res.json() as Promise<T>;
 }
@@ -98,6 +103,27 @@ export const adminApi = {
     const form = new FormData();
     form.append('file', file);
     return request<KeyboardAsset>(`/api/admin/keyboards/${id}/upload`, {
+      method: 'POST',
+      body: form
+    });
+  },
+  importKeyboardBundle: async (file: File) => {
+    const form = new FormData();
+    form.append('file', file);
+    return request<{
+      name: string;
+      tibetanName: string;
+      description: string;
+      version: string;
+      layoutType: string;
+      script: string;
+      layoutJsonMac: import('../data/tibetanData').KeyMap[][];
+      layoutJsonWindows: import('../data/tibetanData').KeyMap[][];
+      fontFilenames: string[];
+      suggestedFontIds: string[];
+      keylayoutSource: string;
+      warnings: string[];
+    }>('/api/admin/keyboards/import-bundle', {
       method: 'POST',
       body: form
     });

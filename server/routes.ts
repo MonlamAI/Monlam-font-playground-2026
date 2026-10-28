@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import multer from 'multer';
+import { Router, type NextFunction, type Request, type Response } from 'express';
+import multer, { MulterError } from 'multer';
 import { randomUUID } from 'crypto';
 import type { Db } from './db';
 import {
@@ -15,6 +15,10 @@ import { requireAdmin, loginAdmin, logoutAdmin, meAdmin } from './auth';
 import { storeUpload, deleteStoredFile } from './storage';
 import { sendFeedbackEmail } from './email';
 import { readPublicSiteSettings, setCompareBoldnessEnabled } from './siteSettings';
+import {
+  matchFontIds,
+  parseKeyboardBundleBuffer
+} from './keyboardBundleImport';
 
 function fontWithConfigs(db: Db, row: Record<string, unknown>) {
   return rowToFont(row, loadFontPresetConfigs(db, row.id as string));
@@ -64,10 +68,36 @@ function ensureSpecialFontDefaultConfigs(db: Db, fontId: string) {
   }
 }
 
+/** Bodyig bundles and font packages can be large (Mac + Win + fonts). */
+const MAX_ADMIN_UPLOAD_BYTES = 300 * 1024 * 1024;
+
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 30 * 1024 * 1024 }
+  limits: { fileSize: MAX_ADMIN_UPLOAD_BYTES }
 });
+
+function uploadSingle(field: string) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    upload.single(field)(req, res, (err: unknown) => {
+      if (!err) {
+        next();
+        return;
+      }
+      if (err instanceof MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          const maxMb = Math.round(MAX_ADMIN_UPLOAD_BYTES / (1024 * 1024));
+          res.status(413).json({
+            error: `Package is too large (max ${maxMb} MB). Try zipping only the Mac folder (Monlam.Bodyig.*.Mac).`
+          });
+          return;
+        }
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      next(err);
+    });
+  };
+}
 
 const feedbackUpload = multer({
   storage: multer.memoryStorage(),
@@ -400,7 +430,7 @@ export function createAdminRouter(db: Db) {
     res.json(fontWithConfigs(db, row));
   });
 
-  router.post('/fonts/:id/upload', upload.single('file'), async (req, res) => {
+  router.post('/fonts/:id/upload', uploadSingle('file'), async (req, res) => {
     try {
       const existing = db.prepare('SELECT * FROM fonts WHERE id = ?').get(req.params.id) as
         | Record<string, unknown>
@@ -661,7 +691,29 @@ export function createAdminRouter(db: Db) {
     res.json(rowToKeyboard(row, links.map((l) => l.font_id)));
   });
 
-  router.post('/keyboards/:id/upload', upload.single('file'), async (req, res) => {
+  router.post('/keyboards/import-bundle', uploadSingle('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        res.status(400).json({ error: 'No file uploaded' });
+        return;
+      }
+      const parsed = await parseKeyboardBundleBuffer(req.file.buffer, req.file.originalname);
+      const fontRows = db.prepare('SELECT id, name, filename FROM fonts').all() as {
+        id: string;
+        name: string;
+        filename: string;
+      }[];
+      const suggestedFontIds = matchFontIds(parsed.fontFilenames, fontRows);
+      res.json({ ...parsed, suggestedFontIds });
+    } catch (err) {
+      console.error(err);
+      res.status(400).json({
+        error: err instanceof Error ? err.message : 'Could not read keyboard package'
+      });
+    }
+  });
+
+  router.post('/keyboards/:id/upload', uploadSingle('file'), async (req, res) => {
     try {
       const existing = db.prepare('SELECT * FROM keyboards WHERE id = ?').get(req.params.id) as
         | Record<string, unknown>
@@ -676,9 +728,39 @@ export function createAdminRouter(db: Db) {
       }
       const stored = await storeUpload(req.file, 'keyboards');
       await deleteStoredFile(existing.s3_key as string | null);
+
+      let layoutMac = existing.layout_json_mac ?? existing.layout_json;
+      let layoutWin = existing.layout_json_windows;
+      const name = existing.name as string;
+      let version = existing.version as string;
+      let description = existing.description as string;
+      const lower = req.file.originalname.toLowerCase();
+      if (lower.endsWith('.zip') || lower.endsWith('.keylayout') || lower.endsWith('.keylayout.xml')) {
+        try {
+          const parsed = await parseKeyboardBundleBuffer(req.file.buffer, req.file.originalname);
+          layoutMac = JSON.stringify(parsed.layoutJsonMac);
+          layoutWin = JSON.stringify(parsed.layoutJsonWindows);
+          version = parsed.version || version;
+          description = parsed.description || description;
+        } catch (parseErr) {
+          console.warn('Keyboard package stored but layout auto-import failed:', parseErr);
+        }
+      }
+
       db.prepare(`
-        UPDATE keyboards SET s3_key = ?, file_url = ?, updated_at = ? WHERE id = ?
-      `).run(stored.storageKey, stored.fileUrl, new Date().toISOString(), req.params.id);
+        UPDATE keyboards SET s3_key = ?, file_url = ?, layout_json = ?, layout_json_mac = ?, layout_json_windows = ?,
+          version = ?, description = ?, updated_at = ? WHERE id = ?
+      `).run(
+        stored.storageKey,
+        stored.fileUrl,
+        layoutMac,
+        layoutMac,
+        layoutWin,
+        version,
+        description,
+        new Date().toISOString(),
+        req.params.id
+      );
       const row = db.prepare('SELECT * FROM keyboards WHERE id = ?').get(req.params.id) as Record<
         string,
         unknown
