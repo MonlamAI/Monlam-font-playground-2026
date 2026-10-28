@@ -11,6 +11,8 @@ import {
   mappedCharFromKeyboardEvent
 } from '../utils/keyboardLayout';
 import { FEATURE_TYPING_WPM } from '../config/features';
+import { TabScrollLayout } from './TabScrollLayout';
+import { AppFooter } from './AppFooter';
 
 function drillText(d: TypingDrill, field: 'title' | 'hint', t: (key: string) => string): string {
   const key = `typing.drills.${d.id}.${field}`;
@@ -94,63 +96,68 @@ export const TypingPractice: React.FC = () => {
     }
   };
 
-  return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 min-w-0 w-full">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300">
-              <Keyboard className="w-5 h-5" />
+  const stickyChrome = (
+    <div className="max-w-7xl mx-auto w-full min-w-0 space-y-3 px-3 py-3 sm:px-6 lg:px-8">
+      <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
+        <div className="flex items-center gap-2">
+          <div className="rounded-lg bg-blue-50 p-2 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300">
+            <Keyboard className="h-5 w-5" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 tibetan-text dark:text-slate-100">
+            {t('typing.title')}
+          </h2>
+        </div>
+      </div>
+      <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-xs dark:border-slate-700 dark:bg-slate-900 sm:p-5">
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+            <span className="text-xs font-semibold text-gray-500 tibetan-text dark:text-slate-400">
+              {t('typing.drillsLabel')}
+            </span>
+            <div className="flex flex-wrap items-center gap-3 text-xs font-semibold sm:gap-4">
+              {FEATURE_TYPING_WPM ? (
+                <div className="flex items-center gap-1.5 text-blue-600">
+                  <span className="tibetan-text">{t('typing.speed')}</span>
+                  <span className={`text-sm font-bold ${fmt.numeralsClass}`}>
+                    {t('typing.wpm', { count: wpm })}
+                  </span>
+                </div>
+              ) : null}
+              <div className="flex items-center gap-1.5 text-emerald-600">
+                <span className="tibetan-text">{t('typing.accuracy')}</span>
+                <span className={`text-sm font-bold ${fmt.numeralsClass}`}>{fmt.pct(accuracy)}</span>
+              </div>
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-slate-100 tibetan-text">{t('typing.title')}</h2>
-            </div>
+          </div>
+          <div className="-mx-1 flex max-w-full items-center gap-1.5 overflow-x-auto px-1 pb-1">
+            {TYPING_DRILLS.map((d, idx) => (
+              <button
+                key={d.id}
+                onClick={() => {
+                  setCurrentDrillIndex(idx);
+                  handleResetDrill();
+                }}
+                className={`shrink-0 whitespace-nowrap rounded-md px-2.5 py-1 text-xs transition ${
+                  currentDrillIndex === idx
+                    ? 'bg-blue-600 font-bold text-white shadow-sm ring-2 ring-blue-400/40'
+                    : 'border border-gray-200 bg-gray-50 font-medium text-gray-800 hover:bg-gray-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700'
+                }`}
+              >
+                <span className={fmt.numeralsClass}>{fmt.n(idx + 1)}.</span>{' '}
+                <span className="tibetan-text">{drillText(d, 'title', t)}</span>
+              </button>
+            ))}
           </div>
         </div>
       </div>
+    </div>
+  );
 
-      <div className="space-y-6">
-        <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 p-4 sm:p-6 shadow-xs min-w-0">
-          <div className="flex flex-col gap-3 pb-4 border-b border-gray-100 dark:border-slate-800">
-            <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-3">
-              <span className="text-xs font-semibold text-gray-500 dark:text-slate-400 tibetan-text">
-                {t('typing.drillsLabel')}
-              </span>
-              <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-semibold">
-                {FEATURE_TYPING_WPM ? (
-                  <div className="flex items-center gap-1.5 text-blue-600">
-                    <span className="tibetan-text">{t('typing.speed')}</span>
-                    <span className={`text-sm font-bold ${fmt.numeralsClass}`}>{t('typing.wpm', { count: wpm })}</span>
-                  </div>
-                ) : null}
-                <div className="flex items-center gap-1.5 text-emerald-600">
-                  <span className="tibetan-text">{t('typing.accuracy')}</span>
-                  <span className={`text-sm font-bold ${fmt.numeralsClass}`}>{fmt.pct(accuracy)}</span>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 -mx-1 px-1 max-w-full">
-              {TYPING_DRILLS.map((d, idx) => (
-                <button
-                  key={d.id}
-                  onClick={() => {
-                    setCurrentDrillIndex(idx);
-                    handleResetDrill();
-                  }}
-                  className={`shrink-0 whitespace-nowrap rounded-md px-2.5 py-1 text-xs transition ${
-                    currentDrillIndex === idx
-                      ? 'bg-blue-600 font-bold text-white shadow-sm ring-2 ring-blue-400/40'
-                      : 'border border-gray-200 bg-gray-50 font-medium text-gray-800 hover:bg-gray-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  <span className={fmt.numeralsClass}>{fmt.n(idx + 1)}.</span>{' '}
-                  <span className="tibetan-text">{drillText(d, 'title', t)}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="pt-4 pb-6">
+  return (
+    <TabScrollLayout sticky={stickyChrome} scrollFooter={<AppFooter />}>
+      <div className="max-w-7xl mx-auto min-w-0 w-full space-y-6 px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
+        <div className="min-w-0 rounded-xl border border-gray-200 bg-white p-4 shadow-xs dark:border-slate-700 dark:bg-slate-900 sm:p-6">
+          <div className="pb-6 pt-2">
             <div className="bg-gray-50 dark:bg-slate-800/50 p-6 rounded-xl border border-gray-200 dark:border-slate-700 select-none overflow-x-auto">
               <div className="tibetan-text font-app text-3xl sm:text-4xl text-gray-800 dark:text-slate-100 tracking-wide flex flex-wrap gap-1 items-center">
                 {currentDrill.targetText.split('').map((char, i) => {
@@ -234,6 +241,6 @@ export const TypingPractice: React.FC = () => {
           }}
         />
       </div>
-    </div>
+    </TabScrollLayout>
   );
 };

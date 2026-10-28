@@ -56,7 +56,7 @@ Admins can:
 ## Feedback
 
 Public users submit feedback (optional contact email + image/video attachments) from the header **Feedback** button (modal).
-Submissions are always stored in SQLite + `server/uploads/feedback/`. Email to `ADMIN_EMAIL` is attempted via SMTP (`SMTP_HOST`, etc.); if mail fails, the form still succeeds and the CMS retains the entry.
+Submissions are always stored in SQLite + `server/uploads/feedback/`. Email to `FEEDBACK_TO_EMAIL` (defaults to `ADMIN_EMAIL`, e.g. `hello@monlam.ai`) is attempted via SMTP (`SMTP_HOST`, etc.); if mail fails, the form still succeeds and the CMS retains the entry. Each visitor is limited to `FEEDBACK_DAILY_LIMIT` submissions per UTC day (default 3), enforced on the server via cookie, IP hash, and optional contact email.
 
 ### Local SMTP testing (Maildev)
 
@@ -72,7 +72,7 @@ Run `npm run mail` (or `npm run dev:all`), submit feedback, then open the Mailde
 
 For production, replace `SMTP_*` with your provider (SendGrid, Amazon SES, Postmark, etc.).
 
-Env vars: see `.env.example` (`ADMIN_EMAIL`, `SMTP_*`, `FEEDBACK_FROM_EMAIL`).
+Env vars: see `.env.example` (`FEEDBACK_TO_EMAIL`, `ADMIN_EMAIL`, `FEEDBACK_DAILY_LIMIT`, `SMTP_*`, `FEEDBACK_FROM_EMAIL`).
 
 ## Production (EC2)
 

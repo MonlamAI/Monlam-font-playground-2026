@@ -14,6 +14,13 @@ import {
 import { requireAdmin, loginAdmin, logoutAdmin, meAdmin } from './auth';
 import { storeUpload, deleteStoredFile } from './storage';
 import { sendFeedbackEmail } from './email';
+import {
+  checkFeedbackRateLimit,
+  ensureFeedbackSubmitterCookie,
+  getFeedbackQuota,
+  recordFeedbackSubmission,
+  resolveSubmitterKeys
+} from './feedbackRateLimit';
 import { readPublicSiteSettings, setCompareBoldnessEnabled } from './siteSettings';
 import type { KeyboardBundleImportResult } from './keyboardBundleImport';
 import {
@@ -1271,11 +1278,35 @@ export function createPublicRouter(db: Db) {
     res.json(result);
   });
 
+  router.get('/feedback/quota', (req, res) => {
+    const cookieId = ensureFeedbackSubmitterCookie(req, res);
+    const contactEmail = String(req.query?.contactEmail || '').trim() || null;
+    const keys = resolveSubmitterKeys(req, contactEmail, cookieId);
+    const quota = getFeedbackQuota(db, keys);
+    res.json(quota);
+  });
+
   /** Public feedback submission — always persists; email is best-effort. */
   router.post('/feedback', feedbackUpload.array('attachments', 5), async (req, res) => {
     try {
+      const cookieId = ensureFeedbackSubmitterCookie(req, res);
       const message = String(req.body?.message || '').trim();
       const contactEmail = String(req.body?.contactEmail || req.body?.email || '').trim() || null;
+
+      const submitterKeys = resolveSubmitterKeys(req, contactEmail, cookieId);
+      const rate = checkFeedbackRateLimit(db, submitterKeys);
+      if (!rate.allowed) {
+        const limit = rate.quota.limit;
+        res.status(429).json({
+          error: `You have reached the maximum of ${limit} feedback submissions for today. Please try again after the daily limit resets.`,
+          code: 'FEEDBACK_DAILY_LIMIT',
+          limit,
+          used: rate.quota.used,
+          remaining: 0,
+          resetAt: rate.quota.resetAt
+        });
+        return;
+      }
 
       if (!message || message.length < 5) {
         res.status(400).json({ error: 'Please enter feedback of at least 5 characters.' });
@@ -1344,6 +1375,8 @@ export function createPublicRouter(db: Db) {
         });
       }
 
+      recordFeedbackSubmission(db, submitterKeys);
+
       // Email is independent of CMS storage — never roll back saved feedback.
       const emailResult = await sendFeedbackEmail({
         id,
@@ -1358,11 +1391,13 @@ export function createPublicRouter(db: Db) {
       ).run(emailResult.sent ? 1 : 0, emailResult.error || null, new Date().toISOString(), id);
 
       const saved = loadFeedback(db, id);
+      const quota = getFeedbackQuota(db, submitterKeys);
       res.status(201).json({
         ok: true,
         feedback: saved,
         emailSent: emailResult.sent,
-        emailWarning: emailResult.sent ? null : emailResult.error || 'Email could not be sent.'
+        emailWarning: emailResult.sent ? null : emailResult.error || 'Email could not be sent.',
+        quota
       });
     } catch (err) {
       console.error(err);

@@ -63,7 +63,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header
       ref={headerRef}
-      className="sticky top-0 z-40 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 transition-colors"
+      className="z-50 shrink-0 bg-white dark:bg-slate-950 border-b border-gray-200 dark:border-slate-800 transition-colors"
     >
       <div className="w-full px-3 sm:px-4 lg:px-5">
         <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 min-h-[4.25rem] py-2.5">

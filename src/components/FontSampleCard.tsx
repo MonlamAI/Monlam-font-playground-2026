@@ -170,7 +170,7 @@ export const FontSampleCard: React.FC<FontSampleCardProps> = ({
 
       <div
         style={{ color: theme.meta }}
-        className="relative flex min-h-[200px] flex-1 items-center justify-center overflow-x-hidden overflow-y-auto px-5 pb-8 sm:min-h-[240px] sm:pb-10"
+        className="relative flex min-h-[200px] flex-1 items-center justify-center overflow-x-hidden overflow-y-visible px-5 pb-8 sm:min-h-[240px] sm:pb-10"
       >
         <div
           aria-hidden

@@ -20,6 +20,8 @@ import { useI18n } from '../i18n/I18nProvider';
 import { fontCardTitlePair, localePick, uiTibetanClass } from '../utils/fontDisplay';
 import { formatLocaleNumber, localizeDigitsInString, localeNumeralsClass } from '../utils/localeNumber';
 import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
+import { TabScrollLayout } from './TabScrollLayout';
+import { AppFooter } from './AppFooter';
 
 interface InstallGuideProps {
   allFonts: FontItem[];
@@ -81,6 +83,7 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
   ];
 
   return (
+    <TabScrollLayout scrollFooter={<AppFooter />}>
     <div className="relative mx-auto w-full min-w-0 max-w-5xl space-y-6 px-4 py-5 sm:space-y-8 sm:px-6 sm:py-8 lg:px-8">
       <div
         aria-hidden
@@ -306,5 +309,6 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
         )}
       </section>
     </div>
+    </TabScrollLayout>
   );
 };

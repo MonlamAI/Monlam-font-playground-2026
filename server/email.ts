@@ -27,6 +27,12 @@ function getAdminEmail(): string | null {
   return email || null;
 }
 
+/** Feedback notifications — defaults to ADMIN_EMAIL (e.g. hello@monlam.ai). */
+function getFeedbackRecipientEmail(): string | null {
+  const to = (process.env.FEEDBACK_TO_EMAIL || process.env.ADMIN_EMAIL || '').trim();
+  return to || null;
+}
+
 function createTransport() {
   const host = (process.env.SMTP_HOST || '').trim();
   const port = Number(process.env.SMTP_PORT || 587);
@@ -51,11 +57,11 @@ function createTransport() {
  * Callers must still persist feedback independently of this result.
  */
 export async function sendFeedbackEmail(payload: FeedbackEmailPayload): Promise<EmailResult> {
-  const adminEmail = getAdminEmail();
+  const adminEmail = getFeedbackRecipientEmail();
   if (!adminEmail) {
     return {
       sent: false,
-      error: 'ADMIN_EMAIL is not configured. Feedback was saved in the CMS.'
+      error: 'FEEDBACK_TO_EMAIL / ADMIN_EMAIL is not configured. Feedback was saved in the CMS.'
     };
   }
 

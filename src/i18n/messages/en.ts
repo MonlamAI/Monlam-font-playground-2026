@@ -376,7 +376,11 @@ const en = {
     closeAria: 'Close feedback',
     successTitle: 'Feedback submitted successfully',
     successSavedEmail: 'Saved and emailed to the Monlam team.',
-    successSavedCms: 'Saved for the team to review in the CMS.'
+    successSavedCms: 'Saved for the team to review in the CMS.',
+    quotaRemaining: '{{remaining}} of {{limit}} submissions left today.',
+    quotaNone: 'You have used all {{limit}} feedback submissions for today.',
+    dailyLimit:
+      'You have reached the maximum of {{limit}} feedback submissions for today. You can submit more after the limit resets ({{resetTime}} UTC).'
   },
   feedback: {
     title: 'Send feedback',

@@ -140,7 +140,7 @@ export const FontCard: React.FC<FontCardProps> = ({
             ? { paddingBottom: descenderPad }
             : { minHeight: previewMinHeight, paddingBottom: descenderPad }
         }
-        className={`font-card__preview min-w-0 flex flex-col justify-center overflow-x-hidden overflow-y-auto ${
+        className={`font-card__preview min-w-0 flex flex-col justify-center overflow-x-hidden overflow-y-visible ${
           singleLinePreview ? 'min-h-0 py-3 sm:py-4 px-4 sm:px-6' : 'flex-1 p-4 sm:p-6'
         }`}
       >

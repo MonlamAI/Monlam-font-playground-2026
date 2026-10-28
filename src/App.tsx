@@ -115,6 +115,23 @@ export default function App() {
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
+  const scrollShellTabs = ['catalog', 'compare', 'typing', 'install'] as const;
+  const usesScrollShell = (scrollShellTabs as readonly AppTab[]).includes(activeTab);
+
+  useEffect(() => {
+    if (!usesScrollShell) return;
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtml = html.style.overflow;
+    const prevBody = body.style.overflow;
+    html.style.overflow = 'hidden';
+    body.style.overflow = 'hidden';
+    return () => {
+      html.style.overflow = prevHtml;
+      body.style.overflow = prevBody;
+    };
+  }, [usesScrollShell]);
+
   // Filtered fonts computation
   const filteredFonts = useMemo(() => {
     return allFonts.filter((font) => {
@@ -203,9 +220,15 @@ export default function App() {
 
   return (
     <ScriptStylesProvider>
-    <div className="min-h-screen min-w-0 w-full overflow-x-hidden bg-gray-50 dark:bg-slate-950 flex flex-col text-gray-900 dark:text-slate-100 selection:bg-blue-100 selection:text-blue-900 dark:selection:bg-blue-900/60 dark:selection:text-blue-100">
+    <div
+      className={`min-w-0 w-full max-w-[100vw] bg-gray-50 dark:bg-slate-950 flex flex-col text-gray-900 dark:text-slate-100 selection:bg-blue-100 selection:text-blue-900 dark:selection:bg-blue-900/60 dark:selection:text-blue-100 ${
+        usesScrollShell ? 'h-dvh max-h-dvh overflow-hidden' : 'min-h-screen'
+      }`}
+    >
       <PublishedFontFaces fonts={allFonts} />
-      <div className="flex-1 flex flex-col">
+      <div
+        className={`flex-1 flex flex-col min-h-0 ${usesScrollShell ? 'overflow-hidden' : ''}`}
+      >
         {/* Navigation Header */}
         <Header
           activeTab={activeTab}
@@ -216,7 +239,11 @@ export default function App() {
         />
 
         {/* Tab Views */}
-        <main className="pb-6 flex-1 min-w-0 w-full">
+        <main
+          className={`flex-1 min-w-0 w-full ${
+            usesScrollShell ? 'flex flex-col min-h-0 pb-0' : 'pb-6'
+          }`}
+        >
           {activeTab === 'catalog' && (
             <ControlsBar
               searchQuery={searchQuery}
@@ -260,22 +287,25 @@ export default function App() {
               setSidebarOpen={setSidebarOpen}
               onOpenFeedback={() => setIsFeedbackOpen(true)}
             >
-              <FontCatalog
-                fonts={filteredFonts}
-                previewText={previewText}
-                activePresetId={activePresetId}
-                presets={presets}
-                fontSize={fontSize}
-                lineHeight={lineHeight}
-                fontWeight={fontWeight}
-                viewMode={viewMode}
-                selectedFonts={selectedFonts}
-                onToggleSelect={handleToggleSelect}
-                comparedFonts={comparedFonts}
-                onToggleCompare={handleToggleCompare}
-                onOpenGlyphs={(font) => setInspectingFont(font)}
-                onResetFilters={handleResetFilters}
-              />
+              <>
+                <FontCatalog
+                  fonts={filteredFonts}
+                  previewText={previewText}
+                  activePresetId={activePresetId}
+                  presets={presets}
+                  fontSize={fontSize}
+                  lineHeight={lineHeight}
+                  fontWeight={fontWeight}
+                  viewMode={viewMode}
+                  selectedFonts={selectedFonts}
+                  onToggleSelect={handleToggleSelect}
+                  comparedFonts={comparedFonts}
+                  onToggleCompare={handleToggleCompare}
+                  onOpenGlyphs={(font) => setInspectingFont(font)}
+                  onResetFilters={handleResetFilters}
+                />
+                <AppFooter />
+              </>
             </ControlsBar>
           )}
 
@@ -331,7 +361,7 @@ export default function App() {
         onViewKeyboards={() => setActiveTab('install')}
       />
 
-      <AppFooter />
+      {!usesScrollShell && <AppFooter />}
     </div>
     </ScriptStylesProvider>
   );

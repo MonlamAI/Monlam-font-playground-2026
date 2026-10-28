@@ -5,7 +5,7 @@ import { useI18n } from '../i18n/I18nProvider';
 import { uiTibetanClass } from '../utils/fontDisplay';
 import { formatLocaleNumber, localeNumeralsClass } from '../utils/localeNumber';
 
-export const AppFooter: React.FC = () => {
+export const AppFooter: React.FC<{ className?: string }> = ({ className = '' }) => {
   const { t, locale } = useI18n();
   const year = new Date().getFullYear();
   const siteTitle = locale === 'bo' ? t('site.titleTibetan') : t('site.titleEnglish');
@@ -15,7 +15,9 @@ export const AppFooter: React.FC = () => {
   const footerLinkClass = `${footerTextClass} hover:text-blue-600 dark:hover:text-blue-400 transition inline-flex items-center gap-1.5`;
 
   return (
-    <footer className="border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-4 sm:py-5">
+    <footer
+      className={`border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-4 sm:py-5 ${className}`.trim()}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-2.5 shrink-0">

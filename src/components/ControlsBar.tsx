@@ -31,6 +31,7 @@ import {
   localeNumeralsClass
 } from '../utils/localeNumber';
 import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
+import { useForwardWheelToScroll } from '../hooks/useForwardWheelToScroll';
 
 export type FontKindFilter = FontKind | 'all';
 
@@ -219,9 +220,16 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
 
   const collapseSidebar = () => setSidebarOpen(false);
   const expandSidebar = () => setSidebarOpen(true);
+  const catalogScrollRef = React.useRef<HTMLDivElement>(null);
+  const layoutRootRef = React.useRef<HTMLDivElement>(null);
+
+  useForwardWheelToScroll(catalogScrollRef, layoutRootRef, { skipAside: true });
 
   return (
-    <div className="flex items-start w-full min-w-0 relative overflow-x-clip">
+    <div
+      ref={layoutRootRef}
+      className="flex items-stretch w-full min-w-0 relative h-full min-h-0 flex-1 overflow-hidden"
+    >
       {/* Mobile overlay — full drawer only on small screens */}
       {sidebarOpen && (
         <button
@@ -234,7 +242,7 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
 
       {/* Preview panel: mobile drawer | desktop expanded (w-72) | desktop collapsed icon rail (w-14) */}
       <aside
-        className={`fixed top-[var(--site-header-h,5.5rem)] z-50 h-[calc(100vh-var(--site-header-h,5.5rem))] overflow-visible bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 flex flex-col transition-[width,transform] duration-200 ease-out left-0 lg:sticky lg:top-[var(--site-header-h,5.5rem)] lg:z-30 lg:max-h-[calc(100vh-var(--site-header-h,5.5rem))] lg:shrink-0 lg:translate-x-0 ${
+        className={`fixed top-[var(--site-header-h,5.5rem)] z-50 h-[calc(100dvh-var(--site-header-h,5.5rem))] overflow-hidden bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 flex flex-col transition-[width,transform] duration-200 ease-out left-0 lg:relative lg:top-auto lg:z-30 lg:h-full lg:min-h-0 lg:max-h-full lg:self-stretch lg:shrink-0 lg:translate-x-0 ${
           sidebarOpen
             ? 'translate-x-0 w-[min(100vw-2.5rem,20rem)] lg:w-72'
             : '-translate-x-full w-[min(100vw-2.5rem,20rem)] lg:translate-x-0 lg:w-14'
@@ -543,9 +551,9 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
         </div>
       </aside>
 
-      {/* Main column: toolbar + catalog */}
-      <div className="flex-1 min-w-0 flex flex-col">
-        <div className="sticky top-[var(--site-header-h,5.5rem)] z-30 bg-gray-50/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800">
+      {/* Main column: toolbar + catalog (catalog scrolls independently) */}
+      <div className="flex-1 min-w-0 flex flex-col min-h-0 h-full overflow-hidden">
+        <div className="shrink-0 z-20 bg-gray-50 dark:bg-slate-950/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 shadow-sm">
           <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <div className="flex items-center gap-2 w-full sm:w-auto min-w-0">
               <HoverTip
@@ -694,7 +702,13 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
           </div>
         </div>
 
-        <div className="w-full min-w-0 pt-1">{children}</div>
+        <div
+          ref={catalogScrollRef}
+          id="catalog-scroll-region"
+          className="catalog-scroll w-full min-w-0 flex-1 min-h-0 overflow-y-auto overflow-x-hidden pt-1 pb-4"
+        >
+          {children}
+        </div>
       </div>
     </div>
   );

@@ -110,6 +110,13 @@ export function openDatabase(dbPath?: string) {
       FOREIGN KEY (feedback_id) REFERENCES feedback(id) ON DELETE CASCADE
     );
 
+    CREATE TABLE IF NOT EXISTS feedback_daily_usage (
+      submitter_key TEXT NOT NULL,
+      day_utc TEXT NOT NULL,
+      submission_count INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (submitter_key, day_utc)
+    );
+
     CREATE TABLE IF NOT EXISTS script_styles (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,

@@ -9,7 +9,7 @@ import {
   AlertCircle,
   Loader2
 } from 'lucide-react';
-import type { FeedbackSubmitResponse } from '../types/feedback';
+import type { FeedbackQuota, FeedbackSubmitResponse } from '../types/feedback';
 import { useI18n } from '../i18n/I18nProvider';
 import { useLocaleFormatters } from '../hooks/useLocaleFormatters';
 import { localizeDigitsInString } from '../utils/localeNumber';
@@ -26,6 +26,15 @@ function formatBytes(n: number, locale: AppLocale) {
   else if (n < 1024 * 1024) s = `${(n / 1024).toFixed(0)} KB`;
   else s = `${(n / (1024 * 1024)).toFixed(1)} MB`;
   return localizeDigitsInString(s, locale);
+}
+
+function formatResetUtc(iso: string, locale: AppLocale) {
+  const d = new Date(iso);
+  return d.toLocaleString(locale === 'bo' ? 'en-US' : locale, {
+    timeZone: 'UTC',
+    dateStyle: 'medium',
+    timeStyle: 'short'
+  });
 }
 
 function isAllowedFile(file: File) {
@@ -67,6 +76,8 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
     emailSent: boolean;
     emailWarning: string | null;
   } | null>(null);
+  const [quota, setQuota] = React.useState<FeedbackQuota | null>(null);
+  const [quotaLoading, setQuotaLoading] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const panelRef = React.useRef<HTMLDivElement>(null);
 
@@ -89,6 +100,36 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
       document.body.style.overflow = prev;
     };
   }, [isOpen, onClose, submitting]);
+
+  const refreshQuota = React.useCallback(async (email?: string) => {
+    setQuotaLoading(true);
+    try {
+      const q = new URLSearchParams();
+      const trimmed = (email ?? contactEmail).trim();
+      if (trimmed) q.set('contactEmail', trimmed);
+      const res = await fetch(`/api/feedback/quota?${q.toString()}`, { credentials: 'include' });
+      if (res.ok) {
+        setQuota((await res.json()) as FeedbackQuota);
+      }
+    } catch {
+      /* quota hint is optional */
+    } finally {
+      setQuotaLoading(false);
+    }
+  }, [contactEmail]);
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    setSuccess(null);
+    setError('');
+    void refreshQuota();
+  }, [isOpen, refreshQuota]);
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const t = window.setTimeout(() => void refreshQuota(), 400);
+    return () => window.clearTimeout(t);
+  }, [contactEmail, isOpen, refreshQuota]);
 
   const resetForm = () => {
     setMessage('');
@@ -171,13 +212,43 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
       if (contactEmail.trim()) form.append('contactEmail', contactEmail.trim());
       files.forEach((f) => form.append('attachments', f));
 
-      const res = await fetch('/api/feedback', { method: 'POST', body: form });
+      const res = await fetch('/api/feedback', {
+        method: 'POST',
+        body: form,
+        credentials: 'include'
+      });
       const data = (await res.json().catch(() => ({}))) as FeedbackSubmitResponse & {
         error?: string;
+        code?: string;
+        limit?: number;
+        resetAt?: string;
       };
+      if (res.status === 429 && data.code === 'FEEDBACK_DAILY_LIMIT') {
+        const limit = data.limit ?? quota?.limit ?? 3;
+        const resetAt = data.resetAt ?? quota?.resetAt ?? '';
+        setError(
+          t('feedbackModal.dailyLimit', {
+            limit: fmt.n(limit),
+            resetTime: resetAt ? formatResetUtc(resetAt, locale) : '—'
+          })
+        );
+        if (data.resetAt) {
+          setQuota({
+            limit,
+            used: limit,
+            remaining: 0,
+            resetAt: data.resetAt
+          });
+        } else {
+          void refreshQuota();
+        }
+        return;
+      }
       if (!res.ok) {
         throw new Error(data.error || 'Submission failed');
       }
+
+      if (data.quota) setQuota(data.quota);
 
       setSuccess({
         emailSent: data.emailSent,
@@ -192,6 +263,8 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
   };
 
   if (!isOpen) return null;
+
+  const atDailyLimit = quota != null && quota.remaining <= 0;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -224,6 +297,22 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
               <p className="mt-0.5 text-xs text-gray-500 dark:text-slate-400 leading-relaxed">
                 {t('feedbackModal.subtitle')}
               </p>
+              {quota && !quotaLoading && (
+                <p
+                  className={`mt-1.5 text-[11px] leading-relaxed ${
+                    atDailyLimit
+                      ? 'text-amber-700 dark:text-amber-300'
+                      : 'text-gray-500 dark:text-slate-500'
+                  }`}
+                >
+                  {atDailyLimit
+                    ? t('feedbackModal.quotaNone', { limit: fmt.n(quota.limit) })
+                    : t('feedbackModal.quotaRemaining', {
+                        remaining: fmt.n(quota.remaining),
+                        limit: fmt.n(quota.limit)
+                      })}
+                </p>
+              )}
             </div>
             <button
               type="button"
@@ -402,7 +491,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
             <button
               type="submit"
               form="feedback-modal-form"
-              disabled={submitting}
+              disabled={submitting || atDailyLimit}
               className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-md transition active:scale-95 disabled:opacity-50"
             >
               {submitting ? (

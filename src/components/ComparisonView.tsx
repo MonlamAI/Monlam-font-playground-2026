@@ -13,6 +13,8 @@ import {
 } from '../utils/localeNumber';
 import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
 import { TooltipIconButton } from './HoverTooltip';
+import { TabScrollLayout } from './TabScrollLayout';
+import { AppFooter } from './AppFooter';
 
 interface ComparisonViewProps {
   allFonts: FontItem[];
@@ -72,10 +74,9 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
     onSetComparedFonts(next);
   };
 
-  return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 min-w-0 w-full">
-      {/* Top Banner */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 p-4 sm:p-5 shadow-xs mb-4 sm:mb-6">
+  const stickyChrome = (
+    <div className="max-w-7xl mx-auto w-full min-w-0 px-3 py-3 sm:px-6 lg:px-8">
+      <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-xs dark:border-slate-700 dark:bg-slate-900 sm:p-5">
         <div className="flex items-center gap-2">
           <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300">
             <GitCompare className="w-5 h-5" />
@@ -198,8 +199,12 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
           </div>
         </div>
       </div>
+    </div>
+  );
 
-      <div className="space-y-6">
+  return (
+    <TabScrollLayout sticky={stickyChrome} scrollFooter={<AppFooter />}>
+      <div className="max-w-7xl mx-auto min-w-0 w-full space-y-6 px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
           {comparedFonts.length === 0 ? (
             <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 p-8">
               <p className="text-gray-500 dark:text-slate-400 text-sm tibetan-text">{t('compare.emptyTitle')}</p>
@@ -309,7 +314,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
               })}
             </div>
           )}
-        </div>
-    </div>
+      </div>
+    </TabScrollLayout>
   );
 };

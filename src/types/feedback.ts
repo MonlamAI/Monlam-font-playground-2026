@@ -23,9 +23,17 @@ export interface FeedbackItem {
   attachments: FeedbackAttachment[];
 }
 
+export type FeedbackQuota = {
+  limit: number;
+  used: number;
+  remaining: number;
+  resetAt: string;
+};
+
 export interface FeedbackSubmitResponse {
   ok: boolean;
   feedback: FeedbackItem;
   emailSent: boolean;
   emailWarning: string | null;
+  quota?: FeedbackQuota;
 }

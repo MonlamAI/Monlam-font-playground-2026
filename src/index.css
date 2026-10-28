@@ -30,13 +30,13 @@
 
   html {
     color-scheme: light;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   body {
     font-family: var(--font-app);
     line-height: var(--app-line-height);
-    overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100%;
   }
 
@@ -199,6 +199,15 @@
 .font-monlam-yigchung {
   font-family: "Monlam yig-chong", "Monlam Yig-chong", "Noto Serif Tibetan", serif;
   font-size: 0.95em;
+}
+
+/* Typefaces catalog — sole vertical scroll region (wheel / trackpad) */
+.catalog-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 /* Custom scrollbars */
