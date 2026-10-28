@@ -146,7 +146,7 @@ export const adminApi = {
       return { file, slimmed: false };
     }
     onProgress?.({ phase: 'local', loaded: 0, total: file.size, percent: 0 });
-    const blob = await buildBodyigStorageZip(await file.arrayBuffer());
+    const blob = await buildBodyigStorageZip(await file.arrayBuffer(), file.name);
     if (blob.size > CLOUDFLARE_SAFE_UPLOAD_BYTES) {
       throw new Error(
         `Keyboard package is still ${formatUploadBytes(blob.size)} without fonts. ${LARGE_PACKAGE_UPLOAD_HINT}`

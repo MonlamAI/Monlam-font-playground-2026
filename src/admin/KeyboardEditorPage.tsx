@@ -110,7 +110,7 @@ export function KeyboardEditorPage() {
           setUploadProgress(null);
           if (slimmed) {
             setMessage(
-              'Keyboard created. Stored a keyboard-layout zip without font files (CDN size limit); fonts remain in the catalog.'
+              'Keyboard created. Stored a compact layout zip (CDN limit); full Bodyig fonts remain in the catalog.'
             );
           } else {
             setMessage('Keyboard created');
@@ -135,7 +135,7 @@ export function KeyboardEditorPage() {
           setUploadProgress(null);
           setMessage(
             slimmed
-              ? 'Saved. Stored a keyboard-layout zip without font files (CDN size limit).'
+              ? 'Saved. Stored a compact layout zip (CDN limit); fonts remain in the catalog.'
               : 'Saved'
           );
         } else {
@@ -222,7 +222,7 @@ export function KeyboardEditorPage() {
       }
       setMessage(
         slimmed
-          ? 'Stored a keyboard-layout zip without font files (CDN size limit).'
+          ? 'Stored a compact layout zip (CDN limit).'
           : 'Keyboard package uploaded'
       );
     } catch (err) {
@@ -370,8 +370,8 @@ export function KeyboardEditorPage() {
             {pendingPackageFile.size > 95 * 1024 * 1024 ? (
               <>
                 {' '}
-                Over 95 MB: Save will upload a <strong>keyboard-layout-only</strong> zip (no .ttf fonts) so Cloudflare
-                accepts it; fonts stay linked from the catalog.
+                Over 95 MB: Save uploads a small <strong>compact layout zip</strong> (keylayout + README only) for
+                Cloudflare; fonts stay in the catalog.
               </>
             ) : null}
           </p>

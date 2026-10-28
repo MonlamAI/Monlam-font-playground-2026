@@ -233,25 +233,43 @@ function zipEntryPaths(zip: JSZip): string[] {
   });
 }
 
-function isFontBinaryZipPath(path: string): boolean {
-  return /\/Fonts\//i.test(path) && /\.(ttf|otf|ttc)$/i.test(path);
-}
-
 /**
- * Zip without font binaries — small enough for Cloudflare when saving keyboard downloads.
- * Keeps keylayout, bundle plists, installers, and other non-font assets.
+ * Compact zip for CDN upload: keylayout + plists + README only (not the full Bodyig tree).
  */
-export async function buildBodyigStorageZip(data: ArrayBuffer | Uint8Array): Promise<Blob> {
+export async function buildBodyigStorageZip(
+  data: ArrayBuffer | Uint8Array,
+  filename = 'bundle.zip'
+): Promise<Blob> {
   const bytes = data instanceof Uint8Array ? data : new Uint8Array(data);
-  const src = await JSZip.loadAsync(bytes, { checkCRC32: false });
+  const lower = filename.toLowerCase();
   const out = new JSZip();
-  const paths = zipEntryPaths(src).filter((p) => !isFontBinaryZipPath(p));
 
-  for (const path of paths) {
-    const entry = src.file(path);
-    if (!entry) continue;
-    const content = await entry.async('uint8array');
-    out.file(path, content);
+  if (lower.endsWith('.keylayout') || lower.endsWith('.keylayout.xml')) {
+    const name = filename.split('/').pop() || 'keyboard.keylayout.xml';
+    out.file(`Monlam-Keyboard/${name}`, bytes);
+  } else {
+    const src = await JSZip.loadAsync(bytes, { checkCRC32: false });
+    const parts = await loadZipBundleParts(src);
+    const keyName = parts.keylayoutPath.split('/').pop() || 'Monlam.keylayout.xml';
+    out.file(`Monlam-Keyboard/${keyName}`, parts.keylayoutData);
+    if (parts.infoPlist) out.file('Monlam-Keyboard/Info.plist', parts.infoPlist);
+    if (parts.versionPlist) out.file('Monlam-Keyboard/version.plist', parts.versionPlist);
+    const fontList = parts.fontFilenames.length
+      ? parts.fontFilenames.join('\n  ')
+      : '(none listed in bundle)';
+    out.file(
+      'Monlam-Keyboard/README.txt',
+      [
+        'Monlam Bodyig keyboard layout (compact download).',
+        'Install the .keylayout / .keylayout.xml file on macOS (System Settings → Keyboard).',
+        'Fonts from the full Bodyig package are on https://monlamfonts.com — use the font catalog.',
+        '',
+        `Layout source in original bundle: ${parts.keylayoutPath}`,
+        '',
+        'Font filenames referenced in the bundle:',
+        `  ${fontList}`
+      ].join('\n')
+    );
   }
 
   return out.generateAsync({
