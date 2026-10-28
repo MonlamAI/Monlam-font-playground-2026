@@ -15,7 +15,12 @@ import {
   OFFICIAL_BODYIG_DOWNLOADS,
   openOfficialDownload
 } from '../data/officialDownloads';
-import { InstallStep, InstallStepsCarousel } from './InstallStepsCarousel';
+import { InstallStepsCarousel } from './InstallStepsCarousel';
+import {
+  bodyigVisualGuidePdfFilename,
+  bodyigVisualGuidePdfUrl,
+  bodyigVisualGuideSlides
+} from '../data/bodyigVisualGuide';
 import { useI18n } from '../i18n/I18nProvider';
 import { fontCardTitlePair, localePick, uiTibetanClass } from '../utils/fontDisplay';
 import { formatLocaleNumber, localizeDigitsInString, localeNumeralsClass } from '../utils/localeNumber';
@@ -33,54 +38,24 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
   const [activeOs, setActiveOs] = React.useState<'windows' | 'mac'>('windows');
   const [assetListOpen, setAssetListOpen] = React.useState(false);
 
-  const stepBadge = (n: number) => (
-    <div
-      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-sm font-bold text-white shadow-md shadow-blue-500/30 ring-2 ring-white dark:ring-slate-800 ${localeNumeralsClass}`}
-    >
-      {formatLocaleNumber(n, locale)}
-    </div>
-  );
-
   const macDownload = OFFICIAL_BODYIG_DOWNLOADS.find((d) => d.platform === 'mac')!;
   const winDownload = OFFICIAL_BODYIG_DOWNLOADS.find((d) => d.platform === 'windows')!;
   const suiteTitle = `${localePick(BODYIG_SUITE.name, BODYIG_SUITE.tibetanName, locale)} ${BODYIG_SUITE.version}`;
   const uiBo = uiTibetanClass(locale);
 
-  const windowsSteps: InstallStep[] = [
-    {
-      badge: stepBadge(1),
-      title: t('install.steps.win1Title'),
-      body: <p className="tibetan-text">{t('install.steps.win1Body')}</p>
-    },
-    {
-      badge: stepBadge(2),
-      title: t('install.steps.win2Title'),
-      body: <p className="tibetan-text">{t('install.steps.win2Body')}</p>
-    },
-    {
-      badge: stepBadge(3),
-      title: t('install.steps.win3Title'),
-      body: <p className="tibetan-text">{t('install.steps.win3Body')}</p>
-    }
-  ];
+  const visualSlides = React.useMemo(() => {
+    const paths = bodyigVisualGuideSlides(activeOs, locale);
+    return paths.map((imageSrc, i) => ({
+      imageSrc,
+      alt: t('install.visualSlideAlt', {
+        step: formatLocaleNumber(i + 1, locale),
+        os: activeOs === 'mac' ? t('install.osMac') : t('install.osWindows')
+      })
+    }));
+  }, [activeOs, locale, t]);
 
-  const macSteps: InstallStep[] = [
-    {
-      badge: stepBadge(1),
-      title: t('install.steps.mac1Title'),
-      body: <p className="tibetan-text">{t('install.steps.mac1Body')}</p>
-    },
-    {
-      badge: stepBadge(2),
-      title: t('install.steps.mac2Title'),
-      body: <p className="tibetan-text">{t('install.steps.mac2Body')}</p>
-    },
-    {
-      badge: stepBadge(3),
-      title: t('install.steps.mac3Title'),
-      body: <p className="tibetan-text">{t('install.steps.mac3Body')}</p>
-    }
-  ];
+  const visualGuidePdfHref = bodyigVisualGuidePdfUrl(activeOs);
+  const visualGuidePdfDownload = bodyigVisualGuidePdfFilename(activeOs);
 
   return (
     <TabScrollLayout scrollFooter={<AppFooter />}>
@@ -141,7 +116,10 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
             <div className="flex flex-col gap-2 sm:flex-row lg:flex-col">
               <button
                 type="button"
-                onClick={() => openOfficialDownload(macDownload.url)}
+                onClick={() => {
+                  setActiveOs('mac');
+                  openOfficialDownload(macDownload.url);
+                }}
                 className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-md transition hover:bg-blue-50 active:scale-95"
               >
                 <Apple className="h-4 w-4" />
@@ -149,7 +127,10 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
               </button>
               <button
                 type="button"
-                onClick={() => openOfficialDownload(winDownload.url)}
+                onClick={() => {
+                  setActiveOs('windows');
+                  openOfficialDownload(winDownload.url);
+                }}
                 className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-500 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-400 active:scale-95"
               >
                 <Laptop className="h-4 w-4" />
@@ -210,8 +191,26 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
           </div>
         </div>
 
-        {activeOs === 'windows' && <InstallStepsCarousel steps={windowsSteps} resetKey="windows" />}
-        {activeOs === 'mac' && <InstallStepsCarousel steps={macSteps} resetKey="mac" />}
+        <InstallStepsCarousel
+          slides={visualSlides}
+          resetKey={`${activeOs}-${locale}`}
+        />
+
+        <div className="flex flex-wrap items-center justify-center gap-3 border-t border-blue-100/80 pt-4 dark:border-slate-700/80 sm:justify-start">
+          <a
+            href={visualGuidePdfHref}
+            download={visualGuidePdfDownload}
+            className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-white px-4 py-2.5 text-sm font-semibold text-blue-800 shadow-sm transition hover:bg-blue-50 dark:border-blue-800 dark:bg-slate-900 dark:text-blue-200 dark:hover:bg-blue-950/50"
+          >
+            <Download className="h-4 w-4 shrink-0" />
+            <span className="tibetan-text">
+              {t('install.downloadVisualGuidePdf', {
+                os: activeOs === 'mac' ? t('install.osMac') : t('install.osWindows')
+              })}
+            </span>
+          </a>
+          <p className="text-xs text-gray-500 dark:text-slate-400 tibetan-text">{t('install.visualGuidePdfHint')}</p>
+        </div>
         </div>
       </section>
 
