@@ -10,6 +10,27 @@ import type {
 } from '../types/cms';
 import type { FontPresetConfig } from '../types/font';
 import type { PublicSiteSettings } from '../types/siteSettings';
+import {
+  requestFormDataWithProgress,
+  type FormUploadProgress
+} from './uploadProgress';
+
+export type { FormUploadProgress };
+
+export type KeyboardBundleImportResult = {
+  name: string;
+  tibetanName: string;
+  description: string;
+  version: string;
+  layoutType: string;
+  script: string;
+  layoutJsonMac: import('../data/tibetanData').KeyMap[][];
+  layoutJsonWindows: import('../data/tibetanData').KeyMap[][];
+  fontFilenames: string[];
+  suggestedFontIds: string[];
+  keylayoutSource: string;
+  warnings: string[];
+};
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
@@ -99,34 +120,30 @@ export const adminApi = {
     }),
   deleteKeyboard: (id: string) =>
     request<{ ok: boolean }>(`/api/admin/keyboards/${id}`, { method: 'DELETE' }),
-  uploadKeyboardFile: async (id: string, file: File) => {
+  uploadKeyboardFile: async (
+    id: string,
+    file: File,
+    onProgress?: (progress: FormUploadProgress) => void
+  ) => {
     const form = new FormData();
     form.append('file', file);
-    return request<KeyboardAsset>(`/api/admin/keyboards/${id}/upload`, {
-      method: 'POST',
-      body: form
-    });
+    return requestFormDataWithProgress<KeyboardAsset>(
+      `/api/admin/keyboards/${id}/upload`,
+      form,
+      onProgress
+    );
   },
-  importKeyboardBundle: async (file: File) => {
+  importKeyboardBundle: async (
+    file: File,
+    onProgress?: (progress: FormUploadProgress) => void
+  ) => {
     const form = new FormData();
     form.append('file', file);
-    return request<{
-      name: string;
-      tibetanName: string;
-      description: string;
-      version: string;
-      layoutType: string;
-      script: string;
-      layoutJsonMac: import('../data/tibetanData').KeyMap[][];
-      layoutJsonWindows: import('../data/tibetanData').KeyMap[][];
-      fontFilenames: string[];
-      suggestedFontIds: string[];
-      keylayoutSource: string;
-      warnings: string[];
-    }>('/api/admin/keyboards/import-bundle', {
-      method: 'POST',
-      body: form
-    });
+    return requestFormDataWithProgress<KeyboardBundleImportResult>(
+      '/api/admin/keyboards/import-bundle',
+      form,
+      onProgress
+    );
   },
   listFeedback: (status?: string) =>
     request<import('../types/feedback').FeedbackItem[]>(

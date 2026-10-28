@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Command, Monitor, Save, Upload } from 'lucide-react';
 import { adminApi } from './api';
+import { formatUploadBytes, type FormUploadProgress } from './uploadProgress';
 import type { FontAsset, KeyboardAsset } from '../types/cms';
 import { StatusBadge } from './StatusBadge';
 import { TibetanPhysicalKeyboard } from '../components/TibetanPhysicalKeyboard';
@@ -37,6 +38,8 @@ export function KeyboardEditorPage() {
   const [previewOs, setPreviewOs] = useState<KeyboardOsLayout>('mac');
   const [previewShift, setPreviewShift] = useState(false);
   const [previewCaps, setPreviewCaps] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<FormUploadProgress | null>(null);
+  const [uploadFileSize, setUploadFileSize] = useState(0);
 
   useEffect(() => {
     adminApi.listFonts().then(setFonts).catch(() => undefined);
@@ -95,20 +98,33 @@ export function KeyboardEditorPage() {
       if (isNew) {
         const created = await adminApi.createKeyboard(data);
         if (pendingPackageFile) {
-          await adminApi.uploadKeyboardFile(created.id, pendingPackageFile);
+          setUploadFileSize(pendingPackageFile.size);
+          setUploadProgress({ phase: 'uploading', loaded: 0, total: pendingPackageFile.size, percent: 0 });
+          await adminApi.uploadKeyboardFile(created.id, pendingPackageFile, setUploadProgress);
           setPendingPackageFile(null);
+          setUploadProgress(null);
         }
         setMessage('Keyboard created');
         navigate(`/admin/keyboards/${created.id}`, { replace: true });
       } else if (id) {
         const updated = await adminApi.updateKeyboard(id, data);
-        setKb(updated);
+        if (pendingPackageFile) {
+          setUploadFileSize(pendingPackageFile.size);
+          setUploadProgress({ phase: 'uploading', loaded: 0, total: pendingPackageFile.size, percent: 0 });
+          const withPackage = await adminApi.uploadKeyboardFile(id, pendingPackageFile, setUploadProgress);
+          setKb(withPackage);
+          setPendingPackageFile(null);
+          setUploadProgress(null);
+        } else {
+          setKb(updated);
+        }
         setMessage('Saved');
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Save failed');
     } finally {
       setSaving(false);
+      setUploadProgress(null);
     }
   };
 
@@ -141,28 +157,18 @@ export function KeyboardEditorPage() {
     setImporting(true);
     setError('');
     setMessage('');
+    setUploadFileSize(file.size);
+    setUploadProgress({ phase: 'uploading', loaded: 0, total: file.size, percent: 0 });
     try {
-      const data = await adminApi.importKeyboardBundle(file);
+      const data = await adminApi.importKeyboardBundle(file, setUploadProgress);
       applyImportResult(data);
       setPendingPackageFile(file);
       setMessage('Package imported — review the fields below, then Save.');
-      if (!isNew && id) {
-        const updated = await adminApi.uploadKeyboardFile(id, file);
-        setKb(updated);
-        setForm((prev) => ({
-          ...prev,
-          layoutJsonMacText: updated.layoutJsonMac
-            ? JSON.stringify(updated.layoutJsonMac, null, 2)
-            : prev.layoutJsonMacText,
-          layoutJsonWindowsText: updated.layoutJsonWindows
-            ? JSON.stringify(updated.layoutJsonWindows, null, 2)
-            : prev.layoutJsonWindowsText
-        }));
-      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Import failed');
     } finally {
       setImporting(false);
+      setUploadProgress(null);
       e.target.value = '';
     }
   };
@@ -175,8 +181,10 @@ export function KeyboardEditorPage() {
       return;
     }
     setUploading(true);
+    setUploadFileSize(file.size);
+    setUploadProgress({ phase: 'uploading', loaded: 0, total: file.size, percent: 0 });
     try {
-      const updated = await adminApi.uploadKeyboardFile(id, file);
+      const updated = await adminApi.uploadKeyboardFile(id, file, setUploadProgress);
       setKb(updated);
       if (updated.layoutJsonMac) {
         setForm((prev) => ({
@@ -194,6 +202,7 @@ export function KeyboardEditorPage() {
       setError(err instanceof Error ? err.message : 'Upload failed');
     } finally {
       setUploading(false);
+      setUploadProgress(null);
       e.target.value = '';
     }
   };
@@ -251,7 +260,7 @@ export function KeyboardEditorPage() {
         <button
           type="button"
           onClick={save}
-          disabled={saving || !form.name.trim()}
+          disabled={saving || importing || !form.name.trim()}
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold disabled:opacity-50"
         >
           <Save className="w-4 h-4" />
@@ -272,21 +281,60 @@ export function KeyboardEditorPage() {
         <p className="text-xs text-gray-600 dark:text-slate-400 leading-relaxed">
           Upload the Mac or full Bodyig <strong>.zip</strong> (for example{' '}
           <code className="font-mono text-[11px]">Monlam.Bodyig.5.0.0.Mac</code>). We read the keyboard layout,
-          version, and font list from the bundle — no manual JSON needed.
+          version, and font list from the bundle — no manual JSON needed. Large files show upload progress below;
+          only layout metadata is parsed (font files in the zip are not re-uploaded to the server during import).
         </p>
-        <label className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium cursor-pointer">
+        <label
+          className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-white text-sm font-medium ${
+            importing || saving
+              ? 'bg-blue-400 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
+          }`}
+        >
           <Upload className="w-4 h-4" />
-          {importing ? 'Reading package…' : 'Choose Bodyig .zip'}
+          {importing ? 'Importing…' : 'Choose Bodyig .zip'}
           <input
             type="file"
             accept=".zip,.keylayout,.keylayout.xml"
             className="hidden"
+            disabled={importing || saving}
             onChange={onImportBundle}
           />
         </label>
-        {pendingPackageFile && isNew && (
+        {uploadProgress && (
+          <div className="w-full max-w-lg space-y-1.5" aria-live="polite">
+            <div className="flex flex-wrap justify-between gap-2 text-xs text-gray-600 dark:text-slate-400">
+              <span>
+                {uploadProgress.phase === 'uploading'
+                  ? `Uploading… ${formatUploadBytes(uploadProgress.loaded)} of ${formatUploadBytes(
+                      uploadProgress.total || uploadFileSize
+                    )} (${uploadProgress.percent}%)`
+                  : saving
+                    ? 'Storing package on server…'
+                    : 'Reading keyboard layout on server…'}
+              </span>
+              {uploadProgress.phase === 'processing' && (
+                <span className="text-blue-600 dark:text-blue-400">Please wait</span>
+              )}
+            </div>
+            <div className="h-2.5 rounded-full bg-gray-200 dark:bg-slate-700 overflow-hidden">
+              <div
+                className={`h-full bg-blue-600 transition-[width] duration-150 ease-out ${
+                  uploadProgress.phase === 'processing' ? 'w-full animate-pulse' : ''
+                }`}
+                style={
+                  uploadProgress.phase === 'uploading'
+                    ? { width: `${Math.max(uploadProgress.percent, 2)}%` }
+                    : undefined
+                }
+              />
+            </div>
+          </div>
+        )}
+        {pendingPackageFile && (
           <p className="text-xs text-gray-500 dark:text-slate-400">
-            Package file will be stored when you click Save ({pendingPackageFile.name}).
+            Download package ({formatUploadBytes(pendingPackageFile.size)}) will be stored when you click Save —{' '}
+            {pendingPackageFile.name}
           </p>
         )}
       </div>

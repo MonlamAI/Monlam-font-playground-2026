@@ -248,14 +248,59 @@ export function matchFontIds(
   return [...ids];
 }
 
-async function collectZipEntries(zip: JSZip): Promise<{ path: string; data: Uint8Array }[]> {
-  const out: { path: string; data: Uint8Array }[] = [];
-  for (const [path, entry] of Object.entries(zip.files)) {
-    if (entry.dir || path.includes('__MACOSX/') || path.startsWith('.')) continue;
-    const data = await entry.async('uint8array');
-    out.push({ path, data });
+function zipEntryPaths(zip: JSZip): string[] {
+  return Object.keys(zip.files).filter((path) => {
+    const entry = zip.files[path];
+    if (!entry || entry.dir) return false;
+    if (path.includes('__MACOSX/') || path.startsWith('.')) return false;
+    return true;
+  });
+}
+
+/** Read only keylayout + plists from zip (skip decompressing font binaries). */
+async function loadZipBundleParts(zip: JSZip): Promise<{
+  keylayoutPath: string;
+  keylayoutData: Uint8Array;
+  infoPlist?: Uint8Array;
+  versionPlist?: Uint8Array;
+  fontFilenames: string[];
+}> {
+  const paths = zipEntryPaths(zip);
+
+  const fontFilenames = paths
+    .filter((p) => /\/Fonts\//i.test(p) && /\.(ttf|otf|ttc)$/i.test(p))
+    .map((p) => p.split('/').pop()!)
+    .filter(Boolean);
+
+  const keylayoutPath = paths
+    .filter((p) => /\.keylayout(\.xml)?$/i.test(p))
+    .sort((a, b) => b.length - a.length)[0];
+
+  if (!keylayoutPath) {
+    throw new Error('No Mac keyboard layout (.keylayout or .keylayout.xml) found in the package.');
   }
-  return out;
+
+  const infoPath = paths.find((p) => /Info\.plist$/i.test(p));
+  const versionPath = paths.find((p) => /version\.plist$/i.test(p));
+
+  const keylayoutEntry = zip.file(keylayoutPath);
+  if (!keylayoutEntry) {
+    throw new Error('Could not read keyboard layout from the package.');
+  }
+
+  const [keylayoutData, infoPlist, versionPlist] = await Promise.all([
+    keylayoutEntry.async('uint8array'),
+    infoPath ? zip.file(infoPath)?.async('uint8array') : Promise.resolve(undefined),
+    versionPath ? zip.file(versionPath)?.async('uint8array') : Promise.resolve(undefined)
+  ]);
+
+  return {
+    keylayoutPath,
+    keylayoutData,
+    infoPlist,
+    versionPlist,
+    fontFilenames: [...new Set(fontFilenames)]
+  };
 }
 
 export async function parseKeyboardBundleBuffer(
@@ -263,66 +308,60 @@ export async function parseKeyboardBundleBuffer(
   filename: string
 ): Promise<KeyboardBundleImportResult> {
   const warnings: string[] = [];
-  let entries: { path: string; data: Uint8Array }[] = [];
-
   const lower = filename.toLowerCase();
+
+  let keylayoutPath: string;
+  let keylayoutData: Uint8Array;
+  let infoPlist: Uint8Array | undefined;
+  let versionPlist: Uint8Array | undefined;
+  let uniqueFonts: string[] = [];
+
   if (lower.endsWith('.zip')) {
-    const zip = await JSZip.loadAsync(buffer);
-    entries = await collectZipEntries(zip);
+    const zip = await JSZip.loadAsync(buffer, { checkCRC32: false });
+    const parts = await loadZipBundleParts(zip);
+    keylayoutPath = parts.keylayoutPath;
+    keylayoutData = parts.keylayoutData;
+    infoPlist = parts.infoPlist;
+    versionPlist = parts.versionPlist;
+    uniqueFonts = parts.fontFilenames;
   } else if (lower.endsWith('.keylayout') || lower.endsWith('.keylayout.xml')) {
-    entries = [{ path: filename, data: new Uint8Array(buffer) }];
+    keylayoutPath = filename;
+    keylayoutData = new Uint8Array(buffer);
   } else {
     throw new Error('Upload a .zip Bodyig package or a .keylayout / .keylayout.xml file.');
   }
 
-  const keylayoutEntry = entries
-    .filter((e) => /\.keylayout(\.xml)?$/i.test(e.path) && !e.path.includes('__MACOSX'))
-    .sort((a, b) => b.path.length - a.path.length)[0];
-
-  if (!keylayoutEntry) {
-    throw new Error('No Mac keyboard layout (.keylayout or .keylayout.xml) found in the package.');
-  }
-
-  const xml = new TextDecoder('utf-8').decode(keylayoutEntry.data);
+  const xml = new TextDecoder('utf-8').decode(keylayoutData);
   const layoutJsonMac = parseMacKeylayoutXml(xml, warnings);
   const layoutJsonWindows = toWindowsKeyboardLayout(layoutJsonMac);
 
   const nameMatch = /<keyboard[^>]*name="([^"]+)"/i.exec(xml);
   const keyboardName = nameMatch?.[1] ?? 'Monlam Bodyig Keyboard';
 
-  const plistEntry = entries.find((e) => /Info\.plist$/i.test(e.path));
   let bundleName = keyboardName;
   let version = '1.0.0';
-  if (plistEntry) {
-    const plist = new TextDecoder('utf-8').decode(plistEntry.data);
+  if (infoPlist) {
+    const plist = new TextDecoder('utf-8').decode(infoPlist);
     bundleName = plistString(plist, 'CFBundleName') ?? bundleName;
     version = plistString(plist, 'CFBundleVersion') ?? version;
   }
 
-  const versionPlist = entries.find((e) => /version\.plist$/i.test(e.path));
   if (versionPlist) {
-    const v = plistString(new TextDecoder('utf-8').decode(versionPlist.data), 'CFBundleVersion');
+    const v = plistString(new TextDecoder('utf-8').decode(versionPlist), 'CFBundleVersion');
     if (v) version = v;
   }
-
-  const fontFilenames = entries
-    .filter((e) => /\/Fonts\//i.test(e.path) && /\.(ttf|otf|ttc)$/i.test(e.path))
-    .map((e) => e.path.split('/').pop()!)
-    .filter(Boolean);
-
-  const uniqueFonts = [...new Set(fontFilenames)];
 
   return {
     name: `${keyboardName} Keyboard`.replace(/\s+Keyboard Keyboard/i, ' Keyboard'),
     tibetanName: bundleName.includes('བོད') || /[\u0f00-\u0fff]/.test(bundleName) ? bundleName : 'སྨོན་ལམ་བོད་ཡིག་མཐེབ་གཞོང་།',
-    description: `Imported from Monlam Bodyig package (${keylayoutEntry.path.split('/').pop()}). Includes ${uniqueFonts.length} font file(s) in the bundle.`,
+    description: `Imported from Monlam Bodyig package (${keylayoutPath.split('/').pop()}). Includes ${uniqueFonts.length} font file(s) in the bundle.`,
     version,
     layoutType: 'Monlam Bodyig QWERTY',
     script: 'Tibetan',
     layoutJsonMac,
     layoutJsonWindows,
     fontFilenames: uniqueFonts,
-    keylayoutSource: keylayoutEntry.path,
+    keylayoutSource: keylayoutPath,
     warnings
   };
 }
