@@ -14,17 +14,42 @@ interface InstallStepsCarouselProps {
   resetKey: string;
 }
 
+const SLIDE_MS = 320;
+
 export const InstallStepsCarousel: React.FC<InstallStepsCarouselProps> = ({ slides, resetKey }) => {
   const { t, locale } = useI18n();
   const [index, setIndex] = React.useState(0);
+  const [slideVisible, setSlideVisible] = React.useState(true);
+  const transitionRef = React.useRef<number | null>(null);
   const count = slides.length;
 
   React.useEffect(() => {
     setIndex(0);
+    setSlideVisible(true);
   }, [resetKey]);
 
+  React.useEffect(() => {
+    return () => {
+      if (transitionRef.current !== null) window.clearTimeout(transitionRef.current);
+    };
+  }, []);
+
+  const navigateTo = React.useCallback(
+    (nextIndex: number) => {
+      if (count === 0 || nextIndex === index) return;
+      if (transitionRef.current !== null) window.clearTimeout(transitionRef.current);
+      setSlideVisible(false);
+      transitionRef.current = window.setTimeout(() => {
+        transitionRef.current = null;
+        setIndex(nextIndex);
+        requestAnimationFrame(() => setSlideVisible(true));
+      }, SLIDE_MS * 0.45);
+    },
+    [count, index]
+  );
+
   const go = (delta: number, target: HTMLButtonElement) => {
-    setIndex((i) => (i + delta + count) % count);
+    navigateTo((index + delta + count) % count);
     target.blur();
   };
 
@@ -47,7 +72,9 @@ export const InstallStepsCarousel: React.FC<InstallStepsCarouselProps> = ({ slid
               alt={current.alt}
               loading="eager"
               decoding="async"
-              className="install-guide-slide-img"
+              className={`install-guide-slide-img install-guide-slide-img--transition ${
+                slideVisible ? 'install-guide-slide-img--visible' : 'install-guide-slide-img--hidden'
+              }`}
             />
           </figure>
         </div>
@@ -87,8 +114,8 @@ export const InstallStepsCarousel: React.FC<InstallStepsCarouselProps> = ({ slid
                   current: formatLocaleNumber(i + 1, locale),
                   total: formatLocaleNumber(count, locale)
                 })}
-                onClick={() => setIndex(i)}
-                className={`h-2 rounded-full transition-all ${
+                onClick={() => navigateTo(i)}
+                className={`h-2 rounded-full transition-all duration-300 ease-out ${
                   i === index
                     ? 'w-7 bg-gradient-to-r from-blue-500 to-indigo-600 shadow-sm shadow-blue-500/30'
                     : 'w-2 bg-blue-200/80 hover:bg-blue-300 dark:bg-slate-600 dark:hover:bg-slate-500'

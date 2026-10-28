@@ -196,7 +196,7 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
           resetKey={`${activeOs}-${locale}`}
         />
 
-        <div className="flex flex-wrap items-center justify-center gap-3 border-t border-blue-100/80 pt-4 dark:border-slate-700/80 sm:justify-start">
+        <div className="flex flex-wrap items-center justify-center border-t border-blue-100/80 pt-4 dark:border-slate-700/80 sm:justify-start">
           <a
             href={visualGuidePdfHref}
             download={visualGuidePdfDownload}
@@ -209,7 +209,6 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
               })}
             </span>
           </a>
-          <p className="text-xs text-gray-500 dark:text-slate-400 tibetan-text">{t('install.visualGuidePdfHint')}</p>
         </div>
         </div>
       </section>

@@ -217,6 +217,34 @@
   object-position: center;
 }
 
+.install-guide-slide-img--transition {
+  transition:
+    opacity 320ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.install-guide-slide-img--visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.install-guide-slide-img--hidden {
+  opacity: 0;
+  transform: translate3d(0, 6px, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .install-guide-slide-img--transition {
+    transition: none;
+  }
+
+  .install-guide-slide-img--hidden {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* Typefaces catalog — sole vertical scroll region (wheel / trackpad) */
 .catalog-scroll {
   overflow-y: auto;
