@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Header } from './components/Header';
 import { ControlsBar } from './components/ControlsBar';
 import { FontCatalog } from './components/FontCatalog';
@@ -31,6 +32,7 @@ import {
 import { FEATURE_TYPING_QUEST, FEATURE_TYPOGRAPHY_GUIDE } from './config/features';
 import { ScriptStylesProvider } from './contexts/ScriptStylesContext';
 import { useSiteSettings } from './hooks/useSiteSettings';
+import { appTabToSearchParams, parseAppTabParam } from './utils/appTabUrl';
 
 export default function App() {
   const { fonts: allFonts } = usePublishedFonts();
@@ -44,7 +46,14 @@ export default function App() {
     collapse: collapseUpdates,
     expand: expandUpdates
   } = useCatalogUpdates();
-  const [activeTab, setActiveTab] = useState<AppTab>('catalog');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = parseAppTabParam(searchParams.get('tab'));
+  const setActiveTab = useCallback(
+    (tab: AppTab) => {
+      setSearchParams((prev) => appTabToSearchParams(tab, prev), { replace: true });
+    },
+    [setSearchParams]
+  );
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<FontCategory>('All');
   const [selectedFontKind, setSelectedFontKind] = useState<FontKindFilter>('normal');
@@ -60,13 +69,13 @@ export default function App() {
   );
 
   useEffect(() => {
-    if (
-      (activeTab === 'quest' && !FEATURE_TYPING_QUEST) ||
-      (activeTab === 'guide' && !FEATURE_TYPOGRAPHY_GUIDE)
-    ) {
-      setActiveTab('catalog');
+    const param = searchParams.get('tab');
+    if (!param) return;
+    const resolved = parseAppTabParam(param);
+    if (resolved === 'catalog' && param !== 'catalog') {
+      setSearchParams((prev) => appTabToSearchParams('catalog', prev), { replace: true });
     }
-  }, [activeTab]);
+  }, [searchParams, setSearchParams]);
 
   useEffect(() => {
     if (presets.length === 0) return;
