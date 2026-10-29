@@ -34,8 +34,10 @@ export const TabScrollLayout: React.FC<TabScrollLayoutProps> = ({
         ref={scrollRef}
         className="catalog-scroll min-h-0 flex-1 overflow-x-hidden overflow-y-auto pb-4"
       >
-        {children}
-        {scrollFooter}
+        <div className="flex min-h-full min-w-0 flex-col">
+          <div className="min-h-0 w-full flex-1">{children}</div>
+          {scrollFooter ? <div className="mt-auto w-full shrink-0">{scrollFooter}</div> : null}
+        </div>
       </div>
     </div>
   );

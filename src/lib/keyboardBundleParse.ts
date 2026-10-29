@@ -16,7 +16,7 @@ export type KeyboardBundleImportResult = {
   warnings: string[];
 };
 
-/** Apple virtual key codes → US QWERTY keys (ANSI). */
+/** Apple virtual key codes (kVK_ANSI_*) → US QWERTY keys (ANSI). */
 const MAC_CODE_TO_KEY: Record<number, string> = {
   0: 'a',
   1: 's',
@@ -51,8 +51,9 @@ const MAC_CODE_TO_KEY: Record<number, string> = {
   31: 'o',
   32: 'u',
   33: '[',
-  34: 'p',
-  35: 'l',
+  34: 'i',
+  35: 'p',
+  37: 'l',
   38: 'j',
   39: "'",
   40: 'k',
@@ -63,8 +64,8 @@ const MAC_CODE_TO_KEY: Record<number, string> = {
   45: 'n',
   46: 'm',
   47: '.',
-  50: '`',
-  49: ' '
+  49: ' ',
+  50: '`'
 };
 
 const ROW_KEY_ORDER: string[][] = [
@@ -84,7 +85,11 @@ function decodeXmlText(raw: string): string {
     .replace(/&quot;/g, '"');
 }
 
-type ActionDef = { none?: string; s1?: string };
+type ActionDef = {
+  byState: Map<string, string>;
+  /** When `none` has only `next="…"`, use that state's output for the base key cap. */
+  noneNext?: string;
+};
 
 function parseActions(xml: string): Map<string, ActionDef> {
   const map = new Map<string, ActionDef>();
@@ -93,23 +98,45 @@ function parseActions(xml: string): Map<string, ActionDef> {
   while ((m = blockRe.exec(xml))) {
     const id = m[1];
     const body = m[2];
-    const def: ActionDef = {};
-    const whenRe = /<when state="([^"]+)" output="([^"]*)"/g;
+    const def: ActionDef = { byState: new Map() };
+    const whenRe = /<when state="([^"]+)"([^>]*)\/?>/g;
     let w: RegExpExecArray | null;
     while ((w = whenRe.exec(body))) {
       const state = w[1];
-      const out = decodeXmlText(w[2]);
-      if (state === 'none') def.none = out;
-      if (state === 's1') def.s1 = out;
+      const attrs = w[2];
+      const outMatch = /\boutput="([^"]*)"/.exec(attrs);
+      const nextMatch = /\bnext="([^"]+)"/.exec(attrs);
+      if (outMatch) {
+        def.byState.set(state, decodeXmlText(outMatch[1]));
+      } else if (state === 'none' && nextMatch) {
+        def.noneNext = nextMatch[1];
+      }
     }
     map.set(id, def);
   }
   return map;
 }
 
-function parseKeyMapLayer(xml: string, mapIndex: number): Map<number, { output?: string; action?: string }> {
+function parseKeyMapSetXml(xml: string): string {
+  const layoutMatch = /<layout[^>]*\smapSet="(\d+)"/i.exec(xml);
+  const setId = layoutMatch?.[1];
+  if (!setId) return xml;
+  const setRe = new RegExp(`<keyMapSet id="${setId}">([\\s\\S]*?)<\\/keyMapSet>`, 'i');
+  return setRe.exec(xml)?.[1] ?? xml;
+}
+
+function parseModifierKeyMapIndex(xml: string, modifierKeys: string): number | undefined {
+  const re = new RegExp(
+    `<keyMapSelect mapIndex="(\\d+)">\\s*<modifier keys="${modifierKeys.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"\\/>`,
+    'i'
+  );
+  const m = re.exec(xml);
+  return m ? Number(m[1]) : undefined;
+}
+
+function parseKeyMapLayer(keyMapSetXml: string, mapIndex: number): Map<number, { output?: string; action?: string }> {
   const layerRe = new RegExp(`<keyMap index="${mapIndex}">([\\s\\S]*?)<\\/keyMap>`, 'i');
-  const match = layerRe.exec(xml);
+  const match = layerRe.exec(keyMapSetXml);
   const layer = match?.[1] ?? '';
   const keys = new Map<number, { output?: string; action?: string }>();
   const keyRe = /<key code="(\d+)"(?:\s+output="([^"]*)")?(?:\s+action="([^"]*)")?[^>]*\/?>/g;
@@ -122,22 +149,47 @@ function parseKeyMapLayer(xml: string, mapIndex: number): Map<number, { output?:
   return keys;
 }
 
+type ResolveLayer = 'base' | 'shift' | 'caps';
+
+function actionOutputForLayer(actionId: string, actions: Map<string, ActionDef>, layer: ResolveLayer): string {
+  const act = actions.get(actionId);
+  if (!act) {
+    if (/[\u0f00-\u0fff]/.test(actionId)) return actionId;
+    return '';
+  }
+  const none = act.byState.get('none');
+  const s1 = act.byState.get('s1');
+  const mv2 = act.byState.get('mv2');
+
+  if (layer === 'base') {
+    if (none) return none;
+    if (act.noneNext) {
+      const chained = act.byState.get(act.noneNext);
+      if (chained) return chained;
+    }
+    if (mv2) return mv2;
+    if (s1) return s1;
+    return '';
+  }
+
+  if (layer === 'shift') {
+    return none ?? s1 ?? mv2 ?? '';
+  }
+
+  return none ?? mv2 ?? s1 ?? '';
+}
+
 function resolveOutput(
   entry: { output?: string; action?: string } | undefined,
   actions: Map<string, ActionDef>,
-  preferS1: boolean
+  layer: ResolveLayer
 ): string {
   if (!entry) return '';
   if (entry.output !== undefined) return entry.output;
   if (entry.action) {
-    const act = actions.get(entry.action);
-    if (act) {
-      if (preferS1 && act.s1) return act.s1;
-      if (act.none) return act.none;
-    }
-    if (/[\u0f00-\u0fff]/.test(entry.action) || entry.action.length <= 2) {
-      return entry.action;
-    }
+    const out = actionOutputForLayer(entry.action, actions, layer);
+    if (out) return out;
+    if (/[\u0f00-\u0fff]/.test(entry.action)) return entry.action;
   }
   return '';
 }
@@ -148,32 +200,59 @@ function labelForKey(key: string): string {
   return key;
 }
 
+const LETTER_KEY_CODES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15, 16, 17];
+
+/** macOS Caps Lock layer is often Latin A–Z; Monlam docs map Tibetan symbols to the Option layers. */
+function capsLayerUsesLatinLetters(
+  layerCaps: Map<number, { output?: string; action?: string }>,
+  actions: Map<string, ActionDef>
+): boolean {
+  let latin = 0;
+  let tibetan = 0;
+  for (const code of LETTER_KEY_CODES) {
+    const out = resolveOutput(layerCaps.get(code), actions, 'caps');
+    if (/^[A-Z]$/.test(out)) latin += 1;
+    else if (/[\u0f00-\u0fff]/.test(out)) tibetan += 1;
+  }
+  return latin >= 8 && latin > tibetan;
+}
+
 export function parseMacKeylayoutXml(xml: string, warnings: string[]): KeyMap[][] {
   const actions = parseActions(xml);
-  const layer0 = parseKeyMapLayer(xml, 0);
-  const layer1 = parseKeyMapLayer(xml, 1);
-  const layer2 = parseKeyMapLayer(xml, 2);
-  const layer4 = parseKeyMapLayer(xml, 4);
+  const keyMapSetXml = parseKeyMapSetXml(xml);
+  const shiftMapIndex = parseModifierKeyMapIndex(xml, 'anyShift caps?') ?? 1;
+  const capsMapIndex = parseModifierKeyMapIndex(xml, 'caps') ?? 2;
+  const optionMapIndex = parseModifierKeyMapIndex(xml, 'anyOption');
+  const optionShiftMapIndex =
+    parseModifierKeyMapIndex(xml, 'anyShift caps? anyOption') ??
+    parseModifierKeyMapIndex(xml, 'anyShift? caps? anyOption? anyControl');
+
+  const layer0 = parseKeyMapLayer(keyMapSetXml, 0);
+  const layerShift = parseKeyMapLayer(keyMapSetXml, shiftMapIndex);
+  let layerCaps = parseKeyMapLayer(keyMapSetXml, capsMapIndex);
+  let layerCapsShift = layerShift;
+
+  if (capsLayerUsesLatinLetters(layerCaps, actions) && optionMapIndex !== undefined) {
+    layerCaps = parseKeyMapLayer(keyMapSetXml, optionMapIndex);
+    if (optionShiftMapIndex !== undefined) {
+      layerCapsShift = parseKeyMapLayer(keyMapSetXml, optionShiftMapIndex);
+    }
+  }
 
   const byKey = new Map<string, KeyMap>();
 
-  const allCodes = new Set<number>([
-    ...layer0.keys(),
-    ...layer1.keys(),
-    ...layer2.keys(),
-    ...layer4.keys()
-  ]);
+  const allCodes = new Set<number>([...layer0.keys(), ...layerShift.keys(), ...layerCaps.keys()]);
 
   for (const code of allCodes) {
     const key = MAC_CODE_TO_KEY[code];
-    if (!key || key === 'Backspace' || key === 'Tab') continue;
+    if (!key) continue;
 
-    const char = resolveOutput(layer0.get(code), actions, false);
-    const shiftChar = resolveOutput(layer1.get(code), actions, false) || char;
-    const capsChar = resolveOutput(layer2.get(code), actions, false);
-    const capsShiftChar = resolveOutput(layer4.get(code), actions, false);
+    const char = resolveOutput(layer0.get(code), actions, 'base');
+    const shiftChar = resolveOutput(layerShift.get(code), actions, 'shift') || char;
+    const capsChar = resolveOutput(layerCaps.get(code), actions, 'base');
+    const capsShiftChar = resolveOutput(layerCapsShift.get(code), actions, 'base');
 
-    if (!char && !shiftChar) continue;
+    if (!char && !shiftChar && !capsChar) continue;
 
     byKey.set(key, {
       key,
@@ -183,7 +262,7 @@ export function parseMacKeylayoutXml(xml: string, warnings: string[]): KeyMap[][
       wylie: key,
       shiftWylie: key,
       ...(capsChar ? { capsChar } : {}),
-      ...(capsShiftChar ? { capsShiftChar } : {})
+      ...(capsShiftChar && capsShiftChar !== capsChar ? { capsShiftChar } : {})
     });
   }
 
@@ -203,8 +282,8 @@ export function parseMacKeylayoutXml(xml: string, warnings: string[]): KeyMap[][
 
   if (!byKey.has(' ')) {
     const spaceCode = 49;
-    const char = resolveOutput(layer0.get(spaceCode), actions, false) || '་';
-    const shiftChar = resolveOutput(layer1.get(spaceCode), actions, false) || ' ';
+    const char = resolveOutput(layer0.get(spaceCode), actions, 'base') || '་';
+    const shiftChar = resolveOutput(layerShift.get(spaceCode), actions, 'shift') || ' ';
     rows[rows.length - 1]?.push({
       key: ' ',
       char,

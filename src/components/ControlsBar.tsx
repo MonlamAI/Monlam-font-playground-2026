@@ -707,7 +707,7 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
           id="catalog-scroll-region"
           className="catalog-scroll w-full min-w-0 flex-1 min-h-0 overflow-y-auto overflow-x-hidden pt-1 pb-4"
         >
-          {children}
+          <div className="flex min-h-full min-w-0 flex-col">{children}</div>
         </div>
       </div>
     </div>

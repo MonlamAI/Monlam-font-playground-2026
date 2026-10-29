@@ -288,23 +288,27 @@ export default function App() {
               onOpenFeedback={() => setIsFeedbackOpen(true)}
             >
               <>
-                <FontCatalog
-                  fonts={filteredFonts}
-                  previewText={previewText}
-                  activePresetId={activePresetId}
-                  presets={presets}
-                  fontSize={fontSize}
-                  lineHeight={lineHeight}
-                  fontWeight={fontWeight}
-                  viewMode={viewMode}
-                  selectedFonts={selectedFonts}
-                  onToggleSelect={handleToggleSelect}
-                  comparedFonts={comparedFonts}
-                  onToggleCompare={handleToggleCompare}
-                  onOpenGlyphs={(font) => setInspectingFont(font)}
-                  onResetFilters={handleResetFilters}
-                />
-                <AppFooter />
+                <div className="min-h-0 flex-1">
+                  <FontCatalog
+                    fonts={filteredFonts}
+                    previewText={previewText}
+                    activePresetId={activePresetId}
+                    presets={presets}
+                    fontSize={fontSize}
+                    lineHeight={lineHeight}
+                    fontWeight={fontWeight}
+                    viewMode={viewMode}
+                    selectedFonts={selectedFonts}
+                    onToggleSelect={handleToggleSelect}
+                    comparedFonts={comparedFonts}
+                    onToggleCompare={handleToggleCompare}
+                    onOpenGlyphs={(font) => setInspectingFont(font)}
+                    onResetFilters={handleResetFilters}
+                  />
+                </div>
+                <div className="mt-auto shrink-0">
+                  <AppFooter />
+                </div>
               </>
             </ControlsBar>
           )}

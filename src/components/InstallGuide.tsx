@@ -3,7 +3,6 @@ import {
   Download,
   Laptop,
   Apple,
-  ExternalLink,
   ChevronDown,
   ListOrdered,
   FolderDown
@@ -137,15 +136,6 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
                 <span className="tibetan-text">{t('install.downloadWin')}</span>
               </button>
             </div>
-            <a
-              href={BODYIG_SUITE.sourcePage}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs text-blue-200 transition hover:text-white"
-            >
-              <ExternalLink className="h-3.5 w-3.5" />
-              <span>{t('install.sourceLink')}</span>
-            </a>
           </div>
         </div>
       </div>
