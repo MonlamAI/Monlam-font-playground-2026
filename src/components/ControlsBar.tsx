@@ -13,8 +13,11 @@ import {
   PanelLeftClose,
   PanelLeft,
   ChevronDown,
-  ALargeSmall
+  ALargeSmall,
+  Sparkles,
+  Layers
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { FontCategory, PresetText, FontKind, FontItem } from '../types/font';
 import {
   getSpecialPresetOptions,
@@ -23,7 +26,7 @@ import {
 } from '../utils/resolvePreviewText';
 import { useI18n } from '../i18n/I18nProvider';
 import { translate } from '../i18n/translate';
-import { localeBilingualPair, type LocaleTitlePair } from '../utils/fontDisplay';
+import { localeBilingualPair, uiTibetanClass, type LocaleTitlePair } from '../utils/fontDisplay';
 import { formatLocaleNumber, localeNumeralsClass } from '../utils/localeNumber';
 import { NumericControlInput } from './NumericControlInput';
 import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
@@ -60,10 +63,10 @@ interface ControlsBarProps {
   children: React.ReactNode;
 }
 
-const FONT_KIND_OPTIONS: { labelKey: string; value: FontKindFilter }[] = [
-  { labelKey: 'filters.fontKindNormal', value: 'normal' },
-  { labelKey: 'filters.fontKindSpecial', value: 'special' },
-  { labelKey: 'filters.fontKindAll', value: 'all' }
+const FONT_KIND_OPTIONS: { labelKey: string; value: FontKindFilter; Icon: LucideIcon }[] = [
+  { labelKey: 'filters.fontKindNormal', value: 'normal', Icon: ALargeSmall },
+  { labelKey: 'filters.fontKindSpecial', value: 'special', Icon: Sparkles },
+  { labelKey: 'filters.fontKindAll', value: 'all', Icon: Layers }
 ];
 
 const TOOLTIP_BUBBLE =
@@ -175,6 +178,7 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
   children
 }) => {
   const { t, locale } = useI18n();
+  const uiBo = uiTibetanClass(locale, true);
   const { styles: scriptStyles } = useScriptStylesContext();
   const [presetsOpen, setPresetsOpen] = React.useState(false);
   const [scriptStyleOpen, setScriptStyleOpen] = React.useState(false);
@@ -563,8 +567,8 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
       {/* Main column: toolbar + catalog (catalog scrolls independently) */}
       <div className="flex-1 min-w-0 flex flex-col min-h-0 h-full overflow-hidden">
         <div className="shrink-0 z-20 bg-gray-50 dark:bg-slate-950/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 shadow-sm">
-          <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-            <div className="flex items-center gap-2 w-full sm:w-auto min-w-0">
+          <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto min-w-0">
               <HoverTip
                 label={sidebarOpen ? t('filters.collapsePanel') : t('filters.title')}
                 placement="top"
@@ -584,7 +588,39 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
               </HoverTip>
 
               <div
-                className="inline-flex items-center p-0.5 rounded-full border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xs shrink-0"
+                className="flex sm:hidden shrink-0 items-center border border-gray-200 dark:border-slate-700 rounded-lg p-0.5 bg-white dark:bg-slate-900 shadow-xs"
+                role="group"
+                aria-label={t('filters.fontKindAria')}
+              >
+                {FONT_KIND_OPTIONS.map((opt) => {
+                  const isSelected = selectedFontKind === opt.value;
+                  const label = t(opt.labelKey);
+                  const { Icon } = opt;
+                  return (
+                    <HoverTip key={opt.value} label={label} placement="top">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedFontKind(opt.value)}
+                        aria-label={label}
+                        aria-pressed={isSelected}
+                        title={label}
+                        className={`inline-flex items-center justify-center w-9 h-9 rounded-md transition ${
+                          isSelected
+                            ? opt.value === 'special'
+                              ? 'bg-amber-600 text-white shadow-xs'
+                              : 'bg-blue-600 text-white shadow-xs'
+                            : 'text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4 shrink-0" aria-hidden />
+                      </button>
+                    </HoverTip>
+                  );
+                })}
+              </div>
+
+              <div
+                className="hidden sm:flex min-w-0 items-center overflow-x-auto p-0.5 rounded-full border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xs scrollbar-none"
                 role="group"
                 aria-label={t('filters.fontKindAria')}
               >
@@ -595,7 +631,8 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
                       key={opt.value}
                       type="button"
                       onClick={() => setSelectedFontKind(opt.value)}
-                      className={`px-2 sm:px-2.5 py-1 rounded-full text-xs font-medium transition ${
+                      aria-pressed={isSelected}
+                      className={`shrink-0 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition ${uiBo} ${
                         isSelected
                           ? opt.value === 'special'
                             ? 'bg-amber-600 text-white'
@@ -649,14 +686,14 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
               </div>
             </div>
 
-            <div className="relative w-full min-w-0 sm:flex-1 sm:max-w-xl order-3 sm:order-none">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-slate-500" />
+            <div className="relative w-full min-w-0 sm:flex-1 sm:max-w-xl">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-slate-500 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('catalog.searchPlaceholder')}
-                className="w-full min-w-0 pl-9 pr-9 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-full text-sm text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition shadow-xs"
+                className={`w-full min-w-0 pl-9 pr-9 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-full text-sm text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition shadow-xs ${uiBo}`}
               />
               {searchQuery && (
                 <button

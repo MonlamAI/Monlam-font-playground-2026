@@ -20,7 +20,7 @@
 
   html[data-locale="bo"] {
     --tibetan-line-height: 2;
-    --app-line-height: 2;
+    /* Keep chrome/layout line-height normal; Tibetan rhythm lives on .tibetan-text + inputs. */
   }
 
   /* Tailwind leading-* utilities override body line-height; restore Tibetan UI rhythm. */

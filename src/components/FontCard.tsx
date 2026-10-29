@@ -4,7 +4,7 @@ import { TooltipButton, TooltipIconButton } from './HoverTooltip';
 import { FontItem } from '../types/font';
 import { downloadSingleFont } from '../utils/fontDownloader';
 import { useI18n } from '../i18n/I18nProvider';
-import { catalogPreviewLineHeight, fontCardTitlePair } from '../utils/fontDisplay';
+import { catalogPreviewLineHeight, fontCardTitlePair, uiTibetanClass } from '../utils/fontDisplay';
 import { localizeDigitsInString } from '../utils/localeNumber';
 import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
 
@@ -43,6 +43,7 @@ export const FontCard: React.FC<FontCardProps> = ({
   const { t, locale } = useI18n();
   const { labelForCategory } = useScriptStylesContext();
   const titles = fontCardTitlePair(font, locale);
+  const uiBo = uiTibetanClass(locale, true);
   const [localText, setLocalText] = React.useState<string | null>(null);
   const [copied, setCopied] = React.useState(false);
 
@@ -96,7 +97,9 @@ export const FontCard: React.FC<FontCardProps> = ({
             >
               {titles.primary}
             </h3>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 font-medium border border-blue-200/50 dark:border-blue-800 shrink-0 whitespace-nowrap">
+            <span
+              className={`text-xs px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 font-medium border border-blue-200/50 dark:border-blue-800 shrink-0 whitespace-nowrap ${uiBo}`}
+            >
               {labelForCategory(font.category)}
             </span>
             {font.fontKind === 'special' && (

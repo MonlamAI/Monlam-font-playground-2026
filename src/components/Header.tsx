@@ -18,6 +18,7 @@ import { useI18n } from '../i18n/I18nProvider';
 import { uiTibetanClass } from '../utils/fontDisplay';
 import { formatLocaleNumber, localeNumeralsClass } from '../utils/localeNumber';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { HeaderUtilityMenu } from './HeaderUtilityMenu';
 
 export type AppTab = 'catalog' | 'compare' | 'typing' | 'quest' | 'guide' | 'install';
 
@@ -69,7 +70,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 min-h-[4.25rem] py-2.5">
           {/* Logo / Brand */}
           <div
-            className="flex items-center gap-2 sm:gap-2.5 min-w-0 max-w-[58%] sm:max-w-[65%] md:max-w-[16rem] lg:max-w-[20rem] xl:max-w-none shrink-0 cursor-pointer"
+            className="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1 md:flex-none md:max-w-[16rem] lg:max-w-[20rem] xl:max-w-none cursor-pointer"
             onClick={() => setActiveTab('catalog')}
             role="link"
             aria-label={t('global.home')}
@@ -81,9 +82,9 @@ export const Header: React.FC<HeaderProps> = ({
               width={36}
               height={36}
             />
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1 md:flex-initial">
               <p
-                className={`font-app font-semibold text-sm sm:text-base lg:text-lg tracking-tight text-gray-900 dark:text-slate-100 whitespace-normal xl:whitespace-nowrap ${uiBo}`}
+                className={`font-app font-semibold text-sm sm:text-base lg:text-lg tracking-tight text-gray-900 dark:text-slate-100 line-clamp-2 xl:line-clamp-none xl:whitespace-nowrap leading-snug ${uiBo}`}
               >
                 {siteTitle}
               </p>
@@ -171,7 +172,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Quick Actions — theme, feedback, Selected CTA */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto md:ml-0">
-            <div className="flex items-center gap-1">
+            <div className="hidden md:flex items-center gap-1">
               <button
                 type="button"
                 onClick={toggleTheme}
@@ -203,7 +204,15 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
 
-            <LanguageSwitcher />
+            <div className="hidden md:block">
+              <LanguageSwitcher />
+            </div>
+
+            <HeaderUtilityMenu
+              isDark={isDark}
+              onToggleTheme={toggleTheme}
+              onOpenFeedback={onOpenFeedback}
+            />
 
             {/* Selected Fonts Drawer Button */}
             <button
@@ -221,73 +230,45 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Mobile Navigation Tabs */}
-        <div className="md:hidden flex items-center overflow-x-auto py-2 space-x-2 border-t border-gray-100 dark:border-slate-800 text-xs scrollbar-none">
-          <button
-            onClick={() => setActiveTab('catalog')}
-            className={`px-3 py-1.5 whitespace-nowrap rounded-md ${
-              activeTab === 'catalog'
-                ? 'bg-blue-600 text-white font-medium'
-                : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
-            }`}
-          >
-            {t('nav.typefaces')}
-          </button>
-          <button
-            onClick={() => setActiveTab('compare')}
-            className={`px-3 py-1.5 whitespace-nowrap rounded-md ${
-              activeTab === 'compare'
-                ? 'bg-blue-600 text-white font-medium'
-                : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
-            }`}
-          >
-            {t('nav.compare')}
-          </button>
-          <button
-            onClick={() => setActiveTab('typing')}
-            className={`px-3 py-1.5 whitespace-nowrap rounded-md ${
-              activeTab === 'typing'
-                ? 'bg-blue-600 text-white font-medium'
-                : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
-            }`}
-          >
-            {t('nav.typing')}
-          </button>
-          {FEATURE_TYPING_QUEST ? (
-            <button
-              onClick={() => setActiveTab('quest')}
-              className={`px-3 py-1.5 whitespace-nowrap rounded-md ${
-                activeTab === 'quest'
-                  ? 'bg-blue-600 text-white font-medium'
-                  : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
-              }`}
-            >
-              {t('nav.quest')}
-            </button>
-          ) : null}
-          {FEATURE_TYPOGRAPHY_GUIDE ? (
-            <button
-              onClick={() => setActiveTab('guide')}
-              className={`px-3 py-1.5 whitespace-nowrap rounded-md ${
-                activeTab === 'guide'
-                  ? 'bg-blue-600 text-white font-medium'
-                  : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
-              }`}
-            >
-              {t('nav.guide')}
-            </button>
-          ) : null}
-          <button
-            onClick={() => setActiveTab('install')}
-            className={`px-3 py-1.5 whitespace-nowrap rounded-md ${
-              activeTab === 'install'
-                ? 'bg-blue-600 text-white font-medium'
-                : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
-            }`}
-          >
-            {t('nav.install')}
-          </button>
-        </div>
+        {/* Mobile Navigation — icon strip (labels in aria-label; desktop nav unchanged) */}
+        <nav
+          aria-label={t('global.tools')}
+          className="md:hidden flex w-full items-stretch justify-between gap-1 px-0 py-2 border-t border-gray-100 dark:border-slate-800"
+        >
+          {(
+            [
+              { tab: 'catalog' as const, Icon: Type, label: t('nav.typefaces') },
+              { tab: 'compare' as const, Icon: GitCompare, label: t('nav.compare') },
+              { tab: 'typing' as const, Icon: Keyboard, label: t('nav.typing') },
+              ...(FEATURE_TYPING_QUEST
+                ? [{ tab: 'quest' as const, Icon: Gamepad2, label: t('nav.quest') }]
+                : []),
+              ...(FEATURE_TYPOGRAPHY_GUIDE
+                ? [{ tab: 'guide' as const, Icon: BookOpen, label: t('nav.guide') }]
+                : []),
+              { tab: 'install' as const, Icon: Download, label: t('nav.install') }
+            ] as const
+          ).map(({ tab, Icon, label }) => {
+            const isActive = activeTab === tab;
+            return (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setActiveTab(tab)}
+                aria-label={label}
+                aria-current={isActive ? 'page' : undefined}
+                title={label}
+                className={`flex flex-1 items-center justify-center min-w-0 rounded-lg p-2.5 min-h-10 transition active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 ${
+                  isActive
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-slate-100'
+                }`}
+              >
+                <Icon className="w-5 h-5 shrink-0" strokeWidth={isActive ? 2.25 : 1.75} aria-hidden />
+              </button>
+            );
+          })}
+        </nav>
       </div>
     </header>
   );

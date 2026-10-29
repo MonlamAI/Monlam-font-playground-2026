@@ -4,8 +4,6 @@ import {
   clampNumber,
   formatLocaleDecimal,
   formatLocaleNumber,
-  formatLocaleMultiplier,
-  formatLocalePx,
   localeNumeralsClass,
   parseLocaleNumericInput
 } from '../utils/localeNumber';
@@ -25,15 +23,20 @@ type NumericControlInputProps = {
   ariaLabel: string;
 };
 
-function formatValue(
+function formatNumericOnly(
   value: number,
   suffix: NumericControlSuffix,
   locale: AppLocale,
   fractionDigits: number
 ): string {
-  if (suffix === 'px') return formatLocalePx(value, locale);
-  if (suffix === 'x') return formatLocaleMultiplier(value, locale, fractionDigits);
+  if (suffix === 'x') return formatLocaleDecimal(value, locale, fractionDigits);
   return formatLocaleNumber(value, locale);
+}
+
+function suffixLabel(suffix: NumericControlSuffix): string {
+  if (suffix === 'px') return 'px';
+  if (suffix === 'x') return 'x';
+  return '';
 }
 
 function commitValue(
@@ -68,6 +71,7 @@ export const NumericControlInput: React.FC<NumericControlInputProps> = ({
 }) => {
   const [draft, setDraft] = React.useState<string | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const unit = suffixLabel(suffix);
 
   React.useEffect(() => {
     if (document.activeElement !== inputRef.current) {
@@ -75,7 +79,7 @@ export const NumericControlInput: React.FC<NumericControlInputProps> = ({
     }
   }, [value, locale]);
 
-  const display = draft ?? formatValue(value, suffix, locale, fractionDigits);
+  const display = draft ?? formatNumericOnly(value, suffix, locale, fractionDigits);
 
   const applyDraft = () => {
     const next = commitValue(draft ?? display, min, max, suffix, fractionDigits);
@@ -84,30 +88,35 @@ export const NumericControlInput: React.FC<NumericControlInputProps> = ({
   };
 
   return (
-    <input
-      ref={inputRef}
-      type="text"
-      inputMode={suffix === 'x' ? 'decimal' : 'numeric'}
-      aria-label={ariaLabel}
-      value={display}
-      onChange={(e) => setDraft(e.target.value)}
-      onFocus={(e) => {
-        setDraft(formatValue(value, suffix, locale, fractionDigits));
-        e.target.select();
-      }}
-      onBlur={applyDraft}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          applyDraft();
-          inputRef.current?.blur();
-        }
-        if (e.key === 'Escape') {
-          setDraft(null);
-          inputRef.current?.blur();
-        }
-      }}
-      className={`${localeNumeralsClass} w-[4.25rem] rounded-md border border-gray-200 bg-white px-1.5 py-0.5 text-right text-xs font-semibold text-gray-800 shadow-sm transition focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 ${className}`}
-    />
+    <span className={`inline-flex items-center gap-0.5 shrink-0 ${className}`}>
+      <input
+        ref={inputRef}
+        type="text"
+        inputMode={suffix === 'x' ? 'decimal' : 'numeric'}
+        aria-label={unit ? `${ariaLabel} (${unit})` : ariaLabel}
+        value={display}
+        onChange={(e) => setDraft(e.target.value)}
+        onFocus={(e) => {
+          setDraft(formatNumericOnly(value, suffix, locale, fractionDigits));
+          e.target.select();
+        }}
+        onBlur={applyDraft}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            applyDraft();
+            inputRef.current?.blur();
+          }
+          if (e.key === 'Escape') {
+            setDraft(null);
+            inputRef.current?.blur();
+          }
+        }}
+        className={`${localeNumeralsClass} box-border w-[2.375rem] min-w-[2.375rem] max-w-[2.375rem] rounded border border-gray-200 bg-white px-0.5 py-0.5 text-right text-[11px] font-semibold leading-none text-gray-800 shadow-sm transition focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100`}
+      />
+      {unit ? (
+        <span className="text-[11px] font-semibold text-gray-700 dark:text-slate-200 select-none">{unit}</span>
+      ) : null}
+    </span>
   );
 };
