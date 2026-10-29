@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-  Download,
-  Laptop,
-  Apple,
-  ChevronDown,
-  ListOrdered,
-  FolderDown
-} from 'lucide-react';
+import { Download, ChevronDown, ListOrdered, FolderDown } from 'lucide-react';
+import { AppleBrandIcon, WindowsBrandIcon } from './OsBrandIcon';
 import { FontItem } from '../types/font';
 import { downloadSingleFont } from '../utils/fontDownloader';
 import {
@@ -39,7 +33,9 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
 
   const macDownload = OFFICIAL_BODYIG_DOWNLOADS.find((d) => d.platform === 'mac')!;
   const winDownload = OFFICIAL_BODYIG_DOWNLOADS.find((d) => d.platform === 'windows')!;
-  const suiteTitle = `${localePick(BODYIG_SUITE.name, BODYIG_SUITE.tibetanName, locale)} ${BODYIG_SUITE.version}`;
+  const suiteName = localePick(BODYIG_SUITE.name, BODYIG_SUITE.tibetanName, locale);
+  const suiteTitle =
+    locale === 'bo' ? suiteName : `${suiteName} ${BODYIG_SUITE.version}`;
   const uiBo = uiTibetanClass(locale);
 
   const visualSlides = React.useMemo(() => {
@@ -121,7 +117,7 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
                 }}
                 className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-md transition hover:bg-blue-50 active:scale-95"
               >
-                <Apple className="h-4 w-4" />
+                <AppleBrandIcon className="h-5 w-5" />
                 <span className="tibetan-text">{t('install.downloadMac')}</span>
               </button>
               <button
@@ -130,9 +126,11 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
                   setActiveOs('windows');
                   openOfficialDownload(winDownload.url);
                 }}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-500 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-400 active:scale-95"
+                className="flex flex-1 items-center justify-center gap-2.5 rounded-xl bg-blue-500 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-400 active:scale-95"
               >
-                <Laptop className="h-4 w-4" />
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-white/95 p-0.5 shadow-sm">
+                  <WindowsBrandIcon className="h-4 w-4" variant="color" />
+                </span>
                 <span className="tibetan-text">{t('install.downloadWin')}</span>
               </button>
             </div>
@@ -166,7 +164,7 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
                 activeOs === 'windows' ? 'bg-white dark:bg-slate-900 shadow-xs text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100'
               }`}
             >
-              <Laptop className="w-3.5 h-3.5" />
+              <WindowsBrandIcon className="h-4 w-4" variant="color" />
               <span>{t('install.osWindows')}</span>
             </button>
             <button
@@ -175,7 +173,7 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
                 activeOs === 'mac' ? 'bg-white dark:bg-slate-900 shadow-xs text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100'
               }`}
             >
-              <Apple className="w-3.5 h-3.5" />
+              <AppleBrandIcon className="h-4 w-4" />
               <span>{t('install.osMac')}</span>
             </button>
           </div>
