@@ -45,7 +45,7 @@ export const HeaderUtilityMenu: React.FC<HeaderUtilityMenuProps> = ({
     'flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm text-gray-800 dark:text-slate-100 hover:bg-gray-50 dark:hover:bg-slate-800 transition';
 
   return (
-    <div className="relative md:hidden" ref={rootRef}>
+    <div className="relative xl:hidden" ref={rootRef}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}

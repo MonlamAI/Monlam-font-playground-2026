@@ -70,7 +70,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 min-h-[4.25rem] py-2.5">
           {/* Logo / Brand */}
           <div
-            className="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1 md:flex-none md:max-w-[16rem] lg:max-w-[20rem] xl:max-w-none cursor-pointer"
+            className="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1 xl:flex-none xl:max-w-[16rem] 2xl:max-w-[20rem] cursor-pointer"
             onClick={() => setActiveTab('catalog')}
             role="link"
             aria-label={t('global.home')}
@@ -82,7 +82,7 @@ export const Header: React.FC<HeaderProps> = ({
               width={36}
               height={36}
             />
-            <div className="min-w-0 flex-1 md:flex-initial">
+            <div className="min-w-0 flex-1 xl:flex-initial">
               <p
                 className={`font-app font-semibold text-sm sm:text-base lg:text-lg tracking-tight text-gray-900 dark:text-slate-100 line-clamp-2 xl:line-clamp-none xl:whitespace-nowrap leading-snug ${uiBo}`}
               >
@@ -92,7 +92,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Navigation Tabs - Google Fonts style */}
-          <nav className="hidden md:flex flex-1 items-center justify-center flex-nowrap gap-0.5 lg:gap-1 min-w-0 overflow-x-auto scrollbar-none px-1">
+          <nav className="hidden xl:flex flex-1 items-center justify-center flex-nowrap gap-0.5 2xl:gap-1 min-w-0 overflow-x-auto scrollbar-none px-1">
             <button
               onClick={() => setActiveTab('catalog')}
               className={`flex shrink-0 items-center gap-1.5 px-2 lg:px-2.5 xl:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
@@ -171,8 +171,8 @@ export const Header: React.FC<HeaderProps> = ({
           </nav>
 
           {/* Quick Actions — theme, feedback, Selected CTA */}
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto md:ml-0">
-            <div className="hidden md:flex items-center gap-1">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto xl:ml-0">
+            <div className="hidden xl:flex items-center gap-1">
               <button
                 type="button"
                 onClick={toggleTheme}
@@ -204,7 +204,7 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
 
-            <div className="hidden md:block">
+            <div className="hidden xl:block">
               <LanguageSwitcher />
             </div>
 
@@ -220,7 +220,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="relative flex shrink-0 items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-2 min-h-9 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-medium shadow-sm transition active:scale-95"
             >
               <ShoppingBag className="w-4 h-4 shrink-0" />
-              <span className={`hidden md:inline whitespace-nowrap ${uiBo}`}>{t('cart.label')}</span>
+              <span className={`hidden xl:inline whitespace-nowrap ${uiBo}`}>{t('cart.label')}</span>
               <span
                 className={`flex h-5 min-w-5 items-center justify-center rounded-full bg-white px-0.5 text-xs font-bold text-blue-800 ${localeNumeralsClass}`}
               >
@@ -230,10 +230,10 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Mobile Navigation — icon strip (labels in aria-label; desktop nav unchanged) */}
+        {/* Phone & tablet (incl. iPad Pro 1024px): icon tabs; full text nav from xl (1280px)+ */}
         <nav
           aria-label={t('global.tools')}
-          className="md:hidden flex w-full items-stretch justify-between gap-1 px-0 py-2 border-t border-gray-100 dark:border-slate-800"
+          className="xl:hidden flex w-full items-stretch justify-between gap-1 px-0 py-2 border-t border-gray-100 dark:border-slate-800"
         >
           {(
             [
