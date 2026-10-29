@@ -13,7 +13,11 @@ import {
 } from 'lucide-react';
 import { FontItem } from '../types/font';
 import { useTheme } from '../hooks/useTheme';
-import { FEATURE_TYPING_QUEST, FEATURE_TYPOGRAPHY_GUIDE } from '../config/features';
+import {
+  FEATURE_TYPING_PRACTICE,
+  FEATURE_TYPING_QUEST,
+  FEATURE_TYPOGRAPHY_GUIDE
+} from '../config/features';
 import { useI18n } from '../i18n/I18nProvider';
 import { uiTibetanClass } from '../utils/fontDisplay';
 import { formatLocaleNumber, localeNumeralsClass } from '../utils/localeNumber';
@@ -117,17 +121,19 @@ export const Header: React.FC<HeaderProps> = ({
               <span className={uiBo}>{t('nav.compare')}</span>
             </button>
 
-            <button
-              onClick={() => setActiveTab('typing')}
-              className={`flex shrink-0 items-center gap-1.5 px-2 lg:px-2.5 xl:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                activeTab === 'typing'
-                  ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 font-semibold'
-                  : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
-              }`}
-            >
-              <Keyboard className="w-4 h-4" />
-              <span className={uiBo}>{t('nav.typing')}</span>
-            </button>
+            {FEATURE_TYPING_PRACTICE ? (
+              <button
+                onClick={() => setActiveTab('typing')}
+                className={`flex shrink-0 items-center gap-1.5 px-2 lg:px-2.5 xl:px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                  activeTab === 'typing'
+                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 font-semibold'
+                    : 'text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100 hover:bg-gray-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <Keyboard className="w-4 h-4" />
+                <span className={uiBo}>{t('nav.typing')}</span>
+              </button>
+            ) : null}
 
             {FEATURE_TYPING_QUEST ? (
               <button
@@ -239,7 +245,9 @@ export const Header: React.FC<HeaderProps> = ({
             [
               { tab: 'catalog' as const, Icon: Type, label: t('nav.typefaces') },
               { tab: 'compare' as const, Icon: GitCompare, label: t('nav.compare') },
-              { tab: 'typing' as const, Icon: Keyboard, label: t('nav.typing') },
+              ...(FEATURE_TYPING_PRACTICE
+                ? [{ tab: 'typing' as const, Icon: Keyboard, label: t('nav.typing') }]
+                : []),
               ...(FEATURE_TYPING_QUEST
                 ? [{ tab: 'quest' as const, Icon: Gamepad2, label: t('nav.quest') }]
                 : []),

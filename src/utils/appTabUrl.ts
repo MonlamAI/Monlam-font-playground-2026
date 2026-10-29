@@ -1,11 +1,16 @@
 import type { AppTab } from '../components/Header';
-import { FEATURE_TYPING_QUEST, FEATURE_TYPOGRAPHY_GUIDE } from '../config/features';
+import {
+  FEATURE_TYPING_PRACTICE,
+  FEATURE_TYPING_QUEST,
+  FEATURE_TYPOGRAPHY_GUIDE
+} from '../config/features';
 
 const APP_TABS: AppTab[] = ['catalog', 'compare', 'typing', 'quest', 'guide', 'install'];
 
 export function parseAppTabParam(raw: string | null): AppTab {
   if (!raw || !APP_TABS.includes(raw as AppTab)) return 'catalog';
   const tab = raw as AppTab;
+  if (tab === 'typing' && !FEATURE_TYPING_PRACTICE) return 'catalog';
   if (tab === 'quest' && !FEATURE_TYPING_QUEST) return 'catalog';
   if (tab === 'guide' && !FEATURE_TYPOGRAPHY_GUIDE) return 'catalog';
   return tab;

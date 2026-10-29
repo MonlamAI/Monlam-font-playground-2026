@@ -11,13 +11,10 @@ const footerIconBtnClass =
 export const AppFooter: React.FC<{ className?: string }> = ({ className = '' }) => {
   const { t, locale } = useI18n();
   const year = new Date().getFullYear();
-  const siteTitle = locale === 'bo' ? t('site.titleTibetan') : t('site.titleEnglish');
   const uiBo = uiTibetanClass(locale, true);
   const footerTextClass = `font-app font-semibold text-sm lg:text-base tracking-tight text-gray-900 dark:text-slate-100 ${uiBo}`;
   const footerTextStyle: React.CSSProperties = { lineHeight: 1.55, wordBreak: 'normal' };
   const footerLinkClass = `${footerTextClass} hover:text-blue-600 dark:hover:text-blue-400 transition inline-flex items-center gap-2 min-w-0`;
-
-  const copyrightAria = `© ${year} ${t('footer.copyrightHolder')}`;
 
   return (
     <footer
@@ -43,22 +40,9 @@ export const AppFooter: React.FC<{ className?: string }> = ({ className = '' }) 
           </Link>
         </nav>
 
-        {/* Desktop (lg+): full three-part footer */}
-        <div className="hidden lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center lg:gap-6 xl:gap-8 py-5">
-          <div className="flex items-center gap-2.5 min-w-0 justify-self-start">
-            <img
-              src="/logos/bodyig.svg"
-              alt=""
-              className="w-9 h-9 shrink-0"
-              width={36}
-              height={36}
-            />
-            <p className={`${footerTextClass} min-w-0 truncate xl:whitespace-normal`} style={footerTextStyle}>
-              {siteTitle}
-            </p>
-          </div>
-
-          <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 min-w-0 justify-self-center">
+        {/* Desktop (lg+): links + copyright (site title stays in header only) */}
+        <div className="hidden lg:flex lg:items-center lg:justify-between lg:gap-6 xl:gap-8 py-5 flex-wrap">
+          <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 min-w-0">
             <li>
               <a
                 href="https://github.com/MonlamAI/Monlam-font-playground-2026"
@@ -79,7 +63,7 @@ export const AppFooter: React.FC<{ className?: string }> = ({ className = '' }) 
             </li>
           </ul>
 
-          <div className="flex items-center gap-2.5 min-w-0 justify-self-end">
+          <div className="flex items-center gap-2.5 min-w-0 lg:ml-auto">
             <img src="/logos/monlam.svg" alt="" className="w-9 h-9 shrink-0" width={36} height={36} />
             <span className={`${footerTextClass} min-w-0 text-right`} style={footerTextStyle}>
               ©{' '}

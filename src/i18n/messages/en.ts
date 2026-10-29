@@ -198,7 +198,7 @@ const en = {
       'Get official Monlam IT Tibetan fonts, keyboard layouts, and step-by-step installation instructions for your operating system. Choose Mac or Windows for the complete Font & Keyboard Suite, or download individual .ttf assets below.',
     suiteBadge: 'Official Font & Keyboard Suite',
     suiteDescription:
-      'Official Monlam Font & Keyboard complete suite. Includes Tibetan Unicode typefaces (including PayTsik, Lanza, Tsikmachok, and Lakdi Ouchen) and keyboard installers for your operating system.',
+      'Official Monlam Font & Keyboard complete suite. Includes Tibetan Unicode typefaces and keyboard installers for your operating system.',
     selectOs: 'Select your operating system:',
     sourceLink: 'Source: monlamit.com/software/2',
     assetsBadge: 'Individual & selected assets',

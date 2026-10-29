@@ -68,7 +68,9 @@ export const FontCard: React.FC<FontCardProps> = ({
   };
 
   const footerIconBtn =
-    'inline-flex min-h-9 h-9 w-9 shrink-0 items-center justify-center rounded-md font-medium transition';
+    'inline-flex min-h-9 h-9 w-9 shrink-0 items-center justify-center rounded-md font-medium';
+  const footerIconBtnIdle =
+    'transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-slate-700';
   const footerActionBtn =
     'inline-flex min-h-9 shrink-0 items-center justify-center gap-1 rounded-md font-medium transition px-2.5 py-1.5 whitespace-nowrap';
 
@@ -179,7 +181,7 @@ export const FontCard: React.FC<FontCardProps> = ({
             className={`${footerIconBtn} ${
               isCompared
                 ? 'bg-indigo-600 text-white shadow-xs'
-                : 'bg-white dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700'
+                : `${footerIconBtnIdle} bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700`
             }`}
           >
             <GitCompare className="w-4 h-4 shrink-0" />
@@ -189,7 +191,7 @@ export const FontCard: React.FC<FontCardProps> = ({
             label={t('catalog.cardActionGlyphs')}
             ariaLabel={t('catalog.openGlyphs')}
             onClick={() => onOpenGlyphs(font)}
-            className={`${footerIconBtn} bg-white dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700`}
+            className={`${footerIconBtn} ${footerIconBtnIdle} bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700`}
           >
             <Eye className="w-4 h-4 shrink-0" />
           </TooltipIconButton>

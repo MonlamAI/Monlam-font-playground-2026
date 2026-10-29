@@ -1,6 +1,6 @@
 /**
  * Official Monlam IT Font & Keyboard Suite downloads
- * Source: https://monlamit.com/software/2 (Monlam Bodyig v4.0)
+ * Source: https://monlamit.com/software/2 (Monlam Bodyig v5)
  * Releases: https://github.com/MonlamTech/Monlam-App-Store/releases
  */
 
@@ -19,20 +19,20 @@ export interface OfficialDownload {
   sourcePage: string;
 }
 
-/** Primary Font & Keyboard Suite — Monlam Bodyig v4.0.1 */
+/** Primary Font & Keyboard Suite — Monlam Bodyig v5 */
 export const BODYIG_SUITE = {
-  id: 'monlam-bodyig-4',
+  id: 'monlam-bodyig-5',
   name: 'Monlam Bodyig',
-  tibetanName: 'སྨོན་ལམ་བོད་ཡིག་བཞི་བ།',
-  version: 'v4.0.1',
+  tibetanName: 'སྨོན་ལམ་བོད་ཡིག་ལྔ་བ།',
+  version: 'v5',
   sourcePage: 'https://monlamit.com/software/2',
   description:
-    'Official Monlam Font & Keyboard Complete Suite. Includes Tibetan Unicode typefaces (including PayTsik, Lanja, Tsugma Akhyug, and Uchen Lagbris) and keyboard installers for your operating system.',
+    'Official Monlam Font & Keyboard complete suite. Includes Tibetan Unicode typefaces and keyboard installers for your operating system.',
 } as const;
 
 export const OFFICIAL_BODYIG_DOWNLOADS: OfficialDownload[] = [
   {
-    id: 'bodyig-4-mac',
+    id: 'bodyig-5-mac',
     name: BODYIG_SUITE.name,
     tibetanName: BODYIG_SUITE.tibetanName,
     version: BODYIG_SUITE.version,
@@ -40,11 +40,11 @@ export const OFFICIAL_BODYIG_DOWNLOADS: OfficialDownload[] = [
     label: 'Download for Mac',
     url: 'https://github.com/MonlamTech/Monlam-App-Store/releases/download/4.0.1/Monlam.Bodyig.4.0.1.Mac.zip',
     fileSize: '≈11 MB',
-    description: 'Monlam Bodyig v4.0.1 installer package for macOS',
+    description: 'Monlam Bodyig v5 installer package for macOS',
     sourcePage: BODYIG_SUITE.sourcePage,
   },
   {
-    id: 'bodyig-4-windows',
+    id: 'bodyig-5-windows',
     name: BODYIG_SUITE.name,
     tibetanName: BODYIG_SUITE.tibetanName,
     version: BODYIG_SUITE.version,
@@ -52,7 +52,7 @@ export const OFFICIAL_BODYIG_DOWNLOADS: OfficialDownload[] = [
     label: 'Download for Windows',
     url: 'https://github.com/MonlamTech/Monlam-App-Store/releases/download/4.0.1/Monlam.Bodyig.4.0.1.Win.zip',
     fileSize: '≈11 MB',
-    description: 'Monlam Bodyig v4.0.1 installer package for Windows',
+    description: 'Monlam Bodyig v5 installer package for Windows',
     sourcePage: BODYIG_SUITE.sourcePage,
   },
 ];

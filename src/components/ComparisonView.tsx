@@ -50,11 +50,10 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
     [comparedFonts]
   );
   const canAddMore = comparedFonts.length < allFonts.length;
-  const selectUiClass = locale === 'bo' ? `${uiTibetanClass('bo', true)} text-sm` : 'text-xs';
+  const selectUiClass = locale === 'bo' ? `${uiTibetanClass('bo', true)} text-sm` : 'text-xs sm:text-sm';
+  /** Placeholder must fit “+ Choose typeface (NN in catalog)” in EN; BO string is shorter but same min width is fine. */
   const addTypefaceSelectWidth =
-    locale === 'bo'
-      ? 'w-[min(18rem,52vw)] sm:w-64 min-w-[15rem]'
-      : 'w-[min(14rem,42vw)] sm:w-52 min-w-[10rem]';
+    'w-[min(20rem,calc(100vw-2.5rem))] sm:w-auto sm:min-w-[19rem] lg:min-w-[20rem] max-w-[24rem]';
 
   const setGridFont = (slot: number, fontId: string) => {
     const font = allFonts.find((f) => f.id === fontId);

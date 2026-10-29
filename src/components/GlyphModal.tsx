@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Copy, Check, Download, Info, Sparkles } from 'lucide-react';
+import { X, Download } from 'lucide-react';
 import { FontItem } from '../types/font';
 import { downloadSingleFont } from '../utils/fontDownloader';
 import { useI18n } from '../i18n/I18nProvider';
@@ -76,11 +76,6 @@ export const GlyphModal: React.FC<GlyphModalProps> = ({ font, onClose }) => {
                 {labelForCategory(font.category)}
               </span>
             </div>
-            <div className="text-xs text-gray-500 dark:text-slate-400 mt-1 flex items-center gap-2 flex-wrap">
-              <span>{font.designer}</span>
-              <span>•</span>
-              <span>{localizeDigitsInString(String(font.releaseYear), locale)}</span>
-            </div>
           </div>
 
           <div className="flex items-center gap-2">
@@ -102,30 +97,11 @@ export const GlyphModal: React.FC<GlyphModalProps> = ({ font, onClose }) => {
 
         {/* Modal Body */}
         <div className="p-6 flex-1 overflow-y-auto space-y-6">
-          {/* Font Description */}
-          <div className="text-xs text-gray-600 dark:text-slate-400 leading-relaxed bg-blue-50/40 dark:bg-blue-950/40 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50">
-            <p className="font-medium text-blue-950 dark:text-blue-200 mb-1">{font.description}</p>
-            <p className="tibetan-text text-blue-800/80 dark:text-blue-300/80 mt-2">{font.tibetanDescription}</p>
-          </div>
-
-          {/* Specs & Features Pills */}
-          <div className="space-y-2">
-            <span className="text-xs font-bold text-gray-700 dark:text-slate-300 uppercase tracking-wider">
-              OpenType & Technical Features:
-            </span>
-            <div className="flex flex-wrap gap-1.5">
-              {font.features.map((feat) => (
-                <span
-                  key={feat}
-                  className="px-2.5 py-1 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 rounded-md text-xs font-medium"
-                >
-                  ✓ {feat}
-                </span>
-              ))}
-              <span className="px-2.5 py-1 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 rounded-md text-xs font-medium">
-                {t('glyph.size')}: {localizeDigitsInString(font.fileSize, locale)}
-              </span>
-            </div>
+          <div className="text-xs text-gray-600 dark:text-slate-400">
+            <span className="font-semibold text-gray-700 dark:text-slate-300">
+              {t('glyph.size')}:
+            </span>{' '}
+            {localizeDigitsInString(font.fileSize, locale)}
           </div>
 
           {/* Glyphs Character Map */}

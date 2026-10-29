@@ -29,13 +29,17 @@ import {
   PRESET_ID_CUSTOM,
   PRESET_ID_FONT_SAMPLE
 } from './utils/resolvePreviewText';
-import { FEATURE_TYPING_QUEST, FEATURE_TYPOGRAPHY_GUIDE } from './config/features';
+import {
+  FEATURE_TYPING_PRACTICE,
+  FEATURE_TYPING_QUEST,
+  FEATURE_TYPOGRAPHY_GUIDE
+} from './config/features';
 import { ScriptStylesProvider } from './contexts/ScriptStylesContext';
 import { useSiteSettings } from './hooks/useSiteSettings';
 import { appTabToSearchParams, parseAppTabParam } from './utils/appTabUrl';
 
 export default function App() {
-  const { fonts: allFonts } = usePublishedFonts();
+  const { fonts: allFonts, loading: fontsLoading } = usePublishedFonts();
   const { presets } = usePublishedPresets();
   const siteSettings = useSiteSettings();
   const {
@@ -97,18 +101,23 @@ export default function App() {
   // Compared fonts for side-by-side mode
   const [comparedFonts, setComparedFonts] = useState<FontItem[]>([]);
 
-  /** Keep compare slots in sync with published catalog (CMS uploads / re-fetch). */
+  /** Remap compare selection to latest catalog rows after CMS/API refresh (no auto-select on load). */
   useEffect(() => {
-    if (allFonts.length === 0) return;
+    if (fontsLoading || allFonts.length === 0) return;
     setComparedFonts((prev) => {
-      if (prev.length === 0) {
-        return allFonts.length >= 2 ? [allFonts[0], allFonts[3] || allFonts[1]] : prev;
-      }
-      return prev
+      if (prev.length === 0) return prev;
+      const next = prev
         .map((f) => allFonts.find((a) => a.id === f.id))
         .filter((f): f is FontItem => f !== undefined);
+      if (
+        next.length === prev.length &&
+        next.every((font, index) => font.id === prev[index]?.id)
+      ) {
+        return prev;
+      }
+      return next;
     });
-  }, [allFonts]);
+  }, [allFonts, fontsLoading]);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -124,7 +133,9 @@ export default function App() {
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
-  const scrollShellTabs = ['catalog', 'compare', 'typing', 'install'] as const;
+  const scrollShellTabs = (
+    ['catalog', 'compare', ...(FEATURE_TYPING_PRACTICE ? (['typing'] as const) : []), 'install'] as const
+  ) satisfies readonly AppTab[];
   const usesScrollShell = (scrollShellTabs as readonly AppTab[]).includes(activeTab);
 
   useEffect(() => {
@@ -337,9 +348,7 @@ export default function App() {
             />
           )}
 
-          {activeTab === 'typing' && (
-            <TypingPractice />
-          )}
+          {FEATURE_TYPING_PRACTICE && activeTab === 'typing' && <TypingPractice />}
 
           {FEATURE_TYPING_QUEST && activeTab === 'quest' && <TypingQuest />}
 
