@@ -30,6 +30,22 @@ export function formatLocaleMultiplier(value: number, locale: AppLocale, fractio
   return `${formatLocaleDecimal(value, locale, fractionDigits)}x`;
 }
 
+/** Parse manual size / line-height input (ASCII or Tibetan digits, optional px/x suffix). */
+export function parseLocaleNumericInput(raw: string): number | null {
+  let s = raw.trim().replace(/px$/i, '').replace(/x$/i, '').trim();
+  for (let i = 0; i < TIBETAN_DIGITS.length; i++) {
+    s = s.split(TIBETAN_DIGITS[i]).join(String(i));
+  }
+  s = s.replace(/,/g, '.');
+  if (!s || s === '-' || s === '.') return null;
+  const n = Number(s);
+  return Number.isFinite(n) ? n : null;
+}
+
+export function clampNumber(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
+}
+
 /** For i18n `t()` interpolation — numbers become Tibetan digits when locale is bo. */
 export function formatTranslationParam(value: string | number, locale: AppLocale): string {
   return localizeDigitsInString(String(value), locale);

@@ -188,7 +188,7 @@ export const TibetanPhysicalKeyboard: React.FC<TibetanPhysicalKeyboardProps> = (
   size = 'default',
   showSpaceNote = true
 }) => {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const dims = KEY_DIMS[size];
   const space = resolveSpaceChars(keyboardLayout);
   const spaceChar = shiftPressed ? space.shiftChar : space.char;
@@ -325,8 +325,12 @@ export const TibetanPhysicalKeyboard: React.FC<TibetanPhysicalKeyboardProps> = (
       </div>
 
       {showSpaceNote && spaceIsTsheg ? (
-        <p className="mt-2 text-[11px] text-gray-600 dark:text-slate-400 tibetan-text font-app leading-relaxed">
-          ཚེག་ Space · བར་སྟོང་ Shift+Space
+        <p
+          className={`mt-2 text-[11px] text-gray-600 dark:text-slate-400 leading-relaxed ${
+            locale === 'bo' ? 'tibetan-text font-app' : ''
+          }`}
+        >
+          {t('typing.spaceKeyboardNote')}
         </p>
       ) : null}
 

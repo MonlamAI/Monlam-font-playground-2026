@@ -99,8 +99,8 @@ const en = {
     noMatchTitle: 'No typefaces match your filter',
     noMatchBody:
       'Try searching for a different keyword like "Uchen", "Cursive", "Drutsa", or reset your search filter.',
-    addToBag: 'Add to download bag',
-    removeFromBag: 'Remove from download bag',
+    addToBag: 'Add to cart',
+    removeFromBag: 'Remove from cart',
     addCompare: 'Add to compare',
     removeCompare: 'Remove from compare',
     copySample: 'Copy sample text',
@@ -306,6 +306,7 @@ const en = {
     keyEnter: 'Enter',
     keyShift: 'Shift',
     keySpace: 'Space',
+    spaceKeyboardNote: 'Press Space for tsheg (་), or Shift+Space for a regular space.',
     nextKey: 'Next key:',
     nextKeySpace: 'SPACE',
     nextKeyShiftSuffix: ' + Shift',
@@ -421,7 +422,7 @@ const en = {
     comparator: 'Side-by-side comparator',
     setupGuide: 'Windows & Mac setup guide',
     sendFeedback: 'Send feedback',
-    github: 'MonlamAI on GitHub',
+    github: 'Monlam Fonts on GitHub',
     googleFonts: 'Google Fonts Tibetan',
     licence: 'Licence policies',
     unicodeBlock: 'Unicode Tibetan block: U+0F00 – U+0FFF',
@@ -443,7 +444,23 @@ const en = {
   },
   licence: {
     title: 'Licence & usage policies',
-    back: 'Back to playground'
+    back: 'Back to playground',
+    subtitle:
+      'How you may use the Monlam Font Playground, Monlam typefaces, and related keyboard assets.',
+    typefacesHeading: 'Monlam typefaces (SIL Open Font License 1.1)',
+    typefacesIntro:
+      'Monlam fonts from the Tibetan Font For All Devices project are licensed under the SIL Open Font License 1.1. The full licence text is reproduced below from the official repository.',
+    oflSourceLink: 'View on GitHub (MonlamIT/Tibetan-Font-For-All-Devices)',
+    oflDownload: 'Download licence text',
+    oflLoading: 'Loading licence text…',
+    oflError: 'Could not load the licence file. Open the GitHub link below.',
+    keyboardsHeading: 'Keyboards',
+    keyboardsBody:
+      'Keyboard layouts and installers offered here are provided to help people type Tibetan. You may install them for personal use. Modified redistributions should credit Monlam IT and must not misrepresent the original layout.',
+    playgroundHeading: 'This playground',
+    playgroundBody:
+      'The Monlam Font Playground application code is licensed under the Apache License 2.0, unless a specific file states otherwise. The fonts and keyboards catalogued here remain the intellectual property of their original authors and are not covered by that software licence.',
+    contact: 'For permissions beyond this summary, contact Monlam IT /'
   },
   memory: {
     fact: 'Fact',

@@ -23,6 +23,16 @@
     --app-line-height: 2;
   }
 
+  /* Tailwind leading-* utilities override body line-height; restore Tibetan UI rhythm. */
+  html[data-locale="bo"]
+    :where(.leading-relaxed, .leading-snug, .leading-tight):not(.tibetan-text-ui) {
+    line-height: var(--tibetan-line-height);
+  }
+
+  html[data-locale="bo"] :is(textarea, input[type="email"], input[type="search"], input[type="text"]) {
+    line-height: var(--tibetan-line-height);
+  }
+
   html[data-locale="en"] {
     --tibetan-line-height: 1.85;
     --app-line-height: 1.5;
@@ -89,6 +99,10 @@
   font-variant-ligatures: contextual common-ligatures;
   line-height: var(--tibetan-line-height);
   word-break: break-all;
+}
+
+html[data-locale="bo"] :is(.tibetan-text.text-xs, .tibetan-text.text-sm, .tibetan-text.text-base) {
+  line-height: var(--tibetan-line-height);
 }
 
 /* Dense UI (header, buttons): avoid clipping stacks with a tighter line-height */
@@ -318,7 +332,7 @@ html.dark .ui-select {
 
 /* Tibetan UI in native <select>: extra vertical room (stacks / vowels clip at text-xs). */
 html[data-locale="bo"] .ui-select {
-  line-height: 1.65;
+  line-height: var(--tibetan-line-height);
   min-height: 2.75rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;

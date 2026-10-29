@@ -24,12 +24,8 @@ import {
 import { useI18n } from '../i18n/I18nProvider';
 import { translate } from '../i18n/translate';
 import { localeBilingualPair, type LocaleTitlePair } from '../utils/fontDisplay';
-import {
-  formatLocaleMultiplier,
-  formatLocaleNumber,
-  formatLocalePx,
-  localeNumeralsClass
-} from '../utils/localeNumber';
+import { formatLocaleNumber, localeNumeralsClass } from '../utils/localeNumber';
+import { NumericControlInput } from './NumericControlInput';
 import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
 import { useForwardWheelToScroll } from '../hooks/useForwardWheelToScroll';
 
@@ -326,9 +322,15 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
                     <ALargeSmall className="w-3 h-3 shrink-0" aria-hidden />
                     {t('filters.size')}
                   </span>
-                  <span className={`text-gray-700 dark:text-slate-200 font-semibold ${localeNumeralsClass}`}>
-                    {formatLocalePx(fontSize, locale)}
-                  </span>
+                  <NumericControlInput
+                    value={fontSize}
+                    onChange={setFontSize}
+                    min={16}
+                    max={84}
+                    suffix="px"
+                    locale={locale}
+                    ariaLabel={t('filters.size')}
+                  />
                 </div>
                 <input
                   type="range"
@@ -363,9 +365,16 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
                     <SlidersHorizontal className="w-3 h-3" />
                     {t('filters.lineHeight')}
                   </span>
-                  <span className={`font-semibold text-gray-700 dark:text-slate-200 ${localeNumeralsClass}`}>
-                    {formatLocaleMultiplier(lineHeight, locale)}
-                  </span>
+                  <NumericControlInput
+                    value={lineHeight}
+                    onChange={setLineHeight}
+                    min={1.4}
+                    max={2.6}
+                    suffix="x"
+                    locale={locale}
+                    fractionDigits={1}
+                    ariaLabel={t('filters.lineHeight')}
+                  />
                 </div>
                 <input
                   type="range"

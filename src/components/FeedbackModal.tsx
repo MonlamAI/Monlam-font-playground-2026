@@ -14,6 +14,7 @@ import { useI18n } from '../i18n/I18nProvider';
 import { useLocaleFormatters } from '../hooks/useLocaleFormatters';
 import { localizeDigitsInString } from '../utils/localeNumber';
 import type { AppLocale } from '../i18n/localeStorage';
+import { uiTibetanClass } from '../utils/fontDisplay';
 
 const MAX_FILES = 5;
 const MAX_BYTES = 50 * 1024 * 1024;
@@ -64,6 +65,7 @@ interface FeedbackModalProps {
 export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
   const { t, locale } = useI18n();
   const fmt = useLocaleFormatters();
+  const uiBo = uiTibetanClass(locale);
   const [message, setMessage] = React.useState('');
   const [contactEmail, setContactEmail] = React.useState('');
   const [files, setFiles] = React.useState<File[]>([]);
@@ -280,7 +282,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
           role="dialog"
           aria-modal="true"
           aria-labelledby="feedback-modal-title"
-          className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700 overflow-hidden max-h-[min(92vh,880px)] flex flex-col"
+          className={`relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700 overflow-hidden max-h-[min(92vh,880px)] flex flex-col ${uiBo}`}
         >
           <div className="flex items-start justify-between gap-3 px-5 py-4 border-b border-gray-100 dark:border-slate-800 shrink-0">
             <div className="min-w-0">
@@ -374,7 +376,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                   rows={5}
                   maxLength={8000}
                   placeholder={t('feedbackModal.messagePlaceholder')}
-                  className="w-full rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50/80 dark:bg-slate-950/60 px-3.5 py-3 text-sm text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 resize-y min-h-[120px]"
+                  className={`w-full rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50/80 dark:bg-slate-950/60 px-3.5 py-3 text-sm text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 resize-y min-h-[120px] ${uiBo}`}
                   required
                   autoFocus
                 />

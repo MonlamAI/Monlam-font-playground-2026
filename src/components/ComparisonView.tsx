@@ -6,11 +6,10 @@ import { downloadSingleFont } from '../utils/fontDownloader';
 import { fontAssetLabel, uiTibetanClass } from '../utils/fontDisplay';
 import { useI18n } from '../i18n/I18nProvider';
 import {
-  formatLocaleMultiplier,
   formatLocaleNumber,
-  formatLocalePx,
   localeNumeralsClass
 } from '../utils/localeNumber';
+import { NumericControlInput } from './NumericControlInput';
 import { useScriptStylesContext } from '../contexts/ScriptStylesContext';
 import { TooltipIconButton } from './HoverTooltip';
 import { TabScrollLayout } from './TabScrollLayout';
@@ -128,9 +127,16 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   onChange={(e) => setFontSize(Number(e.target.value))}
                   className="w-[5.5rem] sm:w-24 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600 shrink-0"
                 />
-                <span className={`shrink-0 w-[2.75rem] font-bold text-gray-900 dark:text-slate-100 ${localeNumeralsClass}`}>
-                  {formatLocalePx(fontSize, locale)}
-                </span>
+                <NumericControlInput
+                  value={fontSize}
+                  onChange={setFontSize}
+                  min={20}
+                  max={90}
+                  suffix="px"
+                  locale={locale}
+                  ariaLabel={t('compare.size')}
+                  className="shrink-0 font-bold"
+                />
               </div>
 
               <div className="flex items-center gap-1.5 shrink-0">
@@ -146,9 +152,17 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   onChange={(e) => setLineHeight(Number(e.target.value))}
                   className="w-[5.5rem] sm:w-24 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600 shrink-0"
                 />
-                <span className={`w-[2.25rem] shrink-0 font-bold text-gray-900 dark:text-slate-100 ${localeNumeralsClass}`}>
-                  {formatLocaleMultiplier(lineHeight, locale)}
-                </span>
+                <NumericControlInput
+                  value={lineHeight}
+                  onChange={setLineHeight}
+                  min={1.4}
+                  max={2.6}
+                  suffix="x"
+                  locale={locale}
+                  fractionDigits={1}
+                  ariaLabel={t('compare.lineHeight')}
+                  className="shrink-0 font-bold"
+                />
               </div>
 
               {compareBoldnessEnabled ? (
