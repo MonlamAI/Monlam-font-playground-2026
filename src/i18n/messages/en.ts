@@ -91,7 +91,7 @@ const en = {
     stepOf: '{{current}} / {{total}}'
   },
   catalog: {
-    searchPlaceholder: 'Search fonts by name, script, tag…',
+    searchPlaceholder: 'Search fonts',
     typefacesFound: '{{count}} typefaces found',
     collectionHint: 'Curated Monlam IT & Himalayan Unicode Collection',
     tipRealtime: 'Click on any preview text inside cards to type & test directly in real-time.',

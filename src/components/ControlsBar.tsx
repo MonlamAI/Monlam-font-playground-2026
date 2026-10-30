@@ -410,7 +410,7 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
                   }`}
                 >
                   <LayoutGrid className="w-3.5 h-3.5 shrink-0" aria-hidden />
-                  {isSpecialMode ? t('filters.custom') : t('filters.presets')}
+                  {t('filters.presets')}
                 </h3>
                 <ChevronDown
                   className={`w-3.5 h-3.5 text-gray-400 dark:text-slate-500 transition-transform ${

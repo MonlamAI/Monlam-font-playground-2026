@@ -65,7 +65,7 @@
   "common.previous": "Previous step",
   "common.next": "Next step",
   "common.stepOf": "{{current}} / {{total}}",
-  "catalog.searchPlaceholder": "Search fonts by name, script, tag…",
+  "catalog.searchPlaceholder": "Search fonts",
   "catalog.typefacesFound": "{{count}} typefaces found",
   "catalog.collectionHint": "Curated Monlam IT & Himalayan Unicode Collection",
   "catalog.tipRealtime": "Click on any preview text inside cards to type & test directly in real-time.",
