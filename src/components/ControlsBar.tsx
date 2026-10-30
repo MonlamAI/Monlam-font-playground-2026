@@ -425,16 +425,14 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
                       <button
                         type="button"
                         onClick={handleSelectFontSample}
-                        className={`text-left px-3 py-2 rounded-lg text-xs transition border ${
+                        aria-label={t('filters.fontSampleHint')}
+                        className={`text-left px-3 py-2 rounded-lg text-xs transition border ${uiBo} ${
                           activePresetId === PRESET_ID_FONT_SAMPLE
                             ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 border-amber-200 dark:border-amber-800 font-semibold'
                             : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-300 border-transparent hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-gray-100 dark:hover:border-slate-700'
                         }`}
                       >
-                        <span className="block">{t('filters.fontSample')}</span>
-                        <span className="block mt-0.5 text-gray-500 dark:text-slate-400 opacity-80">
-                          {t('filters.fontSampleHint')}
-                        </span>
+                        {t('filters.fontSampleHint')}
                       </button>
                       {specialOptions.map((preset) => {
                         const isActive = activePresetId === preset.id;
