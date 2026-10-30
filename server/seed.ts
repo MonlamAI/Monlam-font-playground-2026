@@ -180,12 +180,12 @@ export function reseedBodyigAssets(db: Db) {
       id, name, tibetan_name, category, font_kind, designer, release_year, version,
       description, tibetan_description, css_class, styles_count, weights,
       features, file_size, filename, sample_text, tags, metrics,
-      supported_scripts, status, s3_key, file_url, keyboard_id, created_at, updated_at
+      supported_scripts, status, s3_key, file_url, keyboard_id, sort_order, created_at, updated_at
     ) VALUES (
       @id, @name, @tibetan_name, @category, @font_kind, @designer, @release_year, @version,
       @description, @tibetan_description, @css_class, @styles_count, @weights,
       @features, @file_size, @filename, @sample_text, @tags, @metrics,
-      @supported_scripts, @status, @s3_key, @file_url, @keyboard_id, @created_at, @updated_at
+      @supported_scripts, @status, @s3_key, @file_url, @keyboard_id, @sort_order, @created_at, @updated_at
     )
   `);
 
@@ -240,7 +240,7 @@ export function reseedBodyigAssets(db: Db) {
       'INSERT INTO font_keyboards (font_id, keyboard_id) VALUES (?, ?)'
     );
 
-    for (const font of MONLAM_FONTS) {
+    MONLAM_FONTS.forEach((font, index) => {
       const storageKey = `fonts/${font.filename}`;
       insertFont.run({
         id: font.id,
@@ -267,12 +267,13 @@ export function reseedBodyigAssets(db: Db) {
         s3_key: storageKey,
         file_url: font.fileUrl || `/uploads/${storageKey}`,
         keyboard_id: DEFAULT_KEYBOARD_ID,
+        sort_order: index,
         created_at: now,
         updated_at: now
       });
       link.run(font.id, DEFAULT_KEYBOARD_ID);
       link.run(font.id, KEYBOARD_2025_ID);
-    }
+    });
   });
 
   tx();

@@ -45,6 +45,7 @@ export interface FontItem {
   version?: string;
   supportedScripts?: string[];
   keyboardId?: string | null;
+  sortOrder?: number;
   presetConfigs?: FontPresetConfig[];
 }
 

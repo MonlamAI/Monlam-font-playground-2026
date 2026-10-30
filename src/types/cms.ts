@@ -62,6 +62,7 @@ export interface FontAsset {
   s3Key: string | null;
   fileUrl: string | null;
   keyboardId: string | null;
+  sortOrder: number;
   presetConfigs: FontPresetConfig[];
   createdAt: string;
   updatedAt: string;
@@ -107,6 +108,7 @@ export interface FontAssetInput {
   supportedScripts?: string[];
   status?: PublishStatus;
   keyboardId?: string | null;
+  sortOrder?: number;
   presetConfigs?: FontPresetConfig[];
 }
 

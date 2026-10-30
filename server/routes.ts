@@ -184,7 +184,7 @@ export function createAdminRouter(db: Db) {
 
   // —— Fonts ——
   router.get('/fonts', (_req, res) => {
-    const rows = db.prepare('SELECT * FROM fonts ORDER BY updated_at DESC').all() as Record<
+    const rows = db.prepare('SELECT * FROM fonts ORDER BY sort_order ASC, name ASC').all() as Record<
       string,
       unknown
     >[];
@@ -217,18 +217,25 @@ export function createAdminRouter(db: Db) {
       body.cssClass ||
       `font-cms-${id.replace(/[^a-z0-9-]/gi, '-').toLowerCase()}`;
     const fontKind = body.fontKind === 'special' ? 'special' : 'normal';
+    const maxOrder = db.prepare('SELECT COALESCE(MAX(sort_order), -1) AS m FROM fonts').get() as {
+      m: number;
+    };
+    const sortOrder =
+      body.sortOrder !== undefined && body.sortOrder !== null
+        ? Number(body.sortOrder) || 0
+        : maxOrder.m + 1;
 
     db.prepare(`
       INSERT INTO fonts (
         id, name, tibetan_name, category, font_kind, designer, release_year, version,
         description, tibetan_description, css_class, styles_count, weights,
         features, file_size, filename, sample_text, tags, metrics,
-        supported_scripts, status, keyboard_id, created_at, updated_at
+        supported_scripts, status, keyboard_id, sort_order, created_at, updated_at
       ) VALUES (
         @id, @name, @tibetan_name, @category, @font_kind, @designer, @release_year, @version,
         @description, @tibetan_description, @css_class, @styles_count, @weights,
         @features, '', @filename, @sample_text, @tags, @metrics,
-        @supported_scripts, @status, @keyboard_id, @created_at, @updated_at
+        @supported_scripts, @status, @keyboard_id, @sort_order, @created_at, @updated_at
       )
     `).run({
       id,
@@ -262,6 +269,7 @@ export function createAdminRouter(db: Db) {
       supported_scripts: JSON.stringify(body.supportedScripts || ['Tibetan']),
       status: body.status === 'published' ? 'published' : 'draft',
       keyboard_id: body.keyboardId || null,
+      sort_order: sortOrder,
       created_at: now,
       updated_at: now
     });
@@ -332,6 +340,7 @@ export function createAdminRouter(db: Db) {
         supported_scripts = @supported_scripts,
         status = @status,
         keyboard_id = @keyboard_id,
+        sort_order = @sort_order,
         updated_at = @updated_at
       WHERE id = @id
     `).run({
@@ -358,6 +367,10 @@ export function createAdminRouter(db: Db) {
       ),
       status: body.status ?? existing.status,
       keyboard_id: body.keyboardId === undefined ? existing.keyboard_id : body.keyboardId,
+      sort_order:
+        body.sortOrder !== undefined && body.sortOrder !== null
+          ? Number(body.sortOrder) || 0
+          : Number(existing.sort_order ?? 0),
       updated_at: now
     });
 
@@ -1031,7 +1044,7 @@ export function createAdminRouter(db: Db) {
     });
     tx();
     const fonts = db
-      .prepare('SELECT * FROM fonts WHERE category = ? ORDER BY name ASC')
+      .prepare('SELECT * FROM fonts WHERE category = ? ORDER BY sort_order ASC, name ASC')
       .all(styleId) as Record<string, unknown>[];
     res.json({
       styleId,
@@ -1253,8 +1266,10 @@ export function createPublicRouter(db: Db) {
     const publishedOnly = req.query.published !== '0';
     const rows = (
       publishedOnly
-        ? db.prepare("SELECT * FROM fonts WHERE status = 'published' ORDER BY name ASC")
-        : db.prepare('SELECT * FROM fonts ORDER BY name ASC')
+        ? db.prepare(
+            "SELECT * FROM fonts WHERE status = 'published' ORDER BY sort_order ASC, name ASC"
+          )
+        : db.prepare('SELECT * FROM fonts ORDER BY sort_order ASC, name ASC')
     ).all() as Record<string, unknown>[];
     res.json(rows.map((r) => fontWithConfigs(db, r)));
   });

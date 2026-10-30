@@ -29,6 +29,7 @@ function assetToFontItem(asset: FontAsset): FontItem {
     version: asset.version,
     supportedScripts: asset.supportedScripts,
     keyboardId: asset.keyboardId,
+    sortOrder: asset.sortOrder,
     presetConfigs: asset.presetConfigs || []
   };
 }

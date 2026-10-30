@@ -157,6 +157,7 @@ export function openDatabase(dbPath?: string) {
   `);
 
   ensureColumn(db, 'fonts', 'font_kind', "TEXT NOT NULL DEFAULT 'normal'");
+  ensureColumn(db, 'fonts', 'sort_order', 'INTEGER NOT NULL DEFAULT 0');
   ensureColumn(db, 'keyboards', 'layout_json_mac', 'TEXT');
   ensureColumn(db, 'keyboards', 'layout_json_windows', 'TEXT');
   db.exec(`
@@ -240,6 +241,7 @@ export function rowToFont(
     s3Key: (row.s3_key as string) || null,
     fileUrl: (row.file_url as string) || null,
     keyboardId: (row.keyboard_id as string) || null,
+    sortOrder: Number(row.sort_order ?? 0),
     presetConfigs,
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string

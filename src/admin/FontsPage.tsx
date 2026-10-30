@@ -26,19 +26,21 @@ export function FontsPage() {
   }, []);
 
   const filtered = useMemo(() => {
-    return fonts.filter((f) => {
-      if (statusFilter === 'published' || statusFilter === 'draft') {
-        if (f.status !== statusFilter) return false;
-      }
-      if (!q.trim()) return true;
-      const s = q.toLowerCase();
-      return (
-        f.name.toLowerCase().includes(s) ||
-        f.tibetanName.includes(q) ||
-        f.category.toLowerCase().includes(s) ||
-        f.tags.some((t) => t.toLowerCase().includes(s))
-      );
-    });
+    return fonts
+      .filter((f) => {
+        if (statusFilter === 'published' || statusFilter === 'draft') {
+          if (f.status !== statusFilter) return false;
+        }
+        if (!q.trim()) return true;
+        const s = q.toLowerCase();
+        return (
+          f.name.toLowerCase().includes(s) ||
+          f.tibetanName.includes(q) ||
+          f.category.toLowerCase().includes(s) ||
+          f.tags.some((t) => t.toLowerCase().includes(s))
+        );
+      })
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.name.localeCompare(b.name));
   }, [fonts, q, statusFilter]);
 
   const togglePublish = async (font: FontAsset) => {
@@ -88,6 +90,7 @@ export function FontsPage() {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 dark:bg-slate-800/60 text-left text-xs text-gray-500 dark:text-slate-400">
             <tr>
+              <th className="px-3 py-3 font-medium w-14 text-center">Order</th>
               <th className="px-4 py-3 font-medium">Name</th>
               <th className="px-4 py-3 font-medium hidden md:table-cell">Category</th>
               <th className="px-4 py-3 font-medium">Status</th>
@@ -98,6 +101,9 @@ export function FontsPage() {
           <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
             {filtered.map((font) => (
               <tr key={font.id} className="hover:bg-gray-50/80 dark:hover:bg-slate-800/40">
+                <td className="px-3 py-3 text-center tabular-nums text-gray-500 dark:text-slate-400">
+                  {font.sortOrder ?? 0}
+                </td>
                 <td className="px-4 py-3">
                   <div className="font-medium text-gray-900 dark:text-slate-100">{font.name}</div>
                   <div className="text-xs text-gray-500 tibetan-text" style={{ wordBreak: 'normal' }}>

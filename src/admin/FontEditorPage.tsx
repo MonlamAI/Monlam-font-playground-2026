@@ -34,6 +34,7 @@ const emptyForm = {
   supportedScripts: 'Tibetan',
   features: '',
   stylesCount: 1,
+  sortOrder: 0,
   weights: '400',
   status: 'draft' as 'draft' | 'published',
   keyboardId: '' as string,
@@ -96,6 +97,7 @@ export function FontEditorPage() {
             supportedScripts: fontAsset.supportedScripts.join(', '),
             features: fontAsset.features.join(', '),
             stylesCount: fontAsset.stylesCount,
+            sortOrder: fontAsset.sortOrder ?? 0,
             weights: fontAsset.weights.join(', '),
             status: fontAsset.status,
             keyboardId: fontAsset.keyboardId || '',
@@ -104,6 +106,15 @@ export function FontEditorPage() {
           setPresetConfigs(configsFromPresets(presetList, fontAsset.presetConfigs || []));
         } else {
           setPresetConfigs(configsFromPresets(presetList));
+          adminApi
+            .listFonts()
+            .then((list) => {
+              if (cancelled) return;
+              const next =
+                list.reduce((max, f) => Math.max(max, f.sortOrder ?? 0), -1) + 1;
+              setForm((prev) => ({ ...prev, sortOrder: next }));
+            })
+            .catch(() => undefined);
         }
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to load');
@@ -119,7 +130,8 @@ export function FontEditorPage() {
   const set =
     (key: keyof typeof emptyForm) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-      const value = key === 'stylesCount' ? Number(e.target.value) : e.target.value;
+      const value =
+        key === 'stylesCount' || key === 'sortOrder' ? Number(e.target.value) : e.target.value;
       setForm((prev) => ({ ...prev, [key]: value }));
     };
 
@@ -207,6 +219,7 @@ export function FontEditorPage() {
       .map((t) => t.trim())
       .filter(Boolean),
     stylesCount: form.stylesCount,
+    sortOrder: Number(form.sortOrder) || 0,
     weights: form.weights
       .split(',')
       .map((t) => Number(t.trim()))
@@ -357,6 +370,18 @@ export function FontEditorPage() {
                 value={form.stylesCount}
                 onChange={set('stylesCount')}
               />
+            </div>
+            <div>
+              <label className={label}>Sort order</label>
+              <input
+                type="number"
+                className={field}
+                value={form.sortOrder}
+                onChange={set('sortOrder')}
+              />
+              <p className="mt-1 text-[11px] text-gray-400 dark:text-slate-500">
+                Lower numbers appear first in the public font catalog.
+              </p>
             </div>
             <div className="sm:col-span-2">
               <label className={label}>Supported scripts (comma-separated)</label>
