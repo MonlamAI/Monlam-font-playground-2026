@@ -46,6 +46,7 @@ export const Header: React.FC<HeaderProps> = ({
   const headerRef = React.useRef<HTMLElement>(null);
   const siteTitle = locale === 'bo' ? t('site.titleTibetan') : t('site.titleEnglish');
   const uiBo = uiTibetanClass(locale, true);
+  const showHeaderFeedback = activeTab !== 'catalog';
 
   React.useLayoutEffect(() => {
     const el = headerRef.current;
@@ -194,20 +195,22 @@ export const Header: React.FC<HeaderProps> = ({
                 </span>
               </button>
 
-              <button
-                type="button"
-                onClick={onOpenFeedback}
-                aria-label={t('nav.feedback')}
-                className="group relative inline-flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-600 dark:text-slate-300 shadow-sm transition active:scale-95"
-              >
-                <MessageSquarePlus className="w-4 h-4" />
-                <span
-                  role="tooltip"
-                  className="pointer-events-none absolute top-full left-1/2 z-50 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-[11px] font-medium text-white opacity-0 shadow-sm transition-none group-hover:opacity-100 dark:bg-slate-100 dark:text-slate-900"
+              {showHeaderFeedback ? (
+                <button
+                  type="button"
+                  onClick={onOpenFeedback}
+                  aria-label={t('nav.feedback')}
+                  className="group relative inline-flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 text-gray-600 dark:text-slate-300 shadow-sm transition active:scale-95"
                 >
-                  {t('nav.feedback')}
-                </span>
-              </button>
+                  <MessageSquarePlus className="w-4 h-4" />
+                  <span
+                    role="tooltip"
+                    className="pointer-events-none absolute top-full left-1/2 z-50 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-[11px] font-medium text-white opacity-0 shadow-sm transition-none group-hover:opacity-100 dark:bg-slate-100 dark:text-slate-900"
+                  >
+                    {t('nav.feedback')}
+                  </span>
+                </button>
+              ) : null}
             </div>
 
             <div className="hidden xl:block">
@@ -218,6 +221,7 @@ export const Header: React.FC<HeaderProps> = ({
               isDark={isDark}
               onToggleTheme={toggleTheme}
               onOpenFeedback={onOpenFeedback}
+              showFeedback={showHeaderFeedback}
             />
 
             {/* Selected Fonts Drawer Button */}

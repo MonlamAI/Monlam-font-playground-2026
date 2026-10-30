@@ -7,12 +7,15 @@ type HeaderUtilityMenuProps = {
   isDark: boolean;
   onToggleTheme: () => void;
   onOpenFeedback: () => void;
+  /** Hidden on Typefaces where feedback lives in the catalog sidebar. */
+  showFeedback?: boolean;
 };
 
 export const HeaderUtilityMenu: React.FC<HeaderUtilityMenuProps> = ({
   isDark,
   onToggleTheme,
-  onOpenFeedback
+  onOpenFeedback,
+  showFeedback = true
 }) => {
   const { t, locale, setLocale } = useI18n();
   const uiBo = uiTibetanClass(locale, true);
@@ -75,18 +78,20 @@ export const HeaderUtilityMenu: React.FC<HeaderUtilityMenuProps> = ({
             <span className={uiBo}>{themeLabel}</span>
           </button>
 
-          <button
-            type="button"
-            role="menuitem"
-            className={menuItemClass}
-            onClick={() => {
-              onOpenFeedback();
-              setOpen(false);
-            }}
-          >
-            <MessageSquarePlus className="w-4 h-4 shrink-0" />
-            <span className={uiBo}>{t('nav.feedback')}</span>
-          </button>
+          {showFeedback ? (
+            <button
+              type="button"
+              role="menuitem"
+              className={menuItemClass}
+              onClick={() => {
+                onOpenFeedback();
+                setOpen(false);
+              }}
+            >
+              <MessageSquarePlus className="w-4 h-4 shrink-0" />
+              <span className={uiBo}>{t('nav.feedback')}</span>
+            </button>
+          ) : null}
 
           <button
             type="button"
