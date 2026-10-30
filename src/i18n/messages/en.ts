@@ -98,13 +98,13 @@ const en = {
     tipSample: 'Sample posters update live when you change the preview text or presets above',
     noMatchTitle: 'No typefaces match your filter',
     noMatchBody:
-      'Try searching for a different keyword like "Uchen", "Cursive", "Drutsa", or reset your search filter.',
+      'Try searching for a different keyword like "Uchen", "Ume", or reset your search filter.',
     addToBag: 'Add to cart',
     removeFromBag: 'Remove from cart',
     addCompare: 'Add to compare',
     removeCompare: 'Remove from compare',
     copySample: 'Copy sample text',
-    openGlyphs: 'View glyph map',
+    openGlyphs: 'Character map and glyphs',
     cardActionCompare: 'Compare',
     cardActionGlyphs: 'Glyphs',
     cardActionDownload: 'Download'
@@ -350,17 +350,18 @@ const en = {
   },
   glyph: {
     size: 'Size',
+    characterMapTitle: 'Character map and glyphs',
     downloadTtf: 'Download .ttf',
     byDesigner: 'By {{designer}}',
     copyGlyph: 'Copy character',
     clickToCopyHint: 'Click any character to copy to clipboard',
     clickToCopyTitle: 'Click to copy {{char}} ({{hex}})',
     categories: {
-      consonants: 'Consonants (ཀ་མད་སུམ་ཅུ)',
-      vowels: 'Vowels & diacritics (དབྱངས་དང་རྟགས)',
-      subjoined: 'Subjoined consonants (འདོགས་ཅན)',
-      numerals: 'Numerals & digits (བོད་ཀྱི་ཨང་ཀི)',
-      punctuation: 'Punctuation & head marks (ཡིག་མགོ་དང་ཤད)'
+      consonants: 'Consonants',
+      vowels: 'Vowels and Diacritics',
+      subjoined: 'Subjoined Consonants',
+      numerals: 'Tibetan Numerals',
+      punctuation: 'Head Marks and Punctuation'
     }
   },
   feedbackModal: {

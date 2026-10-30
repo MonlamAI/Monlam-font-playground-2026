@@ -61,7 +61,7 @@
     "downloadTtf": "ཕབ་ལེན།",
     "comparing": "བསྡུར་བཞིན་པ།",
     "compare": "གཤིབ་བསྡུར།",
-    "glyphs": "ཡི་གེའི་རེའུ་མིག",
+    "glyphs": "ཡིག་རྟགས།",
     "special": "དམིགས་བསལ།",
     "styles_one": "ཉམས་།{{count}}",
     "styles_other": "ཉམས་།{{count}}",
@@ -167,16 +167,16 @@
     "collectionHint": "Monlam IT · Himalayan Unicode · ཡིག་གཟུགས",
     "tipRealtime": "ཡིག་གཟུགས་ཀྱི་བྱང་བུའི སྔོན་ལྟ་ཡིག ལ་བྲི་རོགས།",
     "tipSample": "སྔོན་ལྟ་ཡིག · སྔོན་བཞག · ཡིག་གཟུགས་དཔེ་མཚོན · བསྡུར་བཞིན་པ།",
-    "noMatchTitle": "ཚགས་ཆ · ཡིག་གཟུགས འདོར་བ།",
-    "noMatchBody": "དབུ་ཅན · འབྲུ་ཚ · ཚགས་ཆ་སླར་གསོ།",
+    "noMatchTitle": "ཁྱེད་ཀྱིས་འདེམས་སྒྲུག་བྱས་པའི་ཡིག་གཟུགས་མི་འདུག",
+    "noMatchBody": "དབུ་ཅན་དང་དབུ་མེད་ལྟ་བུའི་ཐ་སྙད་གཞན་ཞིག་གིས་འཚོལ་བཤེར་བྱེད་པའམ། ཡང་ན་འཚོལ་བཤེར་འདེམས་སྒྲུག་བསྐྱར་སྒྲིག་བྱོས།",
     "addToBag": "བསྡུ་ཉར་བྱེད།",
     "removeFromBag": "བསྡུ་ཉར་ནས་ཕྱིར་བཏོན།",
     "addCompare": "བསྡུར་བ། སྣོན་པ།",
     "removeCompare": "བསྡུར་བ། སུབ་པ།",
     "copySample": "དཔེ་མཚོན་ཡིག འདྲ་བཤུས།",
-    "openGlyphs": "ཡི་གེའི་རེའུ་མིག",
+    "openGlyphs": "ཡིག་འབྲུ་མཐུན་སྦྲེལ་དང་ཡིག་རྟགས།",
     "cardActionCompare": "གཤིབ་བསྡུར།",
-    "cardActionGlyphs": "ཡི་གེ",
+    "cardActionGlyphs": "ཡིག་རྟགས།",
     "cardActionDownload": "ཕབ་ལེན།"
   },
   "footer": {
@@ -194,7 +194,7 @@
     "sendFeedback": "བསམ་འཆར་ཕུལ་བ།",
     "github": "Monlam Fonts GitHub",
     "googleFonts": "Google Fonts · ཡིག་གཟུགས",
-    "licence": "ཡིག་གཟུགས་ལམ་འཇུག",
+    "licence": "སྒྲིག་གཞི་ལམ་སྟོན།",
     "unicodeBlock": "Unicode · ཡིག་གཟུགས · U+0F00 – U+0FFF",
     "copyrightHolder": "སྨོན་ལམ་བོད་ཀྱི་བརྡ་འཕྲིན་ཞིབ་འཇུག་ཁང་།",
     "admin": "Admin",
@@ -363,7 +363,18 @@
     "manageMemoryTitle": "དྲན་ཐོ་དོ་དམ། :  མེ་ལོང་གིས་ཁྱེད་ཀྱི་སྐོར་ལ་ཅི་ཞིག་དྲན་གསོ་བྱེད་ཀྱི་ཡོད་པ།"
   },
   "glyph": {
-    "size": "ཆེ་ཆུང་"
+    "size": "ཆེ་ཆུང་། (ཡིག་རྟགས།)",
+    "downloadTtf": "ཕབ་ལེན།",
+    "characterMapTitle": "ཡིག་འབྲུ་མཐུན་སྦྲེལ་དང་ཡིག་རྟགས།",
+    "clickToCopyHint": "ཡིག་རྟགས་གང་རུང་ལ་མནན་ནས་འདྲ་བཤུས་བྱེད།",
+    "clickToCopyTitle": "{{char}} ({{hex}}) འདྲ་བཤུས་བྱེད།",
+    "categories": {
+      "consonants": "ཀ་མད་སུམ་ཅུ།",
+      "vowels": "དབྱངས་དང་རྣམ་འགྱུར་མཚོན་རྟགས།",
+      "subjoined": "འདོགས་ཅན་ཡི་གེ།",
+      "numerals": "བོད་ཡིག་ཨང་ཀི།",
+      "punctuation": "ཡིག་མགོ་དང་ཤད།"
+    }
   },
   "feedbackModal": {
     "badge": "ང་ཚོས་བསམ་ཚུལ་ཆ་ཚང་ཀློག་གི་ཡོད།",
@@ -382,7 +393,7 @@
     "successTitle": "བསམ་ཚུལ་ཡར་སྤྲོད་ལེགས་གྲུབ།",
     "successSavedEmail": "ཉར་ཚགས་བྱས་ནས Monlam ཚོགས་པར་གློག་འཕྲིན་བསྐུར་ཟིན།",
     "successSavedCms": "ཚོགས་པས CMS ནང་ཞིབ་བཤེར་བྱེད་ཆོག་པར་ཉར་ཚགས་བྱས་ཟིན།",
-    "quotaRemaining": "དེ་རིང་གསུང་འདོན་ {{remaining}} / {{limit}} ལྷག",
+    "quotaRemaining": "དེ་རིང་འཆར་འབུལ་ {{remaining}} ནས་ {{limit}} ལྷག་ཡོད།",
     "quotaNone": "དེ་རིང་གསུང་འདོན་ {{limit}} ཚང་མ་བཀོལ་ཟིན།",
     "dailyLimit": "དེ་རིང་གསུང་འདོན་ {{limit}} ཚད་ལ་སླེབས་ཟིན། {{resetTime}} UTC ཡི་རྗེས་སུ་ཡང་བསྐྱར་གསུང་འདོན་བྱེད་ཆོག"
   }
