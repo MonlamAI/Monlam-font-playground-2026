@@ -649,18 +649,6 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
               <div className="flex items-center border border-gray-200 dark:border-slate-700 rounded-lg p-0.5 bg-white dark:bg-slate-800 ml-auto sm:ml-0 sm:hidden shrink-0">
                 <button
                   type="button"
-                  onClick={() => setViewMode('grid')}
-                  aria-label={t('filters.viewGrid')}
-                  className={`p-1.5 rounded-md transition ${
-                    viewMode === 'grid'
-                      ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 shadow-xs'
-                      : 'text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100'
-                  }`}
-                >
-                  <LayoutGrid className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
                   onClick={() => setViewMode('list')}
                   aria-label={t('filters.viewList')}
                   className={`p-1.5 rounded-md transition ${
@@ -670,6 +658,18 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
                   }`}
                 >
                   <List className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('grid')}
+                  aria-label={t('filters.viewGrid')}
+                  className={`p-1.5 rounded-md transition ${
+                    viewMode === 'grid'
+                      ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 shadow-xs'
+                      : 'text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100'
+                  }`}
+                >
+                  <LayoutGrid className="w-4 h-4" />
                 </button>
                 <button
                   type="button"
@@ -710,18 +710,6 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
             <div className="hidden sm:flex items-center border border-gray-200 dark:border-slate-700 rounded-lg p-0.5 bg-white dark:bg-slate-800 sm:ml-auto shrink-0">
               <button
                 type="button"
-                onClick={() => setViewMode('grid')}
-                aria-label={t('filters.viewGrid')}
-                className={`p-1.5 rounded-md transition ${
-                  viewMode === 'grid'
-                    ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 shadow-xs'
-                    : 'text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100'
-                }`}
-              >
-                <LayoutGrid className="w-4 h-4" />
-              </button>
-              <button
-                type="button"
                 onClick={() => setViewMode('list')}
                 aria-label={t('filters.viewList')}
                 className={`p-1.5 rounded-md transition ${
@@ -731,6 +719,18 @@ export const ControlsBar: React.FC<ControlsBarProps> = ({
                 }`}
               >
                 <List className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('grid')}
+                aria-label={t('filters.viewGrid')}
+                className={`p-1.5 rounded-md transition ${
+                  viewMode === 'grid'
+                    ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 shadow-xs'
+                    : 'text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-100'
+                }`}
+              >
+                <LayoutGrid className="w-4 h-4" />
               </button>
               <button
                 type="button"
