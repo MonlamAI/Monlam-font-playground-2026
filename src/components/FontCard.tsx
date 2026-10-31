@@ -72,7 +72,7 @@ export const FontCard: React.FC<FontCardProps> = ({
   const footerIconBtnIdle =
     'transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-slate-700';
   const footerActionBtn =
-    'inline-flex min-h-9 shrink-0 items-center justify-center gap-1 rounded-md font-medium transition px-2.5 py-1.5 whitespace-nowrap';
+    'inline-flex min-h-9 shrink-0 items-center justify-center gap-1 rounded-md font-medium transition p-2 sm:px-2.5 sm:py-1.5 sm:whitespace-nowrap';
 
   const previewLineHeight = catalogPreviewLineHeight(font, lineHeight);
   const descenderPad = Math.round(fontSize * 0.45);
@@ -203,10 +203,14 @@ export const FontCard: React.FC<FontCardProps> = ({
           onClick={handleDownload}
           className={`${footerActionBtn} bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 hover:border-blue-300 dark:hover:border-blue-700`}
         >
-          <Download className="w-3.5 h-3.5 shrink-0" />
-          <span className={locale === 'bo' ? 'tibetan-text-ui tibetan-text' : ''}>{t('catalog.cardActionDownload')}</span>
+          <Download className="w-4 h-4 sm:w-3.5 sm:h-3.5 shrink-0" aria-hidden />
+          <span
+            className={`hidden sm:inline ${locale === 'bo' ? 'tibetan-text-ui tibetan-text' : ''}`}
+          >
+            {t('catalog.cardActionDownload')}
+          </span>
           {locale !== 'bo' ? (
-            <span className="text-[10px] opacity-75 font-mono shrink-0">.ttf</span>
+            <span className="hidden sm:inline text-[10px] opacity-75 font-mono shrink-0">.ttf</span>
           ) : null}
         </TooltipButton>
       </div>

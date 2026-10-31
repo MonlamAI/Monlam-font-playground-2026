@@ -16,27 +16,58 @@ export const AppFooter: React.FC<{ className?: string }> = ({ className = '' }) 
   const footerTextStyle: React.CSSProperties = { lineHeight: 1.55, wordBreak: 'normal' };
   const footerLinkClass = `${footerTextClass} hover:text-blue-600 dark:hover:text-blue-400 transition inline-flex items-center gap-2 min-w-0`;
 
+  const copyrightLine = (
+    <>
+      © <span className={localeNumeralsClass}>{formatLocaleNumber(year, locale)}</span>{' '}
+      <span className="whitespace-normal">{t('footer.copyrightHolder')}</span>
+    </>
+  );
+
   return (
     <footer
       className={`shrink-0 border-t border-gray-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm shadow-[0_-1px_0_rgba(0,0,0,0.04)] dark:shadow-[0_-1px_0_rgba(255,255,255,0.04)] pb-[max(0.75rem,env(safe-area-inset-bottom))] ${className}`.trim()}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-w-0">
-        {/* GitHub · Licence (center) · copyright */}
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-4 py-3.5 sm:py-4 lg:py-5 min-h-[3.25rem] lg:min-h-0">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 min-w-0">
+        {/* Phone & tablet: centred icon links + wrapped copyright */}
+        <div className="lg:hidden flex flex-col items-center gap-2.5 py-3 sm:py-4 min-w-0">
+          <div className="flex items-center justify-center gap-3 sm:gap-4">
+            <a
+              href="https://github.com/MonlamAI/Monlam-font-playground-2026"
+              target="_blank"
+              rel="noreferrer"
+              className={footerIconBtnClass}
+              aria-label={t('footer.github')}
+            >
+              <Github className="w-5 h-5 shrink-0" strokeWidth={1.75} />
+            </a>
+            <Link to="/licence" className={footerIconBtnClass} aria-label={t('footer.licence')}>
+              <Scale className="w-5 h-5 shrink-0" strokeWidth={1.75} />
+            </Link>
+          </div>
+          <div className="flex items-center justify-center gap-2 max-w-[min(100%,22rem)] px-2 min-w-0">
+            <img
+              src="/logos/monlam.svg"
+              alt=""
+              className="w-8 h-8 sm:w-9 sm:h-9 shrink-0"
+              width={36}
+              height={36}
+            />
+            <p
+              className={`text-left text-[11px] sm:text-xs leading-snug text-gray-600 dark:text-slate-400 min-w-0 break-words ${uiBo}`}
+              style={footerTextStyle}
+            >
+              {copyrightLine}
+            </p>
+          </div>
+        </div>
+
+        {/* Desktop (lg+): GitHub · Licence · copyright + logo */}
+        <div className="hidden lg:grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-4 py-5 min-h-0">
           <a
             href="https://github.com/MonlamAI/Monlam-font-playground-2026"
             target="_blank"
             rel="noreferrer"
-            className={`${footerIconBtnClass} justify-self-start lg:hidden`}
-            aria-label={t('footer.github')}
-          >
-            <Github className="w-5 h-5 shrink-0" strokeWidth={1.75} />
-          </a>
-          <a
-            href="https://github.com/MonlamAI/Monlam-font-playground-2026"
-            target="_blank"
-            rel="noreferrer"
-            className={`${footerLinkClass} justify-self-start hidden lg:inline-flex`}
+            className={`${footerLinkClass} justify-self-start`}
             style={footerTextStyle}
           >
             <Github className="w-4 h-4 shrink-0 opacity-80" />
@@ -45,26 +76,17 @@ export const AppFooter: React.FC<{ className?: string }> = ({ className = '' }) 
 
           <Link
             to="/licence"
-            className={`${footerIconBtnClass} justify-self-center lg:hidden`}
-            aria-label={t('footer.licence')}
-          >
-            <Scale className="w-5 h-5 shrink-0" strokeWidth={1.75} />
-          </Link>
-          <Link
-            to="/licence"
-            className={`${footerLinkClass} justify-self-center hidden lg:inline-flex`}
+            className={`${footerLinkClass} justify-self-center`}
             style={footerTextStyle}
           >
             <Scale className="w-4 h-4 shrink-0 opacity-80" />
             <span className="whitespace-nowrap">{t('footer.licence')}</span>
           </Link>
 
-          <div className="hidden lg:flex items-center gap-2.5 min-w-0 justify-self-end col-start-3">
+          <div className="flex items-center gap-2.5 min-w-0 justify-self-end col-start-3">
             <img src="/logos/monlam.svg" alt="" className="w-9 h-9 shrink-0" width={36} height={36} />
             <span className={`${footerTextClass} min-w-0 text-right`} style={footerTextStyle}>
-              ©{' '}
-              <span className={localeNumeralsClass}>{formatLocaleNumber(year, locale)}</span>{' '}
-              <span className="whitespace-normal">{t('footer.copyrightHolder')}</span>
+              {copyrightLine}
             </span>
           </div>
         </div>
