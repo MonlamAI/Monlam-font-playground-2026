@@ -5,6 +5,7 @@ import { FontSampleCard } from './FontSampleCard';
 import { Info } from 'lucide-react';
 import { resolveFontPreviewText } from '../utils/resolvePreviewText';
 import { useI18n } from '../i18n/I18nProvider';
+import { uiTibetanClass } from '../utils/fontDisplay';
 
 interface FontCatalogProps {
   fonts: FontItem[];
@@ -39,7 +40,8 @@ export const FontCatalog: React.FC<FontCatalogProps> = ({
   onOpenGlyphs,
   onResetFilters
 }) => {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const uiBo = uiTibetanClass(locale, true);
   const isSelected = (id: string) => selectedFonts.some((f) => f.id === id);
   const isCompared = (id: string) => comparedFonts.some((f) => f.id === id);
 
@@ -50,11 +52,17 @@ export const FontCatalog: React.FC<FontCatalogProps> = ({
           <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center mx-auto text-gray-400 dark:text-slate-500 mb-3">
             <Info className="w-6 h-6" />
           </div>
-          <h3 className="text-base font-semibold text-gray-900 dark:text-slate-100">{t('catalog.noMatchTitle')}</h3>
-          <p className="text-sm text-gray-500 dark:text-slate-400 mt-1 max-w-md mx-auto">{t('catalog.noMatchBody')}</p>
+          <h3 className={`text-base font-semibold text-gray-900 dark:text-slate-100 ${uiTibetanClass(locale)}`}>
+            {t('catalog.noMatchTitle')}
+          </h3>
+          <p className={`text-sm text-gray-500 dark:text-slate-400 mt-1 max-w-md mx-auto ${uiTibetanClass(locale)}`}>
+            {t('catalog.noMatchBody')}
+          </p>
           <button
+            type="button"
             onClick={onResetFilters}
-            className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition"
+            className={`mt-4 inline-flex items-center justify-center max-w-full mx-auto px-5 py-2.5 min-h-10 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition text-center leading-snug ${uiBo}`}
+            style={locale === 'bo' ? { wordBreak: 'normal' } : undefined}
           >
             {t('common.resetFilters')}
           </button>

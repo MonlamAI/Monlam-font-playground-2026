@@ -111,6 +111,13 @@ html[data-locale="bo"] :is(.tibetan-text.text-xs, .tibetan-text.text-sm, .tibeta
   word-break: normal;
 }
 
+/* Buttons: never syllable-break Tibetan like body .tibetan-text (break-all) */
+button:is(.tibetan-text, .tibetan-text-ui),
+button :is(.tibetan-text, .tibetan-text-ui) {
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
 /* UI counters / sliders: Tibetan digits (U+0F20–0F29) — Monlam UI face, plain OT (no titling rules) */
 .locale-numerals {
   font-family: var(--font-app);
