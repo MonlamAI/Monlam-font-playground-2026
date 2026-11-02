@@ -6,6 +6,7 @@ import { downloadSingleFont } from '../utils/fontDownloader';
 import {
   BODYIG_SUITE,
   OFFICIAL_BODYIG_DOWNLOADS,
+  downloadMonlamBodyig1Zip,
   openOfficialDownload
 } from '../data/officialDownloads';
 import { InstallStepsCarousel } from './InstallStepsCarousel';
@@ -199,6 +200,18 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
           </a>
         </div>
         </div>
+      </section>
+
+      {/* Monlam Bodyig 1 archive */}
+      <section className="rounded-2xl border border-indigo-200/70 bg-gradient-to-br from-white via-indigo-50/40 to-blue-50/30 p-5 shadow-md shadow-indigo-900/5 dark:border-indigo-900/40 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950/25 sm:p-6">
+        <button
+          type="button"
+          onClick={() => downloadMonlamBodyig1Zip()}
+          className={`mx-auto flex w-full max-w-lg items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-indigo-500 active:scale-[0.98] sm:w-auto ${uiTibetanClass(locale, true)}`}
+        >
+          <Download className="h-4 w-4 shrink-0" aria-hidden />
+          {t('install.downloadBodyig1')}
+        </button>
       </section>
 
       {/* INDIVIDUAL FONT ASSET DIRECT DOWNLOAD TABLE */}

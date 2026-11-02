@@ -1,16 +1,56 @@
 <!doctype html>
-<html lang="en">
+<html lang="bo">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href="/logos/bodyig.svg" />
-    <link rel="apple-touch-icon" href="/logos/bodyig.png" />
-    <title>Monlam Font Playground & Typography Suite</title>
-    <meta name="description" content="Interactive Google Fonts-inspired playground for Monlam IT Tibetan typefaces. Real-time side-by-side font comparison, typing practice tutor, complex Tibetan typography guide, and font & keyboard asset downloader." />
-    <meta property="og:title" content="Monlam Font Playground & Typography Suite" />
-    <meta property="og:description" content="Interactive Google Fonts-inspired playground for Monlam IT Tibetan typefaces. Real-time side-by-side font comparison, typing practice tutor, complex Tibetan typography guide, and font & keyboard asset downloader." />
+    <link rel="apple-touch-icon" href="/logos/bodyig.svg" />
+    <title>Monlam Fonts | སྨོན་ལམ་བོད་ཡིག — Tibetan Typefaces &amp; Monlam Bodyig</title>
+    <meta
+      name="description"
+      content="Monlam Fonts — official site for སྨོན་ལམ་བོད་ཡིག (Monlam Bodyig) and Monlam IT Tibetan Unicode typefaces. Preview, compare, download fonts and keyboard installers."
+    />
+    <meta
+      name="keywords"
+      content="Monlam Fonts, Monlam Bodyig, Monlam Bod Yig, སྨོན་ལམ་བོད་ཡིག, སྨོན་ལམ་ཡིག་གཟུགས, Tibetan fonts, Monlam IT, monlamfonts.com"
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://monlamfonts.com/" />
+    <link rel="alternate" hreflang="x-default" href="https://monlamfonts.com/" />
+    <link rel="alternate" hreflang="en" href="https://monlamfonts.com/" />
+    <link rel="alternate" hreflang="bo" href="https://monlamfonts.com/" />
+    <meta property="og:title" content="Monlam Fonts | སྨོན་ལམ་བོད་ཡིག — Tibetan Typefaces &amp; Monlam Bodyig" />
+    <meta
+      property="og:description"
+      content="Monlam Fonts — official Monlam IT playground for Monlam Bodyig (སྨོན་ལམ་བོད་ཡིག) and Tibetan Unicode fonts."
+    />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://monlamfonts.com/" />
+    <meta property="og:site_name" content="Monlam Fonts" />
+    <meta property="og:locale" content="bo_IN" />
+    <meta property="og:image" content="https://monlamfonts.com/logos/bodyig.svg" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Monlam Fonts | སྨོན་ལམ་བོད་ཡིག" />
+    <meta
+      name="twitter:description"
+      content="Preview, compare, and download Monlam Bodyig and Monlam IT Tibetan typefaces."
+    />
+    <meta name="twitter:image" content="https://monlamfonts.com/logos/bodyig.svg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Monlam Fonts",
+        "alternateName": ["Monlam Bodyig", "སྨོན་ལམ་བོད་ཡིག", "Monlam Font Playground", "Monlam Tibetan fonts"],
+        "url": "https://monlamfonts.com/",
+        "description": "Official Monlam IT Tibetan typeface playground and Monlam Bodyig download center.",
+        "inLanguage": ["en", "bo"],
+        "publisher": {
+          "@type": "Organization",
+          "name": "Monlam Tibetan IT Research Center"
+        }
+      }
+    </script>
     <link rel="preload" href="/fonts/MonlamTBslim.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,6 +67,7 @@
           var loc = localStorage.getItem('monlam-ui-locale');
           document.documentElement.dataset.locale =
             loc === 'en' || loc === 'bo' ? loc : 'bo';
+          document.documentElement.lang = loc === 'en' ? 'en' : 'bo';
         } catch (e2) {}
       })();
     </script>
@@ -36,4 +77,3 @@
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-

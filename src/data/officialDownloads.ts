@@ -90,3 +90,19 @@ export function getBodyigDownload(platform: 'mac' | 'windows'): OfficialDownload
 export function openOfficialDownload(url: string) {
   window.open(url, '_blank', 'noopener,noreferrer');
 }
+
+/** Legacy Monlam Bodyig 1 archive (hosted under /public/downloads). */
+export const MONLAM_BODYIG_1_ZIP = {
+  url: '/downloads/monlam-bodyig-1.zip',
+  filename: 'MONLAM BODYIG.zip'
+} as const;
+
+export function downloadMonlamBodyig1Zip() {
+  const link = document.createElement('a');
+  link.href = MONLAM_BODYIG_1_ZIP.url;
+  link.download = MONLAM_BODYIG_1_ZIP.filename;
+  link.rel = 'noopener';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}

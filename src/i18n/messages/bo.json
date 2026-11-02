@@ -13,6 +13,20 @@
     "badgePlayground": "ཚོད་ལྟའི་སྡིངས་ཆ།",
     "titleTibetan": "སྨོན་ལམ་བོད་ཡིག་དྲ་ཚིགས།"
   },
+  "seo": {
+    "siteName": "Monlam Fonts",
+    "siteNameTibetan": "སྨོན་ལམ་བོད་ཡིག",
+    "documentTitle": "Monlam Fonts | སྨོན་ལམ་བོད་ཡིག — ཡིག་གཟུགས་སྔོན་ལྟ · གཤིབ་བསྡུར · ཕབ་ལེན",
+    "metaDescription": "Monlam Fonts ནི་སྨོན་ལམ་བོད་ཡིག་དང་སྨོན་ལམ་ཡིག་གཟུགས་ཀྱི་ཚོད་ལྟ་དང་ཕབ་ལེན་གྱི་དྲ་ཚིགས་ཡིན། བོད་ཡིག་ཡུ་ནི་ཀོད་ཡིག་གཟུགས་སྔོན་ལྟ · གཤིབ་བསྡུར · མཐེབ་གཞོང་ཕབ་ལེན་བྱེད་ཐུབ།",
+    "keywords": "Monlam Fonts, Monlam Bodyig, སྨོན་ལམ་བོད་ཡིག, སྨོན་ལམ་ཡིག་གཟུགས, བོད་ཡིག་ཡིག་གཟུགས, Monlam IT, ཡིག་གཟུགས་ཕབ་ལེན, མཐེབ་གཞོང",
+    "organization": "སྨོན་ལམ་བོད་ཀྱི་བརྡ་འཕྲིན་ཞིབ་འཇུག་ཁང་།",
+    "tabTypefaces": "ཡིག་གཟུགས།",
+    "tabCompare": "གཤིབ་བསྡུར།",
+    "tabInstall": "སྨོན་ལམ་བོད་ཡིག་ཕབ་ལེན།",
+    "tabLicence": "སྒྲིག་གཞི་ལམ་སྟོན།",
+    "tabTyping": "འབྲི་སྦྱོང་།",
+    "tabGuide": "ཡིག་གཟུགས་ལམ་སྟོན།"
+  },
   "nav": {
     "typefaces": "ཡིག་གཟུགས།",
     "compare": "གཤིབ་བསྡུར།",
@@ -308,6 +322,7 @@
     "osMac": "macOS",
     "osLinux": "Linux",
     "osMobile": "iOS & Android",
+    "downloadBodyig1": "སྨོན་ལམ་བོད་ཡིག་དང་པོ། ཕབ་ལེན།",
     "directDownloads": "ཡིག་གཟུགས་ཕབ་ལེན།",
     "directIntro": "ཡིག་གཟུགས་རྐྱང་པ་རྣམས་ Mac དང་ Windows གཉིས་ཀར་བཀོལ་སྤྱོད་བྱེད་ཐུབ།",
     "typefacesAvailable": "ཡིག་གཟུགས་ {{count}} ཡོད།",

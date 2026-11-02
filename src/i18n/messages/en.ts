@@ -5,6 +5,23 @@ const en = {
     titleEnglish: 'Monlam Fonts',
     badgePlayground: 'Playground'
   },
+  seo: {
+    siteName: 'Monlam Fonts',
+    siteNameTibetan: 'སྨོན་ལམ་བོད་ཡིག',
+    documentTitle:
+      'Monlam Fonts | སྨོན་ལམ་བོད་ཡིག — Tibetan Typefaces, Compare & Monlam Bodyig Download',
+    metaDescription:
+      'Monlam Fonts is the official Monlam IT playground for སྨོན་ལམ་བོད་ཡིག (Monlam Bodyig) and Tibetan Unicode typefaces. Preview, compare, and download fonts and keyboard installers from Monlam Tibetan IT Research Center.',
+    keywords:
+      'Monlam Fonts, Monlam Bodyig, Monlam Bod Yig, Monlam Tibetan fonts, Monlam IT, སྨོན་ལམ་བོད་ཡིག, སྨོན་ལམ་ཡིག་གཟུགས, Tibetan typefaces, Tibetan fonts download, bod yig, Monlam keyboard',
+    organization: 'Monlam Tibetan IT Research Center',
+    tabTypefaces: 'Tibetan typefaces',
+    tabCompare: 'Compare fonts',
+    tabInstall: 'Download Monlam Bodyig',
+    tabLicence: 'Licence policies',
+    tabTyping: 'Typing practice',
+    tabGuide: 'Typography guide'
+  },
   global: {
     home: 'Home',
     tools: 'Tools',
@@ -218,6 +235,7 @@ const en = {
     osMac: 'macOS',
     osLinux: 'Linux',
     osMobile: 'iOS & Android',
+    downloadBodyig1: 'Download monlam bodyig 1',
     directDownloads: 'Direct Font Asset Downloads',
     directIntro:
       'Individual .ttf files work on both Mac and Windows. For the full Font & Keyboard installer, use the Mac / Windows buttons above.',

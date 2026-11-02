@@ -159,6 +159,7 @@
   "install.osMac": "macOS",
   "install.osLinux": "Linux",
   "install.osMobile": "iOS & Android",
+  "install.downloadBodyig1": "Download monlam bodyig 1",
   "install.directDownloads": "Direct Font Asset Downloads",
   "install.directIntro": "Individual .ttf files work on both Mac and Windows. For the full Font & Keyboard installer, use the Mac / Windows buttons above.",
   "install.typefacesAvailable": "{{count}} typefaces available",
