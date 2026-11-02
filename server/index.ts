@@ -65,6 +65,8 @@ if (isProd) {
 }
 
 app.listen(PORT, () => {
+  const fontCount = db.prepare('SELECT COUNT(*) as c FROM fonts').get() as { c: number };
   console.log(`Monlam CMS API listening on http://localhost:${PORT}`);
-  console.log(`CMS database: ${resolveDatabasePath()}`);
+  console.log(`CMS database: ${resolveDatabasePath()} (${fontCount.c} fonts)`);
+  console.log(`CMS uploads: ${getLocalUploadDir()}`);
 });

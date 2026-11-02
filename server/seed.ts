@@ -49,8 +49,41 @@ export function seedPresetsIfEmpty(db: Db) {
   console.log(`Seeded ${PRESET_TEXTS.length} preview presets`);
 }
 
-/** Upsert catalog default preset (and insert any missing static presets). */
-export function syncCatalogPresets(db: Db) {
+/** Insert static presets that are missing from CMS. Never overwrites admin-edited rows. */
+export function insertMissingCatalogPresets(db: Db) {
+  const now = new Date().toISOString();
+  const insert = db.prepare(`
+    INSERT INTO presets (
+      id, title, tibetan_title, content, translation, sort_order, status, created_at, updated_at
+    ) VALUES (
+      @id, @title, @tibetan_title, @content, @translation, @sort_order, 'published', @created_at, @updated_at
+    )
+  `);
+
+  const tx = db.transaction(() => {
+    PRESET_TEXTS.forEach((preset, index) => {
+      const existing = db.prepare('SELECT id FROM presets WHERE id = ?').get(preset.id);
+      if (existing) return;
+      insert.run({
+        id: preset.id,
+        title: preset.title,
+        tibetan_title: preset.tibetanTitle,
+        content: preset.content,
+        translation: preset.translation,
+        sort_order: index,
+        created_at: now,
+        updated_at: now
+      });
+    });
+  });
+  tx();
+}
+
+/**
+ * Overwrite catalog preset rows from repo static data (destructive). Run manually:
+ * `npx tsx server/syncCatalogFromGit.ts` or set CMS_SYNC_FROM_GIT=1 on one boot.
+ */
+export function syncCatalogPresetsFromGit(db: Db) {
   const now = new Date().toISOString();
   const insert = db.prepare(`
     INSERT INTO presets (
@@ -82,13 +115,8 @@ export function syncCatalogPresets(db: Db) {
         created_at: now,
         updated_at: now
       };
-      if (existing) {
-        if (preset.id === DEFAULT_PRESET_ID) {
-          update.run(row);
-        }
-      } else {
-        insert.run(row);
-      }
+      if (existing) update.run(row);
+      else insert.run(row);
     });
   });
   tx();
@@ -120,16 +148,9 @@ export function ensureDefaultPresetOrder(db: Db) {
 const WRONG_MONLAM_SPELLING = 'མོན་ལམ';
 const CORRECT_MONLAM_SPELLING = 'སྨོན་ལམ';
 
-/** Align CMS font Tibetan labels with `MONLAM_FONTS` and fix legacy མོན་ → སྨོན་ typo. */
-export function syncFontTibetanLabelsFromCatalog(db: Db) {
+/** One-time-safe typo fix only; does not overwrite CMS Tibetan copy from git. */
+export function fixMonlamTypoInLabels(db: Db) {
   const now = new Date().toISOString();
-  const updateById = db.prepare(`
-    UPDATE fonts SET
-      tibetan_name = @tibetan_name,
-      tibetan_description = @tibetan_description,
-      updated_at = @updated_at
-    WHERE id = @id
-  `);
   const fixFonts = db.prepare(`
     UPDATE fonts SET
       tibetan_name = REPLACE(tibetan_name, @wrong, @correct),
@@ -144,16 +165,8 @@ export function syncFontTibetanLabelsFromCatalog(db: Db) {
     WHERE tibetan_name LIKE @like
   `);
 
+  const like = `%${WRONG_MONLAM_SPELLING}%`;
   const tx = db.transaction(() => {
-    for (const font of MONLAM_FONTS) {
-      updateById.run({
-        id: font.id,
-        tibetan_name: font.tibetanName,
-        tibetan_description: font.tibetanDescription,
-        updated_at: now
-      });
-    }
-    const like = `%${WRONG_MONLAM_SPELLING}%`;
     fixFonts.run({
       wrong: WRONG_MONLAM_SPELLING,
       correct: CORRECT_MONLAM_SPELLING,
@@ -168,6 +181,31 @@ export function syncFontTibetanLabelsFromCatalog(db: Db) {
     });
   });
   tx();
+}
+
+/** Overwrite Tibetan labels for catalog font IDs from `MONLAM_FONTS` (destructive). Manual / opt-in only. */
+export function syncFontTibetanLabelsFromCatalog(db: Db) {
+  const now = new Date().toISOString();
+  const updateById = db.prepare(`
+    UPDATE fonts SET
+      tibetan_name = @tibetan_name,
+      tibetan_description = @tibetan_description,
+      updated_at = @updated_at
+    WHERE id = @id
+  `);
+
+  const tx = db.transaction(() => {
+    for (const font of MONLAM_FONTS) {
+      updateById.run({
+        id: font.id,
+        tibetan_name: font.tibetanName,
+        tibetan_description: font.tibetanDescription,
+        updated_at: now
+      });
+    }
+  });
+  tx();
+  fixMonlamTypoInLabels(db);
 }
 
 /** Wipe and reseed fonts/keyboards from Bodyig 4.0.1 local assets. */
@@ -336,11 +374,23 @@ export function syncScriptStyles(db: Db) {
 
 export function seedIfEmpty(db: Db) {
   seedPresetsIfEmpty(db);
-  syncCatalogPresets(db);
+  insertMissingCatalogPresets(db);
   syncScriptStyles(db);
-  ensureDefaultPresetOrder(db);
-  syncFontTibetanLabelsFromCatalog(db);
+  fixMonlamTypoInLabels(db);
+
+  if (process.env.CMS_SYNC_FROM_GIT === '1') {
+    console.warn(
+      'CMS_SYNC_FROM_GIT=1: syncing presets and Tibetan labels from repo (overwrites matching CMS rows).'
+    );
+    syncCatalogPresetsFromGit(db);
+    syncFontTibetanLabelsFromCatalog(db);
+    ensureDefaultPresetOrder(db);
+  }
+
   const fontCount = db.prepare('SELECT COUNT(*) as c FROM fonts').get() as { c: number };
   if (fontCount.c > 0) return;
+  console.warn(
+    'CMS fonts table is empty — seeding default Bodyig catalog. Set DATABASE_PATH to a persistent file outside the deploy folder so deploys do not reset the database.'
+  );
   reseedBodyigAssets(db);
 }

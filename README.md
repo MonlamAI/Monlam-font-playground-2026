@@ -78,6 +78,8 @@ Env vars: see `.env.example` (`FEEDBACK_TO_EMAIL`, `ADMIN_EMAIL`, `FEEDBACK_DAIL
 
 Font files stay on the EC2 disk with the app (no S3 required). **CMS data lives in SQLite** (`DATABASE_PATH`) and **`UPLOADS_DIR`** — both are gitignored. Point them at **absolute paths outside the deploy directory** (for example `/var/lib/monlam/cms.sqlite` and `/var/lib/monlam/uploads`) so `git pull`, `npm install`, and `npm run build` never create a fresh empty database. Back up those paths on EBS.
 
+**Why CMS edits “disappear” after deploy:** `npm run build` only rebuilds the SPA; the API **restarts** on `npm start` / systemd. If `DATABASE_PATH` points inside the repo and the file is missing or empty, startup runs a **one-time full font seed** and you lose admin changes. Previously, every restart also **re-synced Tibetan labels and the default preset from git** — that is now opt-in (`CMS_SYNC_FROM_GIT=1`). After deploy, check logs for `CMS database: … (N fonts)` and confirm `N` matches what you expect.
+
 **After every `git pull`, you must reinstall (if deps changed), rebuild the SPA, and restart the Node process.** `git pull` alone does not update what users see—the site is served from the built `dist/` folder.
 
 ```bash
