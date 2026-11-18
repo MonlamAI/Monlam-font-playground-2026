@@ -30,6 +30,18 @@ export const BODYIG_SUITE = {
     'Official Monlam Font & Keyboard complete suite. Includes Tibetan Unicode typefaces and keyboard installers for your operating system.',
 } as const;
 
+/** Hosted suite installers (served from /public/downloads). */
+export const BODYIG_5_INSTALLERS = {
+  mac: {
+    url: '/downloads/Monlam.Bodyig.5.0.0.Mac.zip',
+    filename: 'Monlam.Bodyig.5.0.0.Mac.zip'
+  },
+  windows: {
+    url: '/downloads/Monlam.Bodyig.5.0.0.Win.zip',
+    filename: 'Monlam.Bodyig.5.0.0 Win.zip'
+  }
+} as const;
+
 export const OFFICIAL_BODYIG_DOWNLOADS: OfficialDownload[] = [
   {
     id: 'bodyig-5-mac',
@@ -38,9 +50,9 @@ export const OFFICIAL_BODYIG_DOWNLOADS: OfficialDownload[] = [
     version: BODYIG_SUITE.version,
     platform: 'mac',
     label: 'Download for Mac',
-    url: 'https://github.com/MonlamTech/Monlam-App-Store/releases/download/4.0.1/Monlam.Bodyig.4.0.1.Mac.zip',
-    fileSize: '≈11 MB',
-    description: 'Monlam Bodyig v5 installer package for macOS',
+    url: BODYIG_5_INSTALLERS.mac.url,
+    fileSize: '≈17 MB',
+    description: 'Monlam Bodyig 5.0.0 installer package for macOS',
     sourcePage: BODYIG_SUITE.sourcePage,
   },
   {
@@ -50,9 +62,9 @@ export const OFFICIAL_BODYIG_DOWNLOADS: OfficialDownload[] = [
     version: BODYIG_SUITE.version,
     platform: 'windows',
     label: 'Download for Windows',
-    url: 'https://github.com/MonlamTech/Monlam-App-Store/releases/download/4.0.1/Monlam.Bodyig.4.0.1.Win.zip',
-    fileSize: '≈11 MB',
-    description: 'Monlam Bodyig v5 installer package for Windows',
+    url: BODYIG_5_INSTALLERS.windows.url,
+    fileSize: '≈16 MB',
+    description: 'Monlam Bodyig 5.0.0 installer package for Windows',
     sourcePage: BODYIG_SUITE.sourcePage,
   },
 ];
@@ -87,8 +99,25 @@ export function getBodyigDownload(platform: 'mac' | 'windows'): OfficialDownload
   return OFFICIAL_BODYIG_DOWNLOADS.find((d) => d.platform === platform)!;
 }
 
-export function openOfficialDownload(url: string) {
+export function openOfficialDownload(url: string, suggestedFilename?: string) {
+  const isSameOrigin =
+    url.startsWith('/') && !url.startsWith('//');
+  if (isSameOrigin) {
+    const link = document.createElement('a');
+    link.href = url;
+    if (suggestedFilename) link.download = suggestedFilename;
+    link.rel = 'noopener';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    return;
+  }
   window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+export function openBodyigPlatformDownload(platform: 'mac' | 'windows') {
+  const entry = BODYIG_5_INSTALLERS[platform];
+  openOfficialDownload(entry.url, entry.filename);
 }
 
 /** Legacy Monlam Bodyig 1 archive (hosted under /public/downloads). */

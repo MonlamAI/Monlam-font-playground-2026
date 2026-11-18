@@ -5,9 +5,8 @@ import { FontItem } from '../types/font';
 import { downloadSingleFont } from '../utils/fontDownloader';
 import {
   BODYIG_SUITE,
-  OFFICIAL_BODYIG_DOWNLOADS,
   downloadMonlamBodyig1Zip,
-  openOfficialDownload
+  openBodyigPlatformDownload
 } from '../data/officialDownloads';
 import { InstallStepsCarousel } from './InstallStepsCarousel';
 import {
@@ -32,8 +31,6 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
   const [activeOs, setActiveOs] = React.useState<'windows' | 'mac'>('windows');
   const [assetListOpen, setAssetListOpen] = React.useState(false);
 
-  const macDownload = OFFICIAL_BODYIG_DOWNLOADS.find((d) => d.platform === 'mac')!;
-  const winDownload = OFFICIAL_BODYIG_DOWNLOADS.find((d) => d.platform === 'windows')!;
   const suiteName = localePick(BODYIG_SUITE.name, BODYIG_SUITE.tibetanName, locale);
   const suiteTitle =
     locale === 'bo' ? suiteName : `${suiteName} ${BODYIG_SUITE.version}`;
@@ -114,7 +111,7 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
                 type="button"
                 onClick={() => {
                   setActiveOs('mac');
-                  openOfficialDownload(macDownload.url);
+                  openBodyigPlatformDownload('mac');
                 }}
                 className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-md transition hover:bg-blue-50 active:scale-95"
               >
@@ -125,7 +122,7 @@ export const InstallGuide: React.FC<InstallGuideProps> = ({ allFonts }) => {
                 type="button"
                 onClick={() => {
                   setActiveOs('windows');
-                  openOfficialDownload(winDownload.url);
+                  openBodyigPlatformDownload('windows');
                 }}
                 className="flex flex-1 items-center justify-center gap-2.5 rounded-xl bg-blue-500 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-400 active:scale-95"
               >
